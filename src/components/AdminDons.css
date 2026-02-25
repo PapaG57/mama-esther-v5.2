@@ -1,0 +1,53 @@
+.admin-dons {
+  padding: 40px;
+  max-width: 900px;
+  margin: auto;
+  font-family: Bahnschrift, sans-serif;
+}
+
+.don-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.don-form input {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.don-form button {
+  background-color: #007a5e; /* vert drapeau Cameroun */
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.don-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.don-table th,
+.don-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.don-table th {
+  background-color: #fcd116; /* jaune drapeau Cameroun */
+  color: #ce1126; /* rouge drapeau Cameroun */
+}
+
+.don-table a {
+  color: #007a5e; /* vert drapeau Cameroun */
+  font-weight: bold;
+  text-decoration: none;
+}

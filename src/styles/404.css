@@ -1,0 +1,81 @@
+.page404 {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #fcd116 0%, #ffffff 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.page404-hero {
+  text-align: center;
+  max-width: 800px;
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.page404-banner {
+  max-width: 400px;
+  height: auto;
+  margin-bottom: 30px;
+  animation: floaty 4s ease-in-out infinite;
+}
+
+.page404-title {
+  font-size: 3rem;
+  color: #d30000; /* rouge du drapeau Camerounais */
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.page404-subtitle {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 40px;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Animation d’apparition */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation douce du visuel */
+@keyframes floaty {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.page404-button-wrapper {
+  margin-top: 20px;
+}
+
+.page404-button-group {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.page404-button-group .about-button {
+  flex: 1 1 200px;
+  max-width: 260px;
+  text-align: center;
+}

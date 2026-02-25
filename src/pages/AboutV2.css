@@ -1,0 +1,194 @@
+/* ABOUT V2 - STORYTELLING DESIGN */
+.about-v2-hero {
+  height: 50vh;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("/assets/Solidarity-and-unity.png") center/cover;
+  display: flex;
+  align-items: center;
+  padding-top: 80px;
+}
+
+/* MANIFESTO SECTION */
+.about-v2-manifesto {
+  padding: 100px 0;
+  background: white;
+}
+
+.manifesto-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.manifesto-text h2 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 30px;
+  line-height: 1.1;
+  color: var(--color-dark);
+}
+
+.manifesto-text .lead {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-green);
+  margin-bottom: 25px;
+  line-height: 1.4;
+}
+
+.manifesto-text p {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.manifesto-stats {
+  display: flex;
+  gap: 40px;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-box strong {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--color-red);
+}
+
+.stat-box span {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: #999;
+}
+
+.manifesto-image {
+  position: relative;
+}
+
+.manifesto-image img {
+  width: 100%;
+  border-radius: 30px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+}
+
+.image-caption {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  background: var(--color-yellow);
+  padding: 20px 30px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.image-caption strong {
+  font-size: 1.1rem;
+  color: var(--color-dark);
+}
+
+.image-caption span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-green);
+  text-transform: uppercase;
+}
+
+/* VALUES SECTION */
+.about-v2-values {
+  padding: 100px 0;
+  background: var(--color-light);
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 60px;
+}
+
+.v2-value-card {
+  background: white;
+  padding: 50px 40px;
+  border-radius: 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.v2-value-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+}
+
+.v2-value-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 25px;
+}
+
+.v2-value-card h4 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  color: var(--color-green);
+}
+
+/* TEAM CTA */
+.about-v2-team-cta {
+  padding: 100px 0;
+  background: white;
+}
+
+.team-cta-box {
+  background: linear-gradient(135deg, var(--color-green), #004d33);
+  padding: 80px;
+  border-radius: 40px;
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.team-cta-content {
+  position: relative;
+  z-index: 2;
+}
+
+.team-cta-content h2 {
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+
+.team-cta-content p {
+  font-size: 1.25rem;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .manifesto-grid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-cta-box {
+    padding: 40px 20px;
+  }
+
+  .team-cta-content h2 {
+    font-size: 2.5rem;
+  }
+}

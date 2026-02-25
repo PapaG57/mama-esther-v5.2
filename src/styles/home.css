@@ -1,0 +1,30 @@
+.home-content {
+  margin-top: 0;
+}
+
+.scroll-top-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.home-newsletter-section {
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-newsletter-section h2 {
+  color: #4caf50;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.home-newsletter-section p {
+  max-width: 800px;
+  margin: 0 auto 30px;
+  padding: 0 20px;
+  text-align: center;
+}

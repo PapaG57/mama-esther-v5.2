@@ -1,0 +1,80 @@
+.travaux {
+  min-height: 100vh;
+  background: linear-gradient(
+    to bottom,
+    #fcd116 0%,
+    #ffffff 70%
+  ); /* jaune drapeau Cameroun */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.travaux-hero {
+  text-align: center;
+  max-width: 800px;
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.travaux-banner {
+  max-width: 400px;
+  height: auto;
+  margin-bottom: 30px;
+  animation: floaty 4s ease-in-out infinite;
+}
+
+.travaux-title {
+  font-size: 3rem;
+  color: #d30000; /* rouge drapeau Cameroun */
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.travaux-subtitle {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 40px;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floaty {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.travaux-button-group {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.travaux-button-group .about-button {
+  flex: 1 1 200px;
+  max-width: 260px;
+  text-align: center;
+}

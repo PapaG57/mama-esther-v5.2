@@ -1,0 +1,432 @@
+{
+  "topbar": {
+    "englishVersion": "Version anglaise",
+    "frenchVersion": "Version française",
+    "contactEmail": "Contactez-nous",
+    "followUs": "Suivez-nous",
+    "backToTop": "Haut"
+  },
+
+  "navbar": {
+    "home": "Accueil",
+    "about": "À propos",
+    "commitment": "Engagements",
+    "news": "Actualités",
+    "contact": "Contact",
+    "donate": "Faire un Don"
+  },
+
+  "header": {
+    "welcome": "Soyez les bienvenus dans notre association",
+    "title": "Aidez-nous à donner une chance aux orphelins",
+    "subtitle": "Nous avons beaucoup de projets pour l’avenir des enfants et des personnes en difficulté."
+  },
+
+  "actuality": {
+    "title": "Nos actualités en images",
+
+    "subscribeTitle": "Inscrivez-vous",
+    "subscribeText": "Inscrivez-vous à notre newsletter pour rester informé des dernières nouvelles et événements de l'association.",
+    "subscribeButton": "Je m'inscris",
+
+    "newsletterTitle": "Newsletter",
+    "newsletterText": "Les liens pour lire les newsletters sont à la fin de cette page. Cliquez sur les logos au format PDF 😉 !",
+
+    "pdfTitle": "Les temps forts de l’association",
+    "pdfText": "Retrouvez ici nos newsletters passées. Vous pouvez les consulter en version web ou télécharger le PDF directement.",
+
+    "back": "Retour",
+
+    "pagination": "Page {{current}} sur {{total}}",
+    "noNews": "Aucune newsletter disponible pour le moment.",
+    "openPdf": "Ouvrir le PDF de {{title}}",
+    "downloadPdf": "Télécharger le PDF",
+
+    "articles": {
+      "article1": {
+        "title": "Signature des documents pour l'agrément",
+        "content": "\"C'est un jour mémorable pour l'association Mama Esther. Aujourd'hui, la création de l'association a été officiellement reconnue par le tribunal de Thionville en Moselle, marquant le début d'un nouveau chapitre dans la mission de cette organisation philanthropique.\n\n Les membres de l'association et les sympathisants attendaient avec impatience cette nouvelle depuis des mois. Lorsque les documents officiels sont arrivés par courrier, une onde de joie et de soulagement a parcouru l'équipe. La présidente de l'association, Esther Gérard, a tenu à annoncer la bonne nouvelle à tous les membres et bénévoles. \n\nNous avons travaillé sans relâche pour atteindre ce moment,déclara Esther Gérard, visiblement émue. Recevoir ces documents officiels est une reconnaissance de notre engagement et de nos efforts. C'est le début d'une aventure pleine de promesses pour les enfants que nous soutenons. \n\nLa signature des documents par le tribunal de Thionville symbolise bien plus qu'une simple formalité juridique. C'est le fruit d'années de travail acharné, de dévouement et de soutien inconditionnel de la part de nombreux bénévoles et sympathisants. Chaque membre de l'association a contribué à sa manière à cette réalisation. \n\nLa réception des documents officiels marque le début d'un nouveau voyage pour l'association Mama Esther, un voyage empreint de compassion, de détermination et d'espoir. Chaque membre de l'association est désormais prêt à se retrousser les manches et à transformer cette vision en réalité, offrant un avenir meilleur aux enfants et aux personnes vulnérables. \n\nle Webmaster\""
+      },
+      "article2": {
+        "title": "Visite du terrain de l'association",
+        "content": "\"Le soleil brillait doucement sur le vaste terrain, soulignant l'enthousiasme et l'espoir qui imprégnaient l'air. Aujourd'hui, une étape cruciale dans le projet de l'association Mama Esther allait prendre forme. La présidente de l'association, Madame Esther GERARD, était sur place pour visiter le terrain destiné à accueillir le futur bâtiment de l'orphelinat, un projet qui promet de transformer de nombreuses vies. Le terrain, actuellement une étendue de terre vaste et ouverte, était en passe de devenir un havre pour les enfants dans le besoin. L'association Mama Esther, connue pour son engagement envers le bien-être des enfants orphelins et les personnes vulnérables, avait travaillé sans relâche pour commencer la construction de ce nouvel établissement. \n\nTout en marchant à travers le terrain, la présidente prit le temps de discuter avec les membres de la communauté locale, écoutant leurs idées et leurs suggestions avec une attention bienveillante. 'Ce projet n'est pas seulement celui de l'association 'Mama Esther' déclara-t-elle. Il appartient à chacun de nous. Ensemble, nous bâtissons un avenir meilleur pour ces enfants, en leur offrant not seulement un toit, mais aussi un foyer où ils pourront s'épanouir. \n\nLa présidente de l'association 'Mama Esther' quitta le terrain avec le cœur rempli d'espoir et d'enthousiasme, prête à continuer de travailler sans relâche pour que ce rêve devienne réalité. La visite d'aujourd'hui était bien plus qu'une simple inspection ; elle symbolisait la concrétisation d'une vision, portée par une communauté unie par un même objectif : offrir un foyer sûr et aimant aux enfants qui en ont le plus besoin. \n\nLe Webmaster\""
+      },
+      "article3": {
+        "title": "Premier coup de pelle !"
+      }
+    }
+  },
+
+  "registration": {
+    "title": "Inscription à la newsletter",
+    "subtitle": "Recevez nos actus par email :",
+    "placeholder": "Votre adresse email",
+    "humanCheck": "Je suis un humain (veuillez cocher cette case)",
+    "errorCheck": "Non non non... vous avez oublié de cocher la case !",
+    "duplicateAlert": "Cette adresse est déjà inscrite. Merci d’en utiliser une autre 🙏",
+    "clearButton": "Effacer le formulaire",
+    "sending": "Envoi en cours…",
+    "send": "Envoyer",
+    "success": "✅ Inscription réussie !",
+    "error": "❌ Une erreur est survenue.",
+    "close": "Fermer"
+  },
+
+  "footer": {
+    "slogan": "\"L'amour d'une mère au service des enfants et de tous ceux qui ont besoin d'aide et d'assistance.\"",
+    "servicesTitle": "Services",
+    "serviceDon": "Dons",
+    "serviceSponsor": "Sponsor - Partenaires",
+    "serviceFundraising": "Collecte de fonds - matériels",
+    "serviceVolunteer": "Volontariat - Emploi",
+    "serviceLegal": "Mentions Légales",
+    "serviceIssue": "lien mort ou problème sur le site ?",
+    "contactsTitle": "Contacts",
+    "contactPresident": "+33 6 86 74 29 11 - mobile de la Présidente",
+    "contactVicePresident": "+33 6 45 65 65 17 - mobile du vice-président",
+    "contactWriteUs": "👉 Cliquez ici pour nous écrire",
+    "actionCountries": "Nous agissons dans ces pays :",
+    "belgiumComing": "Bientôt en Belgique",
+    "germanyComing": "Bientôt en Allemagne",
+    "copyright": "© {{year}} Mama Esther. Tous droits réservés | Créé par FG Développement",
+    "adminAccess": "🔐 Réservé aux administrateurs",
+    "adminModalTitle": "Connexion administrateur",
+    "adminLogin": "Se connecter",
+    "adminCancel": "Annuler",
+    "adminPlaceholderId": "Identifiant",
+    "adminPlaceholderPassword": "Mot de passe"
+  },
+
+  "aboutSection": {
+    "title": "Qui sommes-nous ?",
+    "description1": "L’Association Mama Esther œuvre pour le bien-être des orphelins et des personnes en difficulté. Notre mission est de venir en aide aux plus vulnérables : enfants sans soutien, personnes âgées isolées, individus en situation de handicap, familles démunies.",
+    "description2": "Grâce à l’engagement de nos membres et bénévoles, nous mettons en place des actions solidaires, des accompagnements personnalisés et des projets de soutien humain et matériel. Ensemble, nous travaillons pour un monde plus juste et bienveillant.",
+    "button": "mieux nous connaître"
+  },
+
+  "engagement": {
+    "title": "Engagements de l'association",
+    "questions": "Vous avez des questions ? Cliquez ici",
+    "transparency": {
+      "title": "Comptabilité transparente",
+      "text": "L'association Mama Esther veille à maintenir une comptabilité rigoureuse et transparente. Nous utilisons des systèmes de gestion financière avancés pour assurer que toutes les transactions sont enregistrées avec précision. Chaque don et chaque dépense sont minutieusement suivis et audités régulièrement pour garantir une utilisation éthique et efficace des ressources. Notre engagement envers une comptabilité sans faille reflète notre dévouement à la transparence et à la responsabilité envers nos donateurs et bénéficiaires. En garantissant une gestion financière rigoureuse, nous renforçons la confiance de nos donateurs et partenaires et assurons que chaque contribution est utilisée pour maximiser l'impact de nos actions."
+    },
+    "support": {
+      "title": "Soutien aux enfants mais aussi ceux dans le besoin",
+      "text": "L'association Mama Esther s'engage à apporter un soutien global à la communauté, en commençant par les enfants mais sans s'y limiter. Nous offrons des services incluant : le soutien scolaire, les soins médicaux et l'accompagnement moral, pour assurer leur bien-être. Mais, cela ne s'arrête pas là. Nous étendons nos efforts aux adultes en difficulté, fournissant des formations professionnelles et un accès à des ressources essentielles. En adoptant une approche holistique, nous visons à renforcer l'ensemble de la communauté, créant ainsi un environnement où chacun peut prospérer. Notre objectif est de bâtir un avenir meilleur pour tous, pour les plus jeunes tout en soutenant les adultes qui jouent un rôle crucial dans leur épanouissement."
+    },
+    "dedication": {
+      "title": "Dévouement sans attente",
+      "text": "L'association Mama Esther repose sur l'engagement indéfectible de ses bénévoles, dont le volontariat désintéressé est la clé de notre succès. Chaque jour, ils offrent de leur temps et de leur énergie sans attendre de contrepartie, animés par le désir de faire une différence dans la vie des plus vulnérables. Leur dévouement va bien au-delà des simples tâches, car ils apportent soutien, espoir et réconfort à ceux qui en ont le plus besoin. Ce volontariat, guidé par des valeurs de solidarité et de compassion, est essentiel pour mener à bien nos missions. Grâce à ces héros du quotidien, nous sommes en mesure de réaliser des projets ambitieux et d'apporter une aide précieuse à notre communauté. Leur altruisme et leur générosité témoignent de leur esprit véritable."
+    }
+  },
+
+  "actualitySection": {
+    "title": "📰 Nos dernières actualités",
+    "subtitle": "🌍 Découvrez les événements et projets qui font avancer notre mission !",
+    "button": "Voir toutes les actualités",
+    "news1": "Le terrain est acquis !",
+    "news2": "L'association est née !",
+    "news3": "Les newsletters sont ici !"
+  },
+
+  "newsletters": {
+    "filterAll": "Tous",
+    "viewOnline": "🌐 Voir en ligne",
+    "viewPdf": "📄 voir en PDF",
+    "downloadPdf": "📄 Télécharger PDF",
+    "webVersion": "🌐 Version web",
+    "titleGallery": "📰 Nos newsletters",
+    "subtitleGallery": "Retrouvez les publications de l'association Mama Esther :",
+    "list": {
+      "news1": {
+        "title": "Newsletter n°1",
+        "summary": "Retour sur le repérage du terrain et début des travaux.",
+        "tags": {
+          "terrain": "terrain",
+          "travaux": "travaux",
+          "equipe": "équipe"
+        }
+      },
+      "news2": {
+        "title": "Newsletter n°2",
+        "summary": "Envois de fournitures et avancement du chantier.",
+        "tags": {
+          "envois": "envois",
+          "chantier": "chantier",
+          "solidarite": "solidarité"
+        }
+      }
+    }
+  },
+
+  "team": {
+    "title": "NOTRE ÉQUIPE",
+    "hint": "Cliquez sur une image pour en savoir plus",
+    "backHome": "Accueil",
+    "roles": {
+      "president": "Présidente",
+      "vicePresident": "Vice-Président",
+      "treasurer": "Trésorière",
+      "logistics": "Logistique",
+      "nurse": "Infirmière",
+      "admin": "Administrateur",
+      "projectManager": "Maître d'Oeuvre",
+      "socialMedia": "Social Media Manager"
+    },
+    "descriptions": {
+      "esther": "Je m'appelle Esther GERARD, aide-soignante travaillant au Luxembourg. Depuis des décennies, j'ai eu à cœur de créer une association pour prendre soin des enfants du Cameroun, mon pays natal, ainsi que de ceux dans le besoin. Ces enfants doivent retrouver des valeurs dans leur vie et comprendre que le malheur qui les touche n'est ni une fatalité, ni une finalité. Comme une mère, je ressens ce besoin profond de leur offrir l'amour d'une maman qu'ils n'ont plus. Nous étendons également cet amour aux personnes défavorisées et dans le besoin. Je souhaite ainsi apporter mes compétences et mes connaissances à ceux qui en ont le plus besoin car pour eux aussi, le malheur qui les touche n'est ni une fatalité, ni une finalité.",
+      "florent": "Je m'appelle Florent GERARD et je suis le mari de 'Mama Esther'. L'idée de créer une association pour venir en aide aux enfants défavorisés est née d'un rêve commun. Depuis toujours, j'ai aimé les enfants, innocentes victimes d'un monde souvent indifférent à leur sort. Bien que certaines personnes fassent des efforts, les moyens ne sont pas toujours suffisants et, malgré les soins apportés, les enfants ne reçoivent pas ce qu'ils méritent. En plus d'aider les enfants, nous venons également en aide aux personnes défavorisées. Fonctionnaire en France depuis 30 ans, je gère toute l'administration de l'association et supervise le site ainsi que les réseaux sociaux afin d'apporter mes compétences et mes connaissances.",
+      "maeva": "Je m'appelle Maryam, trésorière de l'association et fille de notre présidente, 'Mama Esther'. Depuis mon plus jeune âge, j'ai été inspirée par l'engagement et la passion de ma mère pour aider les enfants défavorisés. Ayant grandi avec ces valeurs, j'ai décidé de m'investir pleinement dans cette noble cause. En tant que trésorière, je veille à la bonne gestion financière de l'association, afin de garantir que chaque don soit utilisé de manière efficace et transparente. Mon objectif est de contribuer à offrir un avenir meilleur aux enfants et aux personnes dans le besoin, en apportant mon dévouement à notre mission commune. Je suis convaincue que, grâce à notre engagement collectif, nous pouvons apporter des changements significatifs et durables.",
+      "aziz": "Je m'appelle Aziz et je suis le président de l'ONG AVUCA (aide aux Vulnérables de Centrafrique). Depuis plusieurs années, j'ai eu l'honneur de travailler pour améliorer leurs conditions de vie. Étant moi-même orphelin de père et de mère, je comprends profondément les défis que rencontrent les enfants vulnérables. C’est avec enthousiasme que je m'engage au sein de l'association 'Mama Esther'. Je suis désireux de partager mon expérience et mes compétences pour apporter un soutien concret à ces enfants, en apprenant des autres membres de cette belle communauté. Je crois fermement que, ensemble, nous pouvons transformer leurs vies et leur offrir un avenir meilleur. Merci de m'accueillir parmi vous.",
+      "margault": "Je m'appelle Margault, j'ai 29 ans et je viens de Belgique. Infirmière de métier, je suis passionnée par mon travail et par le bien-être des autres. En dehors de ma profession, je suis une grande sportive et je m'investis dans des activités qui me permettent de rester en forme et équilibrée. J'adore voyager, découvrir de nouvelles cultures, et rencontrer des gens de tous horizons. Les animaux ont aussi une place importante dans ma vie. Enfin, le yoga est une pratique que j'apprécie particulièrement pour son côté apaisant et revitalisant. Mon engagement au sein de l'association 'Mama Esther' est une manière pour moi de contribuer à une cause qui me tient à cœur et d'apporter mon aide à ceux qui en ont le plus besoin.",
+      "marie": "Bonjour, je m’appelle Marie, j’ai 24 ans et je suis infirmière à domicile et spécialisée avec les enfants. Passionnée par les voyages, les rencontres humaines et le volontariat à l'étranger, je souhaite transmettre mes valeurs et compétences aux enfants et aux populations locales. Mon objectif est d'améliorer les conditions de vie des communautés camerounaises grâce à mes compétences relationnelles et professionnelles, et ma passion pour la solidarité et l’humain. Je crois que chaque petite action peut avoir un grand impact. Mon engagement dans l’association 'Mama Esther' vise à contribuer à des projets concrets ayant un impact réel sur le terrain. Au plaisir de recevoir vos dons, d'échanger avec vous ou de vous rencontrer. 🙂",
+      "melanie": "Je m'appelle Mélanie, je suis infirmière et je travaille au Luxembourg. Quand ma collègue de travail, Esther, m'a parlé de la création d'une association pour venir en aide aux enfants du Cameroun, je n'ai pas hésité une seconde à vouloir apporter mon dévouement à ce voyage humanitaire extraordinaire. Accompagner ces enfants dans leur bien-être, leur éducation, leur développement et leur santé fait partie de mes priorités. En contribuant à cette cause, j'espère inspirer d'autres personnes à prendre part à des initiatives humanitaires et à faire une réelle différence dans la vie des enfants. Ensemble, we pouvons créer un futur meilleur pour ces enfants, et je suis impatiente de commencer cette aventure humaine et solidaire."
+    }
+  },
+
+  "don": {
+    "title": "Faire un don",
+    "iframeTitle": "Formulaire de don",
+    "quote": "“C’est dans les petites attentions que nous bâtissons les plus grands espoirs.”",
+    "back": "Retour"
+  },
+
+  "contact": {
+    "title": "CONTACTEZ-NOUS",
+    "back": "Retour",
+    "addressTitle": "ADRESSE",
+    "phoneTitle": "TÉLÉPHONE",
+    "president": "Présidente",
+    "vicePresident": "Vice-président",
+    "availability": "7j/7 de 9h à 19h",
+    "urgency": "Pour les urgences, laissez-nous un message.",
+    "writeUs": "NOUS ÉCRIRE",
+    "form": {
+      "name": "Nom & Prénom",
+      "email": "Votre e-mail",
+      "subject": "Objet",
+      "message": "Message",
+      "humanCheck": "Je suis un humain (veuillez cocher cette case)",
+      "errorCheck": "Non non non... vous avez oublié de cocher la case !",
+      "sending": "Envoi en cours…",
+      "send": "Envoyer",
+      "donate": "Faire un don 💚",
+      "successTitle": "💌 Merci pour votre message !",
+      "successText": "Toute l'équipe se mobilise pour vous répondre le plus rapidement possible.",
+      "close": "Fermer",
+      "networkError": "❌ Erreur réseau. Vérifiez votre connexion.",
+      "submitError": "❌ Une erreur est survenue. Veuillez réessayer."
+    }
+  },
+
+  "mentions": {
+    "title": "Mentions Légales",
+    "date": "En vigueur au 10/07/24",
+    "edition": {
+      "title": "ÉDITION DU SITE",
+      "text": "L’édition et la direction de la publication du Site est assurée par Monsieur Florent GERARD, domicilié au 1 Rue des Troènes, dont le numéro de téléphone est le 06 45 65 65 17, et l'adresse e-mail florent.gerard@mamaesther.org. Ci-après l'Éditeur."
+    },
+    "host": {
+      "title": "HEBERGEUR",
+      "text": "L'hébergeur du Site est la société LWS - 007 Hébergement, dont le siège social est situé au 10 rue Penthièvre 75008 Paris."
+    },
+    "access": {
+      "title": "ACCES AU SITE",
+      "text": "Le Site est normalement accessible, à tout moment, à l'Utilisateur. Toutefois, l'Éditeur pourra, à tout moment, suspendre, limiter ou interrompre le Site afin de procéder, notamment, à des mises à jour ou des modifications de son contenu. L'Éditeur ne pourra en aucun cas être tenu responsable des conséquences éventuelles de cette indisponibilité sur les activités de l'Utilisateur."
+    },
+    "property": {
+      "title": "PROPRIÉTÉ INTELLECTUELLE ET CONTREFAÇON",
+      "text": "L’Association Mama Esther est propriétaire des droits de propriété intellectuelle ou détient les droits d’usage sur tous les éléments accessibles sur le site, notamment : les textes, les images, les graphismes, le logo, les icônes. Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, toute exploitation non autorisée du site ou d’un quelconque élément qu’il contient sera considérée comme constitutive d’une contrefaçon et poursuivie conformément aux dispositions des articles L.335-2 et suivants du Code de Propriété Intellectuelle, sauf autorisation écrite au préalable de l’Association Mama Esther."
+    },
+    "cookies": {
+      "title": "COOKIES ET TRACEURS",
+      "text": "Le site internet de l'association Mama Esther ne possède pas de système de mesure d’audience, ni de fonction de partage sur les réseaux sociaux. Il ne vous sera donc pas demandé d’accepter de cookies ou autres traceurs. Cependant, vous avez la possibilité de cliquer sur les liens de nos réseaux sociaux. L'association Mama Esther ne pourra être tenue responsable des conséquences de votre navigation sur ces réseaux sociaux."
+    },
+    "contact": {
+      "title": "FORMULAIRE DE CONTACT ET COMMENTAIRES",
+      "text": "Vous pouvez être amené à nous indiquer votre adresse e-mail lorsque vous remplissez notre formulaire de contact ou déposez un commentaire sur l’un des articles du site. En aucun cas, vos données ne seront cédées à des tiers. Nous tenons expressément au respect de vos données."
+    },
+    "newsletter": {
+      "title": "NEWSLETTER",
+      "text": "Vous pouvez vous abonner à la newsletter du site. Vous recevez alors automatiquement et gratuitement des newsletters traitant des sujets du site de l'association Mama Esther. Vous pouvez vous désinscrire à tout moment en cliquant sur le lien de désabonnement présent en bas de chaque newsletter. En aucun cas, votre adresse e-mail ne sera cédée à des tiers."
+    },
+    "links": {
+      "title": "LIENS HYPERTEXTES",
+      "text": "Ce site internet contient un certain nombre de liens hypertextes vers d’autres sites. Cependant, l'association Mama Esther n’a pas la possibilité de suivre et vérifier le contenu de ces sites, et n’assumera en conséquence aucune responsabilité de ce fait."
+    },
+    "rss": {
+      "title": "FLUX RSS",
+      "text": "Les flux RSS sont exclusivement destinés aux visiteurs du site pour une utilisation personnelle et ne sauraient en aucun cas servir à alimenter d’autres sites, sauf autorisation écrite au préalable de l'association Mama Esther."
+    },
+    "privacy": {
+      "title": "PROTECTION DES DONNÉES PERSONNELLES",
+      "text": "Conformément au Règlement Général sur la Protection des Données (RGPD), l’association Mama Esther s’engage à garantir la confidentialité et la sécurité des données personnelles collectées. Ces données sont utilisées exclusivement dans le cadre des activités de l’association (dons, contact, volontariat...) et ne sont jamais cédées ou vendues à des tiers. Chaque utilisateur dispose d’un droit d’accès, de rectification, d’opposition et de suppression de ses données personnelles, qu’il peut exercer par simple demande à l’adresse suivante :"
+    },
+    "signature": {
+      "title": "SIGNATURE ASSOCIATIVE",
+      "text": "L’Association Mama Esther s’engage à accueillir vos données comme elle accueille ses bénéficiaires : avec respect, sécurité et bienveillance."
+    },
+    "back": "Retour",
+    "writeUs": "Nous écrire"
+  },
+
+  "construction": {
+    "title": "Page en construction",
+    "subtitle": "La Présidente veille sur chaque pierre qu’on pose — même les pages pas encore finies 💚",
+    "back": "Retour",
+    "writeUs": "Nous écrire"
+  },
+
+  "unsubscribe": {
+    "title": "Oh non… On est triste de vous voir partir...",
+    "subtitle": "Vous ne recevrez plus notre newsletter. Mais sachez que vous serez toujours le ou la bienvenue pour nous retrouver à tout moment 💚",
+    "emailLabel": "Entrez votre adresse email :",
+    "placeholder": "ex. prenom.nom@exemple.com",
+    "buttonYes": "Oui, je me désinscris",
+    "buttonStay": "Rester sur le site",
+    "alertEmail": "📭 Veuillez entrer votre email.",
+    "alertError": "⚠️ Une erreur est survenue lors de la désinscription.",
+    "alertFail": "🚫 Échec de la requête.",
+    "successModal": "Votre désinscription a bien été enregistrée !",
+    "backHome": "Retour à l’accueil"
+  },
+
+  "error404": {
+    "title": "404 - Page introuvable",
+    "subtitle": "Même quand on se perd, on peut toujours revenir là où l’amour nous attend 💛",
+    "back": "Retour",
+    "contact": "Contactez-nous"
+  },
+
+  "donationCounter": {
+    "cumulatedSupport": "Soutien reçu depuis notre création :",
+    "annualDons": "Dons reçus en {{year}} :",
+    "thanks": "Merci pour votre générosité 💚",
+    "seePdf": "📄Voir le fichier au format PDF",
+    "createPdf": "créer le fichier PDF",
+    "monthlyLabel": "Dons mensuels (€)"
+  },
+
+  "bibleVerses": {
+    "corinthians13_13": {
+      "text": "Maintenant donc ces trois choses demeurent : la foi, l'espérance, la charité ; mais la plus grande de ces choses, c'est la charité.",
+      "ref": "1 Corinthiens 13:13"
+    },
+    "galatians6_2": {
+      "text": "Portez les fardeaux les uns des autres, et vous accomplirez ainsi la loi de Christ.",
+      "ref": "Galates 6:2"
+    },
+    "matthew25_40": {
+      "text": "... Je vous le dis en vérité, toutes les fois que vous avez fait ces choses à l’un de ces plus petits de mes frères, c’est à moi que vous les avez faites.",
+      "ref": "Matthieu 25 v. 40 (Bible Segond 1910)"
+    }
+  },
+
+  "admin": {
+    "accessGate": {
+      "denied": "Accès refusé",
+      "deniedText": "L’entrée par la barre d’adresse est interdite. Utilisez le bouton réservé aux administrateurs.",
+      "back": "Retour",
+      "secureAccess": "🔒 Accès sécurisé",
+      "secureText": "Cette page est réservée aux administrateurs."
+    },
+    "dashboard": {
+      "title": "🔐 Espace Administrateur",
+      "addAdminTitle": "Ajouter un administrateur",
+      "addDonationTitle": "💰 Ajouter un don manuel",
+      "donationListTitle": "📋 Liste des dons",
+      "noDonations": "Aucun don enregistré pour le moment."
+    },
+    "forms": {
+      "idPlaceholder": "Prénom - nom",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "passwordPlaceholder": "***************",
+      "donatorName": "Nom du donateur",
+      "amount": "Montant (€)",
+      "source": "-- Sélectionner une source --",
+      "sourceCheque": "Chèque",
+      "sourceTransfer": "Virement",
+      "sourceCash": "Espèces",
+      "sourceOther": "Autres (préciser)",
+      "sourceOtherPlaceholder": "Précisez la source",
+      "comments": "Commentaires (facultatif)",
+      "submitCreate": "Créer",
+      "submitAddDon": "Ajouter le don"
+    },
+    "messages": {
+      "passwordsNoMatch": "Les mots de passe ne correspondent pas.",
+      "passwordLength": "Le mot de passe doit contenir entre 8 et 30 caractères.",
+      "passwordWeak": "Mot de passe trop faible.",
+      "passwordInfo": "Le mot de passe doit contenir entre 8 et 30 caractères, au moins une majuscule, une minuscule, un chiffre et un caractère spécial. Il est considéré fort seulement s’il dépasse 10 caractères et contient au moins un de chaque type.",
+      "strengthFaible": "Mot de passe faible",
+      "strengthMoyen": "Mot de passe moyen",
+      "strengthFort": "Mot de passe fort",
+      "networkError": "Erreur réseau",
+      "creationSuccess": "Création effectuée",
+      "loginSuccess": "Connexion réussie !",
+      "loginError": "Identifiant ou mot de passe incorrect",
+      "donAdded": "Don manuel ajouté !",
+      "donDeleted": "Don supprimé avec succès"
+    },
+    "table": {
+      "name": "Nom du donateur",
+      "amount": "Montant (€)",
+      "source": "Source",
+      "date": "Date",
+      "comments": "Commentaires",
+      "addedBy": "Ajouté par",
+      "action": "Action",
+      "delete": "Supprimer",
+      "viewFile": "📄 Voir le fichier"
+    },
+    "modals": {
+      "successTitle": "🎉 Nouvel administrateur créé avec succès !",
+      "successText": "Votre nouvel administrateur est maintenant actif.",
+      "confirmDeleteTitle": "Confirmation de suppression",
+      "confirmDeleteText": "Vous vous apprêtez à supprimer cette ligne de don. Confirmer la suppression.",
+      "confirm": "Confirmer",
+      "cancel": "Annuler",
+      "close": "Fermer"
+    }
+  },
+  "v2": {
+    "hero": {
+      "associationName": "Association Mama Esther",
+      "mainTitle": "Bâtir un avenir digne pour les orphelins du",
+      "location": "Cameroun",
+      "subtext": "Nous transformons vos dons en actions concrètes : éducation, santé et infrastructures pour les enfants les plus vulnérables."
+    },
+    "impact": {
+      "children": "Enfants soutenus",
+      "projects": "Projets réalisés",
+      "countries": "Pays d'action"
+    },
+    "missions": {
+      "subtitle": "Nos domaines d'action",
+      "title": "Comment nous agissons au quotidien",
+      "eduTitle": "Éducation & Avenir",
+      "eduDesc": "Nous finançons la scolarité et le matériel pour garantir un futur aux orphelins.",
+      "infraTitle": "Infrastructures",
+      "infraDesc": "Rénovation de bâtiments et création de lieux de vie sécurisés pour les enfants.",
+      "transTitle": "Éthique & Rigueur",
+      "transDesc": "Une gestion rigoureuse pour que 100% de vos dons arrivent sur le terrain."
+    },
+    "tags": {
+      "education": "Éducation",
+      "infrastructure": "Travaux",
+      "transparency": "Confiance"
+    },
+    "btns": {
+      "donate": "Faire un don",
+      "discover": "Découvrir nos actions",
+      "learnMore": "En savoir plus",
+      "makeImpact": "Je soutiens l'association"
+    },
+    "cta": {
+      "title": "Chaque geste compte",
+      "text": "Rejoignez notre mission et aidez-nous à offrir un sourire et un avenir à ceux qui en ont le plus besoin."
+    }
+  }
+}

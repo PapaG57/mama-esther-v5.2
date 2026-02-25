@@ -1,0 +1,92 @@
+.mentions {
+  background-color: #ffffff;
+  color: #000000;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.mentions-container {
+  max-width: 800px;
+  text-align: left;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+.mentions-title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.mentions-date {
+  font-size: 1.2rem;
+  font-style: italic;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.mentions-section-title {
+  font-size: 1.4rem;
+  color: #007a5e; /* vert drapeau Cameroun */
+  margin-top: 40px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.mentions-container p {
+  text-align: justify;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Animation douce */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mentions-button-group {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+.mentions-button-group .about-button {
+  flex: 1 1 200px;
+  max-width: 260px;
+  text-align: center;
+}
+
+.mentions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.mentions-logo {
+  max-height: 80px;
+  width: auto;
+}
+
+.mentions-president {
+  max-height: 80px;
+  width: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}

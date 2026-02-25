@@ -1,0 +1,61 @@
+/* src/styles/newsList.css */
+
+.newsletter-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.newsletter-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.newsletter-line:hover {
+  background-color: #f2f2f2;
+}
+
+.newsletter-link {
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: bold;
+  flex-grow: 1;
+  margin-right: 1rem;
+}
+
+.newsletter-link:hover {
+  text-decoration: underline;
+}
+
+.pdf-icon-link {
+  color: #e74c3c;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.pdf-icon-link:hover .pdf-icon-awesome {
+  transform: scale(1.1);
+}
+
+.pdf-icon-awesome {
+  margin-left: auto;
+  transition: transform 0.2s ease-in-out;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,207 @@
+/* ========= BASE GÉNÉRALE - V5.2 DESIGN SYSTEM ========= */
+
+:root {
+  /* Charte Graphique (Cameroun) */
+  --color-green: #007a5e; /* Structure, confiance */
+  --color-green-dark: #003d29;
+  --color-red: #ce1126;   /* Urgence, CTA */
+  --color-yellow: #fcd116; /* Accents, lumière */
+  
+  /* Neutrals */
+  --color-dark: #1a1a1a;
+  --color-light: #f8f9fa;
+  --color-white: #ffffff;
+  --color-text-main: #242424;
+  --color-text-muted: #666666;
+
+  /* Shapes - Arrondis généreux */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 40px;
+  --radius-full: 9999px;
+
+  /* Effects - Ombres douces */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.1);
+  
+  /* Animations */
+  --transition-fast: 0.2s ease;
+  --transition-default: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Typography */
+  --font-main: "Bahnschrift", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
+  /* Layout */
+  --container-width: 1300px;
+  --navbar-height: 80px;
+}
+
+/* ========= RESET & BASE ========= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: var(--font-main);
+  color: var(--color-text-main);
+  background-color: var(--color-white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========= TYPOGRAPHY ========= */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+
+h1 { font-size: 3.5rem; font-weight: 900; }
+h2 { font-size: 2.5rem; font-weight: 800; }
+h3 { font-size: 1.75rem; font-weight: 700; }
+
+a {
+  color: var(--color-green);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-red);
+}
+
+/* ========= BUTTONS (Base Style) ========= */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* ========= SHARED V2 COMPONENTS ========= */
+.v2-layout {
+  font-family: var(--font-main);
+  color: var(--color-dark);
+}
+
+.v2-container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* Titles */
+.v2-section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.v2-subtitle {
+  color: var(--color-red);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.v2-title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--color-dark);
+}
+
+/* Buttons */
+.v2-btn {
+  padding: 18px 36px;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: var(--transition-default);
+  border: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.v2-btn-primary {
+  background: var(--color-red);
+  color: white;
+  box-shadow: 0 10px 20px rgba(206, 17, 38, 0.3);
+}
+
+.v2-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(206, 17, 38, 0.4);
+  background: #b00e20;
+}
+
+.v2-btn-outline {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.v2-btn-outline:hover {
+  background: white;
+  color: var(--color-dark);
+}
+
+.v2-btn-yellow {
+  background: var(--color-yellow);
+  color: var(--color-dark);
+  box-shadow: 0 10px 20px rgba(252, 209, 22, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.v2-btn-yellow:hover {
+  background: var(--color-green);
+  color: white;
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(0, 122, 94, 0.3);
+}
+
+/* Responsive Shared */
+@media (max-width: 768px) {
+  .v2-container {
+    padding: 0 20px;
+  }
+  .v2-title {
+    font-size: 2.2rem;
+  }
+  .v2-btn {
+    width: 100%;
+  }
+}
+
+/* ========= UTILITIES ========= */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-light);
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-green);
+}
