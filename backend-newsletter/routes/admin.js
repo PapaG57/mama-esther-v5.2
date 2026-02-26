@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import Admin from "../models/Admin.js";
 import Donation from "../models/Donation.js";
 import verifyAdmin from "../middlewares/verifyAdmin.js";
+import { validateDonation } from "../middlewares/validation.js";
 
 const { sign } = jwt;
 const router = express.Router();
@@ -62,7 +63,7 @@ router.post("/login", async (req, res) => {
 });
 
 // ➕ Route pour ajouter un don manuel
-router.post("/manual-donation", verifyAdmin, async (req, res) => {
+router.post("/manual-donation", verifyAdmin, validateDonation, async (req, res) => {
   try {
     const { nomDonateur, montant, message, source } = req.body;
 
@@ -92,8 +93,8 @@ router.get("/dons", verifyAdmin, async (req, res) => {
   }
 });
 
-// 🔥 Route DELETE pour supprimer un don
-router.delete("/dons/:id", async (req, res) => {
+// 🔥 Route DELETE pour supprimer un don (protégée)
+router.delete("/dons/:id", verifyAdmin, async (req, res) => {
   console.log("ID reçu pour suppression:", req.params.id);
   try {
     const don = await Donation.findByIdAndDelete(req.params.id);

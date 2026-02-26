@@ -2,19 +2,15 @@
 import { Router } from "express";
 import nodemailer from "nodemailer";
 import path from "path";
+import { validateContact } from "../middlewares/validation.js";
 const router = Router();
 
-router.post("/", async (req, res) => {
+router.post("/", validateContact, async (req, res) => {
   const { name, email, subject, message, extraField } = req.body;
 
   // 🕵️ Anti-spam invisible (honeypot)
   if (extraField && extraField.trim() !== "") {
     return res.status(400).json({ message: "Bot détecté" });
-  }
-
-  // Validation basique des champs
-  if (!name || !email || !message) {
-    return res.status(400).json({ message: "Champs obligatoires manquants." });
   }
 
   try {

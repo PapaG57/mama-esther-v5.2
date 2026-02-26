@@ -1,10 +1,11 @@
 import { Router } from "express";
 import Subscriber from "../models/Subscriber.js";
 import { sendConfirmationEmail } from "../utils/send-email.js";
+import { validateSubscription } from "../middlewares/validation.js";
 
 const router = Router();
 
-router.post("/", async (req, res) => {
+router.post("/", validateSubscription, async (req, res) => {
   const { email, extraField } = req.body;
 
   console.log("📥 Requête reçue pour :", req.body.email);
@@ -12,11 +13,6 @@ router.post("/", async (req, res) => {
   // Vérification anti-bot
   if (extraField && extraField.trim() !== "") {
     return res.status(400).json({ message: "Bot détecté" });
-  }
-
-  // Vérification du format d'email
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json({ message: "Email invalide" });
   }
 
   try {
