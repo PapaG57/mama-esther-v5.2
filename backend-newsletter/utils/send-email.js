@@ -210,10 +210,46 @@ async function sendDonConfirmationEmail(email, amount) {
   });
 }
 
+// Fonction d’envoi d'email d'alerte en cas d'erreur critique
+async function sendErrorAlertEmail(error) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT),
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_SENDER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  try {
+    await transporter.sendMail({
+      from: `"Alerte Système Mama Esther" <${process.env.EMAIL_SENDER}>`,
+      to: process.env.ADMIN_EMAIL || process.env.EMAIL_SENDER,
+      subject: "🚨 Erreur critique sur le serveur",
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; border: 2px solid #ce1126; border-radius: 10px;">
+          <h2 style="color: #ce1126;">⚠️ Une erreur critique est survenue</h2>
+          <p><strong>Date :</strong> ${new Date().toLocaleString()}</p>
+          <p><strong>Message :</strong> ${error.message}</p>
+          <p><strong>Stack Trace :</strong></p>
+          <pre style="background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto;">
+            ${error.stack}
+          </pre>
+        </div>
+      `,
+    });
+    console.log("📢 Email d'alerte envoyé à l'administrateur.");
+  } catch (err) {
+    console.error("❌ Impossible d'envoyer l'email d'alerte :", err);
+  }
+}
+
 // Export des deux fonctions (nommés)
 export {
   sendConfirmationEmail,
   sendUnsubscribeEmail,
   sendDonConfirmationEmail,
   sendAdminNotificationEmail,
+  sendErrorAlertEmail,
 };

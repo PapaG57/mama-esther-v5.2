@@ -20,6 +20,7 @@ import donRouter from "./routes/Don.js";
 import donationRoutes from "./routes/Donations.js";
 import helloassoRoutes from "./routes/helloasso.js";
 import adminRoutes from "./routes/admin.js";
+import { sendErrorAlertEmail } from "./utils/send-email.js";
 
 dotenv.config();
 
@@ -63,6 +64,12 @@ app.get("/", (req, res) => {
 // Middleware global de gestion des erreurs
 app.use((err, req, res, next) => {
   logger.error("❌ Erreur serveur :", { message: err.message, stack: err.stack });
+
+  // Alerte admin pour les erreurs critiques en production
+  if (process.env.NODE_ENV === "production") {
+    sendErrorAlertEmail(err).catch(e => logger.error("Échec envoi alerte mail", e));
+  }
+
   res.status(500).json({ error: "Erreur interne du serveur" });
 });
 
