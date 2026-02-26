@@ -5,6 +5,8 @@ import Footer from "./components/Footer";
 import AdminAccessGate from "./components/AdminAccessGate";
 import ScrollToTopButton from "./components/ScrollToTopButton";
 import HandSpinner from "./components/HandSpinner";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Lazy loading pages for better performance
 const Home = lazy(() => import("./pages/Home"));
@@ -23,6 +25,18 @@ function App() {
     <Router>
       <ScrollToTop />
       <ScrollToTopButton />
+      <ToastContainer 
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <Suspense fallback={<HandSpinner />}>
         <Routes>
           <Route path="/" element={<Home />} />

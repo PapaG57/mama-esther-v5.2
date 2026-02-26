@@ -1,5 +1,5 @@
 import React from "react";
-import "./header.css";
+import "../styles/components/header.css";
 import BibleVerse from "../components/BibleVerse";
 import { useTranslation } from "react-i18next";
 

@@ -1,43 +1,43 @@
 import React, { useState } from "react";
-import "./Registration.css";
+import "../styles/components/Registration.css";
 import { useTranslation } from "react-i18next";
 import { newsletterService } from "../api/services";
+import { toast } from "react-toastify";
 
 const Registration = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [isHuman, setIsHuman] = useState(false);
-  const [status, setStatus] = useState(null); // 'idle', 'sending', 'success', 'error'
-  const [errorMsg, setErrorMsg] = useState("");
+  const [status, setStatus] = useState("idle");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!isHuman) {
-      setErrorMsg(t("registration.errorCheck"));
-      setStatus("error");
+      toast.warning(t("registration.errorCheck"));
       return;
     }
 
     setStatus("sending");
     try {
       await newsletterService.subscribe(email);
-      setStatus("success");
+      toast.success(t("registration.success"));
       setEmail("");
       setIsHuman(false);
+      setStatus("success");
     } catch (err) {
       setStatus("error");
-      if (err.response?.status === 400) {
-        setErrorMsg(t("registration.duplicateAlert"));
+      if (err.response?.status === 409) {
+        toast.info(t("registration.duplicateAlert"));
       } else {
-        setErrorMsg(t("registration.error"));
+        toast.error(t("registration.error"));
       }
     }
   };
 
   return (
     <section className="registration-section">
-      <div className="registration-container">
+      <div className="registration-container v2-container">
         <h3>{t("registration.title")}</h3>
         <p>{t("registration.subtitle")}</p>
         
@@ -60,13 +60,10 @@ const Registration = () => {
             <label htmlFor="humanCheck">{t("registration.humanCheck")}</label>
           </div>
 
-          <button type="submit" disabled={status === "sending"}>
+          <button type="submit" className="v2-btn v2-btn-primary" disabled={status === "sending"}>
             {status === "sending" ? t("registration.sending") : t("registration.send")}
           </button>
         </form>
-
-        {status === "success" && <p className="success-msg">{t("registration.success")}</p>}
-        {status === "error" && <p className="error-msg">{errorMsg}</p>}
       </div>
     </section>
   );

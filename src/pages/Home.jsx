@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import ActualityV2 from "./ActualityV2";
 import NewsletterV2 from "./NewsletterV2";
 import DonationCounter from "../components/DonationCounter";
+import BibleVerse from "../components/BibleVerse";
 
 const HomeV2 = () => {
   const { t } = useTranslation();
@@ -18,17 +19,25 @@ const HomeV2 = () => {
       {/* 1. HERO SECTION - STORYTELLING & CTA */}
       <section className="v2-hero">
         <div className="v2-hero-overlay">
-          <div className="v2-hero-content">
-            <span className="v2-hero-badge">{t("v2.hero.associationName")}</span>
-            <h1 className="v2-hero-title">
-              {t("v2.hero.mainTitle")} <span>{t("v2.hero.location")}</span>
-            </h1>
-            <p className="v2-hero-text">
-              {t("v2.hero.subtext")}
-            </p>
-            <div className="v2-hero-btns">
-              <button className="v2-btn v2-btn-primary" onClick={() => navigate('/don')}>{t("v2.btns.donate")}</button>
-              <button className="v2-btn v2-btn-outline" onClick={() => navigate('/about')}>{t("v2.btns.discover")}</button>
+          <div className="v2-hero-container v2-container">
+            <div className="v2-hero-content">
+              <h1 className="v2-hero-title">
+                {t("v2.hero.mainTitle")} <span>{t("v2.hero.location")}</span>
+              </h1>
+              <p className="v2-hero-text">
+                {t("v2.hero.subtext")}
+              </p>
+              <div className="v2-hero-btns">
+                <button className="v2-btn v2-btn-primary" onClick={() => navigate('/don')}>{t("v2.btns.donate")}</button>
+                <button className="v2-btn v2-btn-outline" onClick={() => navigate('/about')}>{t("v2.btns.discover")}</button>
+              </div>
+            </div>
+            
+            <div className="v2-hero-aside">
+              <BibleVerse 
+                text="bibleVerses.matthew25_40.text" 
+                reference="bibleVerses.matthew25_40.ref" 
+              />
             </div>
           </div>
         </div>
@@ -135,4 +144,3 @@ const HomeV2 = () => {
 };
 
 export default HomeV2;
-

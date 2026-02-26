@@ -13,7 +13,7 @@ import {
   faInstagram,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
-import "./footer.css";
+import "../styles/components/footer.css";
 import PasswordField from "../components/PasswordField";
 import { useTranslation } from "react-i18next";
 import { adminService } from "../api/services";

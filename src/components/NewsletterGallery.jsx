@@ -1,6 +1,6 @@
 import React from "react";
 import { newsletters } from "../data/newsletters";
-import "./NewsletterGallery.css";
+import "../styles/components/NewsletterGallery.css";
 import { useTranslation } from "react-i18next";
 
 function NewsletterGallery() {

@@ -1,5 +1,5 @@
 import React from "react";
-import "./about-section.css";
+import "../styles/components/about-section.css";
 import CamerounButton from "./CamerounButton";
 import Divider from "./Divider";
 import { useTranslation } from "react-i18next";

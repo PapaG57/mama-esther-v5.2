@@ -1,5 +1,5 @@
 // HandSpinner.jsx
-import "../components/HandSpinner.css";
+import "../styles/components/HandSpinner.css";
 
 export default function HandSpinner() {
   return (

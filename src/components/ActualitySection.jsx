@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import "./actualitySection.css";
+import "../styles/components/actualitySection.css";
 import Divider from "./Divider";
 import CamerounButton from "./CamerounButton";
-import { Link } from "react-router-dom"; // Pour gérer la navigation interne proprement
+import { Link } from "react-router-dom"; 
 import { useTranslation } from "react-i18next";
 
 function ActualitySection() {
   const { t } = useTranslation();
   const [isPaused, setIsPaused] = useState(false);
 
-  // 👇 Données des actualités
   const newsData = [
     {
       id: 1,
@@ -21,7 +20,7 @@ function ActualitySection() {
       id: 2,
       title: t("actualitySection.news2"),
       img: "/assets/actualities/actuality2.png",
-      link: "/actualities#news1", // Redirection vers l’ancre id="news1"
+      link: "/actualities#news1",
     },
     {
       id: 3,
@@ -33,7 +32,7 @@ function ActualitySection() {
 
   return (
     <section id="actualitySection" className="news-carousel actuality-section">
-      <Divider /> {/* ligne de séparation */}
+      <Divider /> 
       <h2>{t("actualitySection.title")}</h2>
       <p>
         {t("actualitySection.subtitle")}
@@ -47,10 +46,10 @@ function ActualitySection() {
           <Link
             key={index}
             to={{
-              pathname: news.link.split("#")[0], // "/actualities"
-              hash: `#${news.link.split("#")[1]}`, // "#news1"
+              pathname: news.link.split("#")[0], 
+              hash: `#${news.link.split("#")[1]}`, 
             }}
-            state={{ from: "actualitySection" }} // on envoie l'info d’origine
+            state={{ from: "actualitySection" }} 
             className="news-item"
           >
             <div className="news-visual">
@@ -67,7 +66,7 @@ function ActualitySection() {
           </CamerounButton>
         </div>
       </div>
-      <Divider /> {/* ligne de séparation */}
+      <Divider /> 
     </section>
   );
 }

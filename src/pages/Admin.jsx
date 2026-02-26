@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHandPointLeft, faTrash, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faHandPointLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "../styles/admin.css";
 import CamerounButton from "../components/CamerounButton";
 import PasswordField from "../components/PasswordField";
 import confetti from "canvas-confetti";
 import { useTranslation } from "react-i18next";
 import { adminService } from "../api/services";
+import { toast } from "react-toastify";
 
 function evaluatePasswordStrength(password) {
   const len = password.length;
@@ -39,7 +40,6 @@ export default function Admin() {
   const [identifiant, setIdentifiant] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [confirmationMotDePasse, setConfirmationMotDePasse] = useState("");
-  const [message, setMessage] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -49,7 +49,6 @@ export default function Admin() {
   const [commentaires, setCommentaires] = useState("");
   const [source, setSource] = useState("");
   const [sourcePrecise, setSourcePrecise] = useState("");
-  const [donFeedback, setDonFeedback] = useState("");
   const [dons, setDons] = useState([]);
   const [donASupprimer, setDonASupprimer] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -80,21 +79,20 @@ export default function Admin() {
 
   const handleAdminSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
 
     if (motDePasse !== confirmationMotDePasse) {
-      setMessage(t("admin.messages.passwordsNoMatch"));
+      toast.error(t("admin.messages.passwordsNoMatch"));
       return;
     }
 
     if (motDePasse.length < 8 || motDePasse.length > 30) {
-      setMessage(t("admin.messages.passwordLength"));
+      toast.error(t("admin.messages.passwordLength"));
       return;
     }
 
     const strength = evaluatePasswordStrength(motDePasse);
     if (strength === "faible") {
-      setMessage(t("admin.messages.passwordWeak"));
+      toast.warning(t("admin.messages.passwordWeak"));
       return;
     }
 
@@ -106,24 +104,23 @@ export default function Admin() {
       setMotDePasse("");
       setConfirmationMotDePasse("");
     } catch (err) {
-      setMessage(err.response?.data?.error || t("admin.messages.networkError"));
+      toast.error(err.response?.data?.error || t("admin.messages.networkError"));
     }
   };
 
   const handleManualDonation = async (e) => {
     e.preventDefault();
-    setDonFeedback("");
 
     const data = {
       nomDonateur,
       montant: parseFloat(montant),
-      message: commentaires,
+      commentaires,
       source: source === "Autres (préciser)" ? sourcePrecise : source,
     };
 
     try {
       await adminService.addManualDonation(data);
-      setDonFeedback(t("admin.messages.donAdded"));
+      toast.success(t("admin.messages.donAdded"));
       setNomDonateur("");
       setMontant("");
       setCommentaires("");
@@ -131,7 +128,7 @@ export default function Admin() {
       setSourcePrecise("");
       fetchDons();
     } catch (err) {
-      setDonFeedback(err.response?.data?.error || t("admin.messages.networkError"));
+      toast.error(err.response?.data?.error || t("admin.messages.networkError"));
     }
   };
 
@@ -141,10 +138,10 @@ export default function Admin() {
 
     try {
       await adminService.deleteDon(id);
-      setDonFeedback(t("admin.messages.donDeleted"));
+      toast.success(t("admin.messages.donDeleted"));
       fetchDons();
     } catch (err) {
-      setDonFeedback(t("admin.messages.networkError"));
+      toast.error(t("admin.messages.networkError"));
     } finally {
       setDonASupprimer(null);
       setShowConfirmModal(false);
@@ -215,7 +212,6 @@ export default function Admin() {
                 placeholder={t("admin.forms.passwordPlaceholder")}
                 required
               />
-              {message && <p className="msg-error">{message}</p>}
               <button type="submit" className="v2-btn v2-btn-primary">
                 {t("admin.forms.submitCreate")}
               </button>
@@ -270,7 +266,6 @@ export default function Admin() {
                 value={commentaires}
                 onChange={(e) => setCommentaires(e.target.value)}
               />
-              {donFeedback && <p className="msg-feedback">{donFeedback}</p>}
               <button type="submit" className="v2-btn v2-btn-primary">
                 {t("admin.forms.submitAddDon")}
               </button>

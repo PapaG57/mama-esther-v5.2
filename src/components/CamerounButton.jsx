@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./camerounButton.css";
+import "../styles/components/camerounButton.css";
 
 export default function CamerounButton({
   children,

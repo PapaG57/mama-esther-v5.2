@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/unsubscribe.css";
 import { useTranslation } from "react-i18next";
+import { newsletterService } from "../api/services";
+import { toast } from "react-toastify";
 
 export default function Unsubscribe() {
   const { t } = useTranslation();
@@ -12,27 +14,17 @@ export default function Unsubscribe() {
   // Fonction appelée lorsqu’on clique sur “Oui, je me désinscris”
   const handleUnsubscribe = async () => {
     if (!email) {
-      alert(t("unsubscribe.alertEmail"));
+      toast.warning(t("unsubscribe.alertEmail"));
       return;
     }
 
     try {
-      // Requête vers le serveur Express (MAMA ESTHER BACKEND)
-      const response = await fetch("http://localhost:5000/api/unsubscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      // Si le serveur répond avec succès
-      if (response.ok) {
-        setShowModal(true); // Affichage de la modale de confirmation
-      } else {
-        alert(t("unsubscribe.alertError"));
-      }
+      await newsletterService.unsubscribe(email);
+      setShowModal(true); // Affichage de la modale de confirmation
+      toast.info(t("unsubscribe.successModal"));
     } catch (error) {
       console.error(error);
-      alert(t("unsubscribe.alertFail"));
+      toast.error(t("unsubscribe.alertError"));
     }
   };
 
@@ -42,8 +34,8 @@ export default function Unsubscribe() {
   };
 
   return (
-    <section className="unsubscribe-section">
-      <div className="unsubscribe-container">
+    <section className="unsubscribe-section v2-layout">
+      <div className="unsubscribe-container v2-container">
         <img
           src="/assets/unsubscribe.png"
           alt="Mama Esther vous salue"
@@ -75,10 +67,10 @@ export default function Unsubscribe() {
 
         {/* Boutons d’action */}
         <div className="unsubscribe-buttons">
-          <button onClick={handleUnsubscribe} className="about-button">
+          <button onClick={handleUnsubscribe} className="v2-btn v2-btn-primary">
             {t("unsubscribe.buttonYes")}
           </button>
-          <button onClick={() => navigate("/")} className="about-button">
+          <button onClick={() => navigate("/")} className="v2-btn v2-btn-outline">
             {t("unsubscribe.buttonStay")}
           </button>
         </div>
@@ -86,15 +78,15 @@ export default function Unsubscribe() {
 
       {/* Modale de confirmation affichée après désinscription */}
       {showModal && (
-        <div className="success-modal-overlay">
-          <div className="success-modal-content">
+        <div className="admin-modal-overlay">
+          <div className="admin-modal">
             <img
               src="/assets/icons/check-green.png"
               alt="Succès"
-              className="success-modal-icon"
+              style={{ width: '60px', marginBottom: '20px' }}
             />
             <h2>{t("unsubscribe.successModal")}</h2>
-            <button onClick={handleModalClose} className="success-modal-button">
+            <button onClick={handleModalClose} className="v2-btn v2-btn-primary">
               {t("unsubscribe.backHome")}
             </button>
           </div>

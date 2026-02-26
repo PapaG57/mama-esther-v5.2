@@ -1,13 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/ContactV2.css";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faPhone, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { faFacebookF, faWhatsapp, faLinkedin, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { contactService } from "../api/services";
+import { toast } from "react-toastify";
 
 const ContactV2 = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: t("v2.contact.formSubjectOptions.other"),
+    message: ""
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await contactService.sendMessage(formData);
+      toast.success(t("contact.form.successTitle"));
+      setFormData({ name: "", email: "", subject: t("v2.contact.formSubjectOptions.other"), message: "" });
+    } catch (err) {
+      toast.error(t("contact.form.submitError"));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="v2-layout">
@@ -47,7 +76,7 @@ const ContactV2 = () => {
                   <div className="method-icon"><FontAwesomeIcon icon={faPhone} /></div>
                   <div className="method-text">
                     <h4>{t("contact.phoneTitle")}</h4>
-                    <p>+33 06 XX XX XX XX</p>
+                    <p>+33 06 86 74 29 11</p>
                   </div>
                 </div>
                 <div className="method-item">
@@ -72,20 +101,34 @@ const ContactV2 = () => {
 
             {/* FORM SIDE */}
             <div className="contact-form-side">
-              <form id="contact-form" className="v2-contact-form" onSubmit={(e) => e.preventDefault()}>
+              <form id="contact-form" className="v2-contact-form" onSubmit={handleSubmit}>
                 <div className="form-row">
                   <div className="form-group">
                     <label>{t("v2.contact.formName")}</label>
-                    <input type="text" placeholder={t("v2.contact.formNamePlaceholder")} required />
+                    <input 
+                      type="text" 
+                      name="name"
+                      placeholder={t("v2.contact.formNamePlaceholder")} 
+                      value={formData.name}
+                      onChange={handleChange}
+                      required 
+                    />
                   </div>
                   <div className="form-group">
                     <label>{t("v2.contact.formEmail")}</label>
-                    <input type="email" placeholder={t("v2.contact.formEmailPlaceholder")} required />
+                    <input 
+                      type="email" 
+                      name="email"
+                      placeholder={t("v2.contact.formEmailPlaceholder")} 
+                      value={formData.email}
+                      onChange={handleChange}
+                      required 
+                    />
                   </div>
                 </div>
                 <div className="form-group">
                   <label>{t("v2.contact.formSubject")}</label>
-                  <select>
+                  <select name="subject" value={formData.subject} onChange={handleChange}>
                     <option>{t("v2.contact.formSubjectOptions.volunteer")}</option>
                     <option>{t("v2.contact.formSubjectOptions.donation")}</option>
                     <option>{t("v2.contact.formSubjectOptions.partnership")}</option>
@@ -94,9 +137,18 @@ const ContactV2 = () => {
                 </div>
                 <div className="form-group">
                   <label>{t("v2.contact.formMessage")}</label>
-                  <textarea rows="5" placeholder={t("v2.contact.formMessagePlaceholder")}></textarea>
+                  <textarea 
+                    name="message"
+                    rows="5" 
+                    placeholder={t("v2.contact.formMessagePlaceholder")}
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                  ></textarea>
                 </div>
-                <button type="submit" className="v2-btn v2-btn-primary">{t("v2.btns.send")}</button>
+                <button type="submit" className="v2-btn v2-btn-primary" disabled={loading}>
+                  {loading ? t("contact.form.sending") : t("v2.btns.send")}
+                </button>
               </form>
             </div>
 
@@ -104,6 +156,20 @@ const ContactV2 = () => {
         </div>
       </section>
 
+      {/* MAP PLACEHOLDER / TERRAIN */}
+      <section className="contact-v2-map">
+        <div className="v2-container">
+          <div className="map-card">
+            <div className="map-text">
+              <h3>{t("v2.contact.impactTitle")}</h3>
+              <p>{t("v2.contact.impactText")}</p>
+            </div>
+            <div className="map-visual">
+               <img src="/assets/flags/CM.svg" alt="Cameroun" style={{width: '100px', opacity: 0.2}} />
+            </div>
+          </div>
+        </div>
+      </section>
 
     </div>
   );

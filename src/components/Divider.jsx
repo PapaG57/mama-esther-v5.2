@@ -1,5 +1,5 @@
 import React from "react";
-import "./divider.css";
+import "../styles/components/divider.css";
 
 const Divider = () => {
   return <div className="section-divider thick-divider"></div>;

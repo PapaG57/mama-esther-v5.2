@@ -9,7 +9,7 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import { useTranslation } from "react-i18next";
-import "../components/topbar.css";
+import "../styles/components/topbar.css";
 
 export default function TopBar() {
   const { i18n, t } = useTranslation();
@@ -36,8 +36,6 @@ export default function TopBar() {
         </div>
 
         <div className="social-icons">
-
-          {/* Bascule FR ↔ EN */}
           <img
             src={isFrench ? "/assets/flags/GB.svg" : "/assets/flags/FR.svg"}
             alt={isFrench ? t("topbar.englishVersion") : t("topbar.frenchVersion")}

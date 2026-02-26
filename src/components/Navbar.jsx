@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useScrollNavbar from "../utils/navbar";
 import { useTranslation } from "react-i18next";
-import "./navbar.css";
+import "../styles/components/navbar.css";
 
 export default function Navbar({ hideDonate = false }) {
   const { t, i18n } = useTranslation();
@@ -28,7 +28,6 @@ export default function Navbar({ hideDonate = false }) {
         setMenuOpen(false);
       }
     } else {
-      // If not on home, let the Link handle navigation to home with hash
       setMenuOpen(false);
     }
   };
@@ -37,7 +36,6 @@ export default function Navbar({ hideDonate = false }) {
     <nav className="custom-navbar" ref={navbarRef}>
       <div className="custom-navbar-container">
 
-        {/* Logo */}
         <Link to="/" onClick={() => setMenuOpen(false)}>
           <img
             className="custom-navbar-logo"
@@ -46,7 +44,6 @@ export default function Navbar({ hideDonate = false }) {
           />
         </Link>
 
-        {/* Hamburger */}
         <button
           className={`hamburger ${menuOpen ? "open" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
@@ -56,7 +53,6 @@ export default function Navbar({ hideDonate = false }) {
           <span></span>
         </button>
 
-        {/* Liens */}
         <ul className={`custom-nav-list ${menuOpen ? "open" : ""}`}>
           <li>
             <Link
@@ -108,7 +104,6 @@ export default function Navbar({ hideDonate = false }) {
             </Link>
           </li>
 
-          {/* Bouton Don dans le menu mobile */}
           {!hideDonate && (
             <li className="mobile-don">
               <button
@@ -123,7 +118,6 @@ export default function Navbar({ hideDonate = false }) {
             </li>
           )}
           
-          {/* Langue Mobile */}
           <li className="mobile-lang">
             <button 
               className="lang-btn" 
@@ -138,7 +132,6 @@ export default function Navbar({ hideDonate = false }) {
           </li>
         </ul>
 
-        {/* Bouton Don desktop */}
         <div className="navbar-right-actions">
           {!hideDonate && (
             <button
@@ -149,7 +142,6 @@ export default function Navbar({ hideDonate = false }) {
             </button>
           )}
 
-          {/* Langue Desktop */}
           <button 
             className="lang-btn desktop-lang" 
             onClick={() => changeLanguage(i18n.language === 'fr' ? 'en' : 'fr')}

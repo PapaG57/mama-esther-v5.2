@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./DonationCounter.css";
+import "../styles/components/DonationCounter.css";
 import logoMama from "/assets/logos/logoMama.png";
 import { Bar } from "react-chartjs-2";
 import {
@@ -50,7 +50,7 @@ const DonationCounter = () => {
       {
         label: t("donationCounter.monthlyLabel"),
         data: mensuelData,
-        backgroundColor: "rgba(252, 209, 22, 0.8)", // Jaune Cameroun
+        backgroundColor: "rgba(252, 209, 22, 0.8)", 
         borderColor: "#fcd116",
         borderWidth: 1,
         borderRadius: 5,

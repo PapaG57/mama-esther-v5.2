@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/newsList.css"; // crée ce fichier si tu veux ajouter du style
+import "../styles/components/../styles/newsList.css"; // crée ce fichier si tu veux ajouter du style
 import { useTranslation } from "react-i18next";
 
 export default function NewsList({ data }) {

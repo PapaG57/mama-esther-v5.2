@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { newsletters } from "../data/newsletters";
 import VerifiedLink from "./VerifiedLink"; // Bouton lien intelligent
-import "./NewsletterCarousel.css";
+import "../styles/components/NewsletterCarousel.css";
 import { useTranslation } from "react-i18next";
 
 // Composant principal du carrousel
