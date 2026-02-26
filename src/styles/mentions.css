@@ -33,7 +33,7 @@
 
 .mentions-section-title {
   font-size: 1.4rem;
-  color: #007a5e; /* vert drapeau Cameroun */
+  color: var(--color-green); /* vert drapeau Cameroun */
   margin-top: 40px;
   margin-bottom: 20px;
   text-transform: uppercase;

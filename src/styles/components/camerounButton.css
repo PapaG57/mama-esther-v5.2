@@ -1,0 +1,34 @@
+.about-button {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  background: linear-gradient(
+    90deg,
+    var(--color-green),
+    /* vert drapeau Cameroun */ var(--color-yellow),
+    /* jaune drapeau Cameroun */ var(--color-red) /* rouge drapeau Cameroun */
+  );
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: transform 0.2s ease-in-out, background 0.3s ease-in-out;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: transform 0.2s ease-in-out;
+}
+
+.about-button:hover {
+  color: #000000; /* Texte blanc au survol */
+  transform: scale(1.05);
+  background: linear-gradient(
+    90deg,
+    var(--color-red),
+    /* rouge drapeau camerounais */ var(--color-yellow),
+    /* jaune drapeau camerounais */ var(--color-green) /* vert drapeau camerounais */
+  ); /* Inversion au survol */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}

@@ -224,7 +224,7 @@
 }
 
 .v2-modal-close:hover {
-  background: #ce1126;
+  background: var(--color-red);
   color: white;
 }
 
@@ -269,7 +269,7 @@
 }
 
 .v2-modal-role {
-  color: #006b50;
+  color: var(--color-green);
   font-weight: 700;
   text-transform: uppercase;
   font-size: 0.9rem;

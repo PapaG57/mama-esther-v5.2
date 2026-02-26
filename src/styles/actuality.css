@@ -78,7 +78,7 @@
   position: absolute;
   bottom: -15px;
   left: 15px;
-  background-color: #00ab84;
+  background-color: var(--color-green);
   border-radius: 10px;
   padding: 8px;
   width: 70px;
@@ -148,7 +148,7 @@
 }
 
 .aside-card-text {
-  background-color: #fcd116; /* jaune drapeau Camerounais */
+  background-color: var(--color-yellow); /* jaune drapeau Camerounais */
   border-radius: 8px;
   padding: 18px 14px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);

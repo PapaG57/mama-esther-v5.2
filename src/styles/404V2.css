@@ -1,0 +1,139 @@
+.v2-404-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: #0a0a0a; /* Fond noir pour faire ressortir le vert */
+  overflow: hidden;
+  padding-top: 100px;
+}
+
+/* MATRIX CANVAS */
+.v2-matrix-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.v2-404-content {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+.v2-404-visual {
+  position: relative;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* GLITCH EFFECT FOR 404 WITH CAMEROON GRADIENT */
+.v2-404-number-glitch {
+  font-size: 18rem;
+  font-weight: 900;
+  line-height: 1;
+  position: relative;
+  
+  /* Dégradé Cameroun élégant */
+  background: linear-gradient(135deg, #007a5e 20%, #ce1126 50%, #fcd116 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  display: inline-block;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  animation: glitch-vibration 0.2s infinite;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
+}
+
+/* Couches de glitch pour l'effet "vibrant" */
+.v2-404-number-glitch::before,
+.v2-404-number-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.v2-404-number-glitch::before {
+  color: rgba(0, 122, 94, 0.4);
+  animation: glitch-offset 0.5s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+}
+
+.v2-404-number-glitch::after {
+  color: rgba(206, 17, 38, 0.4);
+  animation: glitch-offset 0.5s infinite linear alternate;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+}
+
+@keyframes glitch-vibration {
+  0% { transform: translate(0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-1px, -1px); }
+  100% { transform: translate(1px, 1px); }
+}
+
+@keyframes glitch-offset {
+  0% { transform: translate(0); }
+  20% { transform: translate(-5px, 5px); }
+  40% { transform: translate(-5px, -5px); }
+  60% { transform: translate(5px, 5px); }
+  80% { transform: translate(5px, -5px); }
+  100% { transform: translate(0); }
+}
+
+.v2-404-text {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 20px 0 50px;
+  line-height: 1.6;
+}
+
+.v2-404-btns {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.v2-404-btns .v2-btn-outline {
+  border-color: var(--color-green);
+  color: var(--color-green);
+}
+
+.v2-404-btns .v2-btn-outline:hover {
+  background: var(--color-green);
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .v2-404-number-glitch {
+    font-size: 10rem;
+  }
+  
+  .v2-404-btns {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}

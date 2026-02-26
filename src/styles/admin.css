@@ -108,11 +108,11 @@
   font-weight: bold;
 }
 .msg-orange-bold {
-  color: #fcd116; /* jaune drapeau Cameroun */
+  color: var(--color-yellow); /* jaune drapeau Cameroun */
   font-weight: bold;
 }
 .msg-green-bold {
-  color: #007a5e; /* vert drapeau Cameroun */
+  color: var(--color-green); /* vert drapeau Cameroun */
   font-weight: bold;
 }
 
@@ -139,7 +139,7 @@
 
 /* --- Modale de succès --- */
 .success-modal h2 {
-  color: #007a32; /* vert drapeau Cameroun */
+  color: var(--color-green); /* vert drapeau Cameroun */
   font-size: 1.8rem;
   margin-bottom: 1rem;
   text-align: center;
@@ -157,9 +157,9 @@
   padding: 10px 20px;
   background: linear-gradient(
     90deg,
-    #007a32,
-    #fcd116,
-    #ce1126
+    var(--color-green),
+    var(--color-yellow),
+    var(--color-red)
   ); /* vert, jaune, rouge Cameroun */
   color: #ffffff;
   font-weight: bold;
@@ -173,21 +173,21 @@
   transform: scale(1.05);
   background: linear-gradient(
     90deg,
-    #ce1126,
-    #fcd116,
-    #007a32
+    var(--color-red),
+    var(--color-yellow),
+    var(--color-green)
   ); /* rouge, jaune, vert Cameroun */
   color: #000;
 }
 
 /* --- Messages de force du mot de passe --- */
 .msg-red-bold {
-  color: #ce1126;
+  color: var(--color-red);
   font-weight: bold;
 } /* rouge drapeau Cameroun * /
-.msg-orange-bold { color: #fcd116; font-weight: bold; } /* jaune drapeau Cameroun */
+.msg-orange-bold { color: var(--color-yellow); font-weight: bold; } /* jaune drapeau Cameroun */
 .msg-green-bold {
-  color: #007a32; /* vert drapeau Cameroun */
+  color: var(--color-green); /* vert drapeau Cameroun */
   font-weight: bold;
 } /* vert drapeau Cameroun */
 

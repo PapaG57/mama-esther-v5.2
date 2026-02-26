@@ -2,7 +2,7 @@
   min-height: 100vh;
   background: linear-gradient(
     to bottom,
-    #fcd116 0%,
+    var(--color-yellow) 0%,
     #ffffff 70%
   ); /* jaune drapeau Cameroun */
   display: flex;
@@ -28,7 +28,7 @@
 
 .travaux-title {
   font-size: 3rem;
-  color: #d30000; /* rouge drapeau Cameroun */
+  color: var(--color-red); /* rouge drapeau Cameroun */
   margin-bottom: 20px;
   text-transform: uppercase;
 }

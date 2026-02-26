@@ -48,7 +48,7 @@ blockquote {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background-color: #007a5e; /* vert drapeau Cameroun */
+  background-color: var(--color-green); /* vert drapeau Cameroun */
   color: #ffffff;
   border: none;
   border-radius: 30px;
@@ -78,7 +78,7 @@ blockquote {
 
 .don-emotion blockquote {
   font-style: italic;
-  color: #007a5e; /* vert drapeau Cameroun */
+  color: var(--color-green); /* vert drapeau Cameroun */
   font-size: 1.5rem;
   margin: 0 auto 15px;
   max-width: 500px;
