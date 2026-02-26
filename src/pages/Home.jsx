@@ -1,6 +1,7 @@
 import React from "react";
-import "./HomeV2.css";
+import "../styles/HomeV2.css";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import ActualityV2 from "./ActualityV2";
 import NewsletterV2 from "./NewsletterV2";
@@ -8,6 +9,7 @@ import DonationCounter from "../components/DonationCounter";
 
 const HomeV2 = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div className="v2-layout">
@@ -25,8 +27,8 @@ const HomeV2 = () => {
               {t("v2.hero.subtext")}
             </p>
             <div className="v2-hero-btns">
-              <button className="v2-btn v2-btn-primary" onClick={() => window.location.href='/v2/don'}>{t("v2.btns.donate")}</button>
-              <button className="v2-btn v2-btn-outline" onClick={() => window.location.href='/v2/about'}>{t("v2.btns.discover")}</button>
+              <button className="v2-btn v2-btn-primary" onClick={() => navigate('/don')}>{t("v2.btns.donate")}</button>
+              <button className="v2-btn v2-btn-outline" onClick={() => navigate('/about')}>{t("v2.btns.discover")}</button>
             </div>
           </div>
         </div>
@@ -71,7 +73,7 @@ const HomeV2 = () => {
               <div className="v2-mission-body">
                 <h4>{t("v2.missions.eduTitle")}</h4>
                 <p>{t("v2.missions.eduDesc")}</p>
-                <button className="v2-link-btn" onClick={() => window.location.href='/about'}>{t("v2.btns.learnMore")} →</button>
+                <button className="v2-link-btn" onClick={() => navigate('/about')}>{t("v2.btns.learnMore")} →</button>
               </div>
             </div>
 
@@ -84,7 +86,7 @@ const HomeV2 = () => {
               <div className="v2-mission-body">
                 <h4>{t("v2.missions.infraTitle")}</h4>
                 <p>{t("v2.missions.infraDesc")}</p>
-                <button className="v2-link-btn" onClick={() => window.location.href='/v2/travaux'}>{t("v2.btns.learnMore")} →</button>
+                <button className="v2-link-btn" onClick={() => navigate('/travaux')}>{t("v2.btns.learnMore")} →</button>
               </div>
             </div>
 
@@ -97,7 +99,7 @@ const HomeV2 = () => {
               <div className="v2-mission-body">
                 <h4>{t("v2.missions.transTitle")}</h4>
                 <p>{t("v2.missions.transDesc")}</p>
-                <button className="v2-link-btn" onClick={() => window.location.href='/v2/contact'}>{t("v2.btns.learnMore")} →</button>
+                <button className="v2-link-btn" onClick={() => navigate('/contact')}>{t("v2.btns.learnMore")} →</button>
               </div>
             </div>
           </div>
@@ -123,7 +125,7 @@ const HomeV2 = () => {
           <div className="v2-cta-content">
             <h2>{t("v2.cta.title")}</h2>
             <p>{t("v2.cta.text")}</p>
-            <button className="v2-btn v2-btn-yellow" onClick={() => window.location.href='/v2/don'}>{t("v2.btns.makeImpact")}</button>
+            <button className="v2-btn v2-btn-yellow" onClick={() => navigate('/don')}>{t("v2.btns.makeImpact")}</button>
           </div>
         </div>
       </section>

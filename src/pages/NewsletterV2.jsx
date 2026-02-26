@@ -1,5 +1,5 @@
 import React from "react";
-import "./NewsletterV2.css";
+import "../styles/NewsletterV2.css";
 import { useTranslation } from "react-i18next";
 
 const NewsletterV2 = () => {
@@ -16,11 +16,11 @@ const NewsletterV2 = () => {
         <div className="v2-newsletter-flex">
           <div className="v2-newsletter-text">
             <span className="v2-subtitle">{t("actuality.pdfTitle")}</span>
-            <h2 className="v2-title">Restez connectés avec nos actions</h2>
+            <h2 className="v2-title">{t("v2.actuality.subscribeTitle")}</h2>
             <p>{t("actuality.pdfText")}</p>
             <div className="v2-subscribe-mini">
-              <input type="email" placeholder="Votre email" />
-              <button>{t("actuality.subscribeButton")}</button>
+              <input type="email" placeholder={t("v2.actuality.emailPlaceholder")} />
+              <button>{t("v2.btns.subscribe")}</button>
             </div>
           </div>
 
@@ -31,9 +31,9 @@ const NewsletterV2 = () => {
                   <img src="/assets/actualities/pdf.png" alt="PDF" />
                 </div>
                 <div className="v2-doc-info">
-                  <span className="v2-doc-tag">Publication</span>
+                  <span className="v2-doc-tag">{t("actuality.newsletterTitle")}</span>
                   <h4>Newsletter - {news.title}</h4>
-                  <span className="v2-doc-link">Lire le rapport →</span>
+                  <span className="v2-doc-link">{t("newsletters.viewPdf")} →</span>
                 </div>
               </a>
             ))}

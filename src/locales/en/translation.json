@@ -293,10 +293,10 @@
   },
 
   "error404": {
-    "title": "404 - Page not found",
-    "subtitle": "Even when we get lost, we can always come back to where love awaits us 💛",
-    "back": "Back",
-    "contact": "Contact us"
+    "title": "Oops... this page wandered off",
+    "subtitle": "Like a child looking for their way, sometimes we get lost. But at Mama Esther, we know that every homecoming is a celebration.",
+    "back": "Back to home",
+    "contact": "Report an issue"
   },
 
   "donationCounter": {
@@ -389,6 +389,142 @@
       "confirm": "Confirm",
       "cancel": "Cancel",
       "close": "Close"
+    }
+  },
+  "v2": {
+    "common": {
+      "learnMore": "Learn more",
+      "readMore": "Continue reading",
+      "back": "Back",
+      "seeMore": "See more"
+    },
+    "hero": {
+      "associationName": "Mama Esther Association",
+      "mainTitle": "Building a dignified future for orphans in",
+      "location": "Cameroon",
+      "subtext": "We transform your donations into concrete actions: education, health and infrastructure for the most vulnerable children."
+    },
+    "impact": {
+      "children": "Children supported",
+      "projects": "Projects realized",
+      "countries": "Action countries"
+    },
+    "missions": {
+      "subtitle": "Our areas of action",
+      "title": "How we act daily",
+      "eduTitle": "Education & Future",
+      "eduDesc": "We fund schooling and supplies to guarantee a future for orphans.",
+      "infraTitle": "Infrastructure",
+      "infraDesc": "Renovation of buildings and creation of safe living spaces for children.",
+      "transTitle": "Ethics & Rigor",
+      "transDesc": "Rigorous management so that 100% of your donations arrive on the ground."
+    },
+    "tags": {
+      "education": "Education",
+      "infrastructure": "Works",
+      "transparency": "Trust"
+    },
+    "btns": {
+      "donate": "Donate",
+      "discover": "Discover our actions",
+      "learnMore": "Learn more",
+      "makeImpact": "I support the association",
+      "becomeVolunteer": "Become a volunteer",
+      "subscribe": "Subscribe",
+      "send": "Send message"
+    },
+    "cta": {
+      "title": "Every gesture counts",
+      "text": "Join our mission and help us offer a smile and a future to those who need it most."
+    },
+    "about": {
+      "heroSubtitle": "Our History, Your Impact",
+      "heroTitle": "Giving hope where",
+      "heroTitleSpan": "the need is great",
+      "manifestoSubtitle": "Who are we?",
+      "manifestoTitle": "A mission born from the heart, carried by action",
+      "manifestoLead": "The Mama Esther Association was born from a simple desire: to no longer remain a spectator in the face of the distress of orphans in Cameroon.",
+      "manifestoText": "Since our creation, we have worked tirelessly to offer not only a roof and food, but above all an education and a dignified future to every child we meet.",
+      "statYearDesc": "Pivotal year",
+      "statVolunteerDesc": "Volunteering",
+      "presidentTitle": "Founder & President",
+      "valuesSubtitle": "Our Pillars",
+      "valuesTitle": "What guides our actions",
+      "teamCtaTitle": "Join the human adventure",
+      "teamCtaText": "Whether you are a volunteer, donor or simple sympathizer, your place is among us."
+    },
+    "actuality": {
+      "heroSubtitle": "The Impact Journal",
+      "heroTitle": "Field stories & news",
+      "featuredTag": "Featured",
+      "readFullArticle": "Read full article",
+      "filterAll": "All",
+      "filterTerrain": "Field Actions",
+      "filterInfra": "Infrastructure",
+      "filterNGO": "NGO Life",
+      "subscribeTitle": "Don't miss any news",
+      "subscribeText": "Receive our latest impact stories directly in your mailbox.",
+      "emailPlaceholder": "Your email address"
+    },
+    "contact": {
+      "heroSubtitle": "Let's talk",
+      "heroTitle": "We are listening to you",
+      "infoTitle": "Want to join us or ask a question?",
+      "infoText": "Whether you are an individual, a company or another association, every message counts for us.",
+      "followUs": "Follow us",
+      "formName": "Full name",
+      "formNamePlaceholder": "John Doe",
+      "formEmail": "Email",
+      "formEmailPlaceholder": "john@example.com",
+      "formSubject": "Subject",
+      "formSubjectOptions": {
+        "volunteer": "Become a volunteer",
+        "donation": "Make a donation / Sponsorship",
+        "partnership": "Company partnership",
+        "other": "Other question"
+      },
+      "formMessage": "Your message",
+      "formMessagePlaceholder": "How can we help you?",
+      "impactTitle": "Our impact is local",
+      "impactText": "We act mainly in the Yaoundé and Douala regions in Cameroon."
+    },
+    "don": {
+      "heroSubtitle": "Your generosity in action",
+      "heroTitle": "Every donation is a promise of future",
+      "supportTitle": "How to support us?",
+      "supportText": "You can make a one-time donation or become a sponsor of a child for long-term support.",
+      "secureTitle": "Secure Payment",
+      "secureText": "Your data is protected via HelloAsso, the leading platform in the associative sector.",
+      "taxTitle": "Tax Deduction",
+      "taxText": "Benefit from a tax reduction of 66% of the amount of your donation.",
+      "makeDonation": "Make a donation now",
+      "donateViaHelloAsso": "Donate via HelloAsso",
+      "formInstruction": "Choose your means of support:",
+      "formFooter": "You will be redirected to our secure payment partner.",
+      "impact": {
+        "nutrition": {
+          "title": "Nutrition",
+          "desc": "15€ provides balanced meals to a child for a month."
+        },
+        "education": {
+          "title": "Education",
+          "desc": "50€ finances tuition fees and annual school supplies."
+        },
+        "health": {
+          "title": "Health",
+          "desc": "100€ covers emergency medical care for the orphanage."
+        }
+      }
+    },
+    "travaux": {
+      "heroSubtitle": "Transparency & Action",
+      "heroTitle": "Our achievements on the ground",
+      "financing": "Financing"
+    },
+    "team": {
+      "subtitle": "Our Team",
+      "title": "The faces of engagement",
+      "memberTag": "Team member"
     }
   }
 }

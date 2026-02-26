@@ -1,191 +1,75 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import "./Registration.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEraser } from "@fortawesome/free-solid-svg-icons";
-import confetti from "canvas-confetti"; // Ajout confetti
-import HandSpinner from "../components/HandSpinner"; // Import du spinner
 import { useTranslation } from "react-i18next";
+import { newsletterService } from "../api/services";
 
-export default function Registration({ isOpen, onClose }) {
+const Registration = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState(null); // 'success', 'error', 'duplicate'
-  const [closing, setClosing] = useState(false);
-  const [isHuman, setIsHuman] = useState(false); // checkbox
-  const [showEmojiAlert, setShowEmojiAlert] = useState(false); // alerte emoji
-  const [showDuplicateAlert, setShowDuplicateAlert] = useState(false); // alerte duplication
-  const [sending, setSending] = useState(false); // Ajout loading spinner
-
-  const clearEmail = () => {
-    setEmail(""); // efface le champ email
-    setIsHuman(false); // décocher la case automatiquement
-    setShowDuplicateAlert(false); // cache l’alerte duplication
-    setShowEmojiAlert(false); // désactive l’alerte emoji (si active)
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      setEmail("");
-      setStatus(null);
-      setIsHuman(false);
-      setShowEmojiAlert(false);
-      setShowDuplicateAlert(false);
-    }
-  }, [isOpen]);
-
-  if (!isOpen) return null;
+  const [isHuman, setIsHuman] = useState(false);
+  const [status, setStatus] = useState(null); // 'idle', 'sending', 'success', 'error'
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     if (!isHuman) {
-      setShowEmojiAlert(true);
+      setErrorMsg(t("registration.errorCheck"));
+      setStatus("error");
       return;
     }
 
-    setSending(true); // Active le spinner
-
+    setStatus("sending");
     try {
-      const res = await axios.post("http://localhost:5000/api/subscribe", {
-        email,
-      });
-
-      if (res.status === 201) {
-        setStatus("success");
-        setEmail("");
-        setIsHuman(false);
-        setShowEmojiAlert(false);
-        setShowDuplicateAlert(false);
-        confetti({
-          // Lancement de l'effet feu d'artifice
-          particleCount: 120,
-          spread: 70,
-          origin: { y: 0.6 },
-        });
-      }
+      await newsletterService.subscribe(email);
+      setStatus("success");
+      setEmail("");
+      setIsHuman(false);
     } catch (err) {
-      if (err.response?.status === 409) {
-        setStatus("duplicate");
-        setShowDuplicateAlert(true);
+      setStatus("error");
+      if (err.response?.status === 400) {
+        setErrorMsg(t("registration.duplicateAlert"));
       } else {
-        setStatus("error");
+        setErrorMsg(t("registration.error"));
       }
-    } finally {
-      setSending(false); // Désactive le spinner
     }
   };
 
-  const handleClose = () => {
-    setClosing(true);
-    setTimeout(() => {
-      onClose();
-      setClosing(false);
-    }, 300);
-  };
-
   return (
-    <div className="registration-overlay">
-      <div
-        className={`registration-content ${closing ? "fade-out" : "fade-in"}`}
-      >
-        <button className="registration-close" onClick={handleClose}>
-          &times;
-        </button>
-        <h2>{t("registration.title")}</h2>
+    <section className="registration-section">
+      <div className="registration-container">
+        <h3>{t("registration.title")}</h3>
         <p>{t("registration.subtitle")}</p>
-
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder={t("registration.placeholder")}
+        
+        <form onSubmit={handleSubmit} className="registration-form">
+          <input 
+            type="email" 
+            placeholder={t("registration.placeholder")} 
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setShowDuplicateAlert(false); // cache l’alerte si on modifie
-            }}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
-          {/* Champ honeypot anti-bot (invisible pour les humains) */}
-          <input
-            type="text"
-            name="extraField"
-            style={{ display: "none" }}
-            autoComplete="off"
-          />
-          {/* Ajout de la checkbox sécurité */}
-          <div>
-            <div className="checkbox-wrapper">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={isHuman}
-                  onChange={(e) => {
-                    setIsHuman(e.target.checked);
-                    if (e.target.checked) {
-                      setShowEmojiAlert(false); // Masque l’alerte si la case est cochée
-                    }
-                  }}
-                  className={showEmojiAlert ? "shake-checkbox" : ""}
-                />
-                <span>{t("registration.humanCheck")}</span>
-              </label>
-            </div>
+          
+          <div className="human-check">
+            <input 
+              type="checkbox" 
+              id="humanCheck" 
+              checked={isHuman}
+              onChange={(e) => setIsHuman(e.target.checked)}
+            />
+            <label htmlFor="humanCheck">{t("registration.humanCheck")}</label>
           </div>
-          {/* Animation d’alerte si la case n'est pas cochée */}
-          {showEmojiAlert && (
-            <div className="emoji-alert">
-              🙈{" "}
-              <span>{t("registration.errorCheck")}</span>
-            </div>
-          )}
-          {/* Alerte duplication d’adresse avec bouton "Effacer" */}
-          {showDuplicateAlert && (
-            <div className="emoji-alert">
-              📨{" "}
-              <span>
-                {t("registration.duplicateAlert")}
-              </span>
-              <button className="btn-clear-email" onClick={clearEmail}>
-                <FontAwesomeIcon icon={faEraser} /> {t("registration.clearButton")}
-              </button>
-            </div>
-          )}
 
-          {/* Bouton d’envoi + main impatiente */}
-          <div style={{ position: "relative" }}>
-            <button
-              type="submit"
-              className="contact-send-button"
-              disabled={sending}
-            >
-              {sending ? (
-                <div className="loading-content">
-                  <span>{t("registration.sending")}</span>
-                  <HandSpinner />
-                </div>
-              ) : (
-                t("registration.send")
-              )}
-            </button>
-          </div>
+          <button type="submit" disabled={status === "sending"}>
+            {status === "sending" ? t("registration.sending") : t("registration.send")}
+          </button>
         </form>
 
-        {status === "success" && (
-          <>
-            {/* Animation de feux d'artifice */}
-            <div id="confetti-target"></div>
-            <p className="form-feedback success">{t("registration.success")}</p>
-          </>
-        )}
-        {status === "error" && (
-          <p className="form-feedback error">{t("registration.error")}</p>
-        )}
-
-        <button className="btn-fermer" onClick={handleClose}>
-          {t("registration.close")}
-        </button>
+        {status === "success" && <p className="success-msg">{t("registration.success")}</p>}
+        {status === "error" && <p className="error-msg">{errorMsg}</p>}
       </div>
-    </div>
+    </section>
   );
-}
+};
+
+export default Registration;

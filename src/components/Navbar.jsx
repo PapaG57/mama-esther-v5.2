@@ -1,24 +1,34 @@
 // src/components/Navbar.jsx
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useScrollNavbar from "../utils/navbar";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./navbar.css";
 
 export default function Navbar({ hideDonate = false }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navbarRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useScrollNavbar(navbarRef);
 
-  const scrollToSection = (event, sectionId) => {
-    event.preventDefault();
-    const target = document.querySelector(sectionId);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setMenuOpen(false);
+  };
+
+  const handleNavClick = (event, sectionId) => {
+    if (location.pathname === "/") {
+      event.preventDefault();
+      const target = document.querySelector(sectionId);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+        setMenuOpen(false);
+      }
+    } else {
+      // If not on home, let the Link handle navigation to home with hash
       setMenuOpen(false);
     }
   };
@@ -28,11 +38,13 @@ export default function Navbar({ hideDonate = false }) {
       <div className="custom-navbar-container">
 
         {/* Logo */}
-        <img
-          className="custom-navbar-logo"
-          src="/assets/logos/logo-long.png"
-          alt="Logo Association"
-        />
+        <Link to="/" onClick={() => setMenuOpen(false)}>
+          <img
+            className="custom-navbar-logo"
+            src="/assets/logos/logo-long.png"
+            alt="Logo Association"
+          />
+        </Link>
 
         {/* Hamburger */}
         <button
@@ -47,43 +59,43 @@ export default function Navbar({ hideDonate = false }) {
         {/* Liens */}
         <ul className={`custom-nav-list ${menuOpen ? "open" : ""}`}>
           <li>
-            <a
+            <Link
               className="custom-nav-link"
-              href="#root"
-              onClick={(e) => scrollToSection(e, "#root")}
+              to="/"
+              onClick={(e) => handleNavClick(e, "#root")}
             >
               {t("navbar.home")}
-            </a>
+            </Link>
           </li>
 
           <li>
-            <a
+            <Link
               className="custom-nav-link"
-              href="#aboutSection"
-              onClick={(e) => scrollToSection(e, "#aboutSection")}
+              to="/#aboutSection"
+              onClick={(e) => handleNavClick(e, "#aboutSection")}
             >
               {t("navbar.about")}
-            </a>
+            </Link>
           </li>
 
           <li>
-            <a
+            <Link
               className="custom-nav-link"
-              href="#engagement"
-              onClick={(e) => scrollToSection(e, "#engagement")}
+              to="/#engagement"
+              onClick={(e) => handleNavClick(e, "#engagement")}
             >
               {t("navbar.commitment")}
-            </a>
+            </Link>
           </li>
 
           <li>
-            <a
+            <Link
               className="custom-nav-link"
-              href="#actualitySection"
-              onClick={(e) => scrollToSection(e, "#actualitySection")}
+              to="/#actualitySection"
+              onClick={(e) => handleNavClick(e, "#actualitySection")}
             >
               {t("navbar.news")}
-            </a>
+            </Link>
           </li>
 
           <li>
@@ -110,17 +122,45 @@ export default function Navbar({ hideDonate = false }) {
               </button>
             </li>
           )}
+          
+          {/* Langue Mobile */}
+          <li className="mobile-lang">
+            <button 
+              className="lang-btn" 
+              onClick={() => changeLanguage(i18n.language === 'fr' ? 'en' : 'fr')}
+            >
+              <img 
+                src={i18n.language === 'fr' ? "/assets/flags/GB.svg" : "/assets/flags/FR.svg"} 
+                alt="Switch Language" 
+              />
+              <span>{i18n.language === 'fr' ? 'English' : 'Français'}</span>
+            </button>
+          </li>
         </ul>
 
         {/* Bouton Don desktop */}
-        {!hideDonate && (
-          <button
-            className="don-button desktop-don"
-            onClick={() => navigate("/don")}
+        <div className="navbar-right-actions">
+          {!hideDonate && (
+            <button
+              className="don-button desktop-don"
+              onClick={() => navigate("/don")}
+            >
+              {t("navbar.donate")}
+            </button>
+          )}
+
+          {/* Langue Desktop */}
+          <button 
+            className="lang-btn desktop-lang" 
+            onClick={() => changeLanguage(i18n.language === 'fr' ? 'en' : 'fr')}
+            title={i18n.language === 'fr' ? 'Switch to English' : 'Passer au Français'}
           >
-            {t("navbar.donate")}
+            <img 
+              src={i18n.language === 'fr' ? "/assets/flags/GB.svg" : "/assets/flags/FR.svg"} 
+              alt="Switch Language" 
+            />
           </button>
-        )}
+        </div>
       </div>
     </nav>
   );

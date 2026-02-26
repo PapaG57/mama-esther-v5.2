@@ -1,92 +1,103 @@
 import React from "react";
-import "./DonV2.css";
+import "../styles/DonV2.css";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 const DonV2 = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
-  const impacts = [
-    { amount: "20€", label: "Fournitures scolaires pour un enfant", icon: "📚" },
-    { amount: "50€", label: "Soins médicaux et nutritionnels", icon: "🍎" },
-    { amount: "100€", label: "Participation aux travaux de l'orphelinat", icon: "🏗️" },
+  const impactPoints = [
+    { icon: "🥣", title: t("v2.don.impact.nutrition.title"), desc: t("v2.don.impact.nutrition.desc") },
+    { icon: "📚", title: t("v2.don.impact.education.title"), desc: t("v2.don.impact.education.desc") },
+    { icon: "🩺", title: t("v2.don.impact.health.title"), desc: t("v2.don.impact.health.desc") }
   ];
 
   return (
     <div className="v2-layout">
       <Navbar hideDonate={true} />
       
-      {/* 1. HERO DON */}
+      {/* HERO DON */}
       <section className="don-v2-hero">
         <div className="v2-container">
           <div className="don-v2-hero-content">
-            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>Votre générosité en action</span>
-            <h1 className="v2-title" style={{color: "white"}}>Chaque don est une promesse d'avenir</h1>
-            <p className="v2-hero-text">
-              100% de votre don est affecté directement aux projets sur le terrain au Cameroun.
-            </p>
+            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>{t("v2.don.heroSubtitle")}</span>
+            <h1 className="v2-title" style={{color: "white"}}>{t("v2.don.heroTitle")}</h1>
           </div>
         </div>
       </section>
 
-      {/* 2. IMPACT CARDS */}
-      <section className="don-v2-impact-grid">
+      {/* 1. IMPACT PREVIEW - MAKES IT LESS AUSTERE */}
+      <section className="don-v2-impact">
         <div className="v2-container">
-          <div className="impact-cards-wrapper">
-            {impacts.map((item, idx) => (
-              <div className="impact-card" key={idx}>
-                <span className="impact-icon">{item.icon}</span>
-                <h3>Avec {item.amount}</h3>
-                <p>{item.label}</p>
+          <div className="don-impact-grid">
+            {impactPoints.map((item, index) => (
+              <div className="don-impact-card" key={index}>
+                <span className="don-impact-icon">{item.icon}</span>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 3. FORM SECTION */}
-      <section className="don-v2-form-section">
+      {/* 2. DON CONTENT & TRUST */}
+      <section className="don-v2-section">
         <div className="v2-container">
-          <div className="don-v2-split">
-            <div className="don-v2-info">
-              <h2>Comment nous soutenir ?</h2>
-              <p>Vous pouvez faire un don ponctuel ou devenir parrain d'un enfant pour un soutien sur le long terme.</p>
+          <div className="don-v2-grid">
+            
+            {/* TEXT SIDE */}
+            <div className="don-info-side">
+              <h2>{t("v2.don.supportTitle")}</h2>
+              <p>{t("v2.don.supportText")}</p>
               
-              <div className="trust-points">
-                <div className="trust-item">
-                  <span className="trust-icon">🔒</span>
-                  <div>
-                    <h4>Paiement Sécurisé</h4>
-                    <p>Vos données sont protégées via HelloAsso, plateforme leader du secteur associatif.</p>
+              <div className="don-trust-cards">
+                <div className="trust-card">
+                  <div className="trust-icon">🔒</div>
+                  <div className="trust-text">
+                    <h4>{t("v2.don.secureTitle")}</h4>
+                    <p>{t("v2.don.secureText")}</p>
                   </div>
                 </div>
-                <div className="trust-item">
-                  <span className="trust-icon">📄</span>
-                  <div>
-                    <h4>Déduction Fiscale</h4>
-                    <p>Bénéficiez d'une réduction d'impôt de 66% du montant de votre don.</p>
+                <div className="trust-card">
+                  <div className="trust-icon">📄</div>
+                  <div className="trust-text">
+                    <h4>{t("v2.don.taxTitle")}</h4>
+                    <p>{t("v2.don.taxText")}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="don-v2-form-card">
-              <div className="form-header">
-                <h3>Faire un don maintenant</h3>
-              </div>
-              <div className="form-body">
-                <p className="form-instruction">Choisissez votre moyen de soutien :</p>
-                <div className="donation-options">
-                  <button className="v2-btn v2-btn-primary" onClick={() => window.open('https://www.helloasso.com/associations/association-mama-esther/formulaires/1', '_blank')}>
-                    Via HelloAsso
+            {/* ACTION CARD */}
+            <div className="don-form-side">
+              <div className="don-form-card">
+                <h3>{t("v2.don.makeDonation")}</h3>
+                <p className="form-instruction">{t("v2.don.formInstruction")}</p>
+                
+                <div className="placeholder-btns">
+                  <button 
+                    className="v2-btn v2-btn-primary" 
+                    onClick={() => window.open('https://www.helloasso.com/associations/association-mama-esther/formulaires/1/widget', '_blank')}
+                  >
+                    {t("v2.don.donateViaHelloAsso")}
                   </button>
-                  <button className="v2-btn v2-btn-outline" style={{borderColor: "var(--color-green)", color: "var(--color-green)"}} onClick={() => window.location.href='/contact'}>
-                    Par Virement / Chèque
+                  
+                  <button 
+                    className="v2-btn v2-btn-outline" 
+                    style={{borderColor: "var(--color-green)", color: "var(--color-green)"}} 
+                    onClick={() => navigate('/contact')}
+                  >
+                    {t("navbar.contact")}
                   </button>
                 </div>
-                <p className="form-footer">Vous allez être redirigé vers notre partenaire de paiement sécurisé.</p>
+                
+                <p className="form-footer">{t("v2.don.formFooter")}</p>
               </div>
             </div>
+
           </div>
         </div>
       </section>

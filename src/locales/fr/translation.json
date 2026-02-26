@@ -100,7 +100,7 @@
   "aboutSection": {
     "title": "Qui sommes-nous ?",
     "description1": "L’Association Mama Esther œuvre pour le bien-être des orphelins et des personnes en difficulté. Notre mission est de venir en aide aux plus vulnérables : enfants sans soutien, personnes âgées isolées, individus en situation de handicap, familles démunies.",
-    "description2": "Grâce à l’engagement de nos membres et bénévoles, nous mettons en place des actions solidaires, des accompagnements personnalisés et des projets de soutien humain et matériel. Ensemble, nous travaillons pour un monde plus juste et bienveillant.",
+    "description2": "Grâce à l’engagement de nos membres et bénévoles, nous mettons en place des actions solidaires, des accompagnements personnalisés et des projets de soutien humain et matériel. Ensemble, we travaillons pour un monde plus juste et bienveillant.",
     "button": "mieux nous connaître"
   },
 
@@ -293,10 +293,10 @@
   },
 
   "error404": {
-    "title": "404 - Page introuvable",
-    "subtitle": "Même quand on se perd, on peut toujours revenir là où l’amour nous attend 💛",
-    "back": "Retour",
-    "contact": "Contactez-nous"
+    "title": "Oups... cette page s’est égarée",
+    "subtitle": "Comme un enfant qui cherche son chemin, il arrive qu'on se perde. Mais chez Mama Esther, nous savons que chaque retour est une fête.",
+    "back": "Retourner à l'accueil",
+    "contact": "Signaler un problème"
   },
 
   "donationCounter": {
@@ -392,6 +392,12 @@
     }
   },
   "v2": {
+    "common": {
+      "learnMore": "En savoir plus",
+      "readMore": "Continuer la lecture",
+      "back": "Retour",
+      "seeMore": "Voir plus"
+    },
     "hero": {
       "associationName": "Association Mama Esther",
       "mainTitle": "Bâtir un avenir digne pour les orphelins du",
@@ -422,11 +428,103 @@
       "donate": "Faire un don",
       "discover": "Découvrir nos actions",
       "learnMore": "En savoir plus",
-      "makeImpact": "Je soutiens l'association"
+      "makeImpact": "Je soutiens l'association",
+      "becomeVolunteer": "Devenir bénévole",
+      "subscribe": "S'abonner",
+      "send": "Envoyer le message"
     },
     "cta": {
       "title": "Chaque geste compte",
       "text": "Rejoignez notre mission et aidez-nous à offrir un sourire et un avenir à ceux qui en ont le plus besoin."
+    },
+    "about": {
+      "heroSubtitle": "Notre Histoire, Votre Impact",
+      "heroTitle": "Donner de l'espoir là où",
+      "heroTitleSpan": "le besoin est grand",
+      "manifestoSubtitle": "Qui sommes-nous ?",
+      "manifestoTitle": "Une mission née du cœur, portée par l'action",
+      "manifestoLead": "L'Association Mama Esther est née d'une volonté simple : ne plus rester spectateur face à la détresse des orphelins au Cameroun.",
+      "manifestoText": "Depuis notre création, nous œuvrons sans relâche pour offrir non seulement un toit et de la nourriture, mais surtout une éducation et un avenir digne à chaque enfant que nous rencontrons.",
+      "statYearDesc": "Année charnière",
+      "statVolunteerDesc": "Bénévolat",
+      "presidentTitle": "Fondatrice & Présidente",
+      "valuesSubtitle": "Nos Piliers",
+      "valuesTitle": "Ce qui guide nos actions",
+      "teamCtaTitle": "Rejoignez l'aventure humaine",
+      "teamCtaText": "Que vous soyez bénévole, donateur ou simple sympathisant, votre place est parmi nous."
+    },
+    "actuality": {
+      "heroSubtitle": "Le Journal de l'Impact",
+      "heroTitle": "Récits du terrain & actualités",
+      "featuredTag": "À la une",
+      "readFullArticle": "Lire l'article complet",
+      "filterAll": "Tout",
+      "filterTerrain": "Actions Terrain",
+      "filterInfra": "Infrastructures",
+      "filterNGO": "Vie de l'ONG",
+      "subscribeTitle": "Ne manquez aucune nouvelle",
+      "subscribeText": "Recevez nos derniers récits d'impact directement dans votre boîte mail.",
+      "emailPlaceholder": "Votre adresse email"
+    },
+    "contact": {
+      "heroSubtitle": "Parlons-nous",
+      "heroTitle": "Nous sommes à votre écoute",
+      "infoTitle": "Envie de nous rejoindre ou de poser une question ?",
+      "infoText": "Que vous soyez un particulier, une entreprise ou une autre association, chaque message compte pour nous.",
+      "followUs": "Suivez-nous",
+      "formName": "Nom complet",
+      "formNamePlaceholder": "Jean Dupont",
+      "formEmail": "Email",
+      "formEmailPlaceholder": "jean@exemple.com",
+      "formSubject": "Sujet",
+      "formSubjectOptions": {
+        "volunteer": "Devenir bénévole",
+        "donation": "Faire un don / Parrainage",
+        "partnership": "Partenariat entreprise",
+        "other": "Autre question"
+      },
+      "formMessage": "Votre message",
+      "formMessagePlaceholder": "Comment pouvons-nous vous aider ?",
+      "impactTitle": "Notre impact est local",
+      "impactText": "Nous agissons principalement dans les régions de Yaoundé et Douala au Cameroun."
+    },
+    "don": {
+      "heroSubtitle": "Votre générosité en action",
+      "heroTitle": "Chaque don est une promesse d'avenir",
+      "supportTitle": "Comment nous soutenir ?",
+      "supportText": "Vous pouvez faire un don ponctuel ou devenir parrain d'un enfant pour un soutien sur le long terme.",
+      "secureTitle": "Paiement Sécurisé",
+      "secureText": "Vos données sont protégées via HelloAsso, plateforme leader du secteur associatif.",
+      "taxTitle": "Déduction Fiscale",
+      "taxText": "Bénéficiez d'une réduction d'impôt de 66% du montant de votre don.",
+      "makeDonation": "Faire un don maintenant",
+      "donateViaHelloAsso": "Donner via HelloAsso",
+      "formInstruction": "Choisissez votre moyen de soutien :",
+      "formFooter": "Vous allez être redirigé vers notre partenaire de paiement sécurisé.",
+      "impact": {
+        "nutrition": {
+          "title": "Nutrition",
+          "desc": "15€ offre des repas équilibrés à un enfant pendant un mois."
+        },
+        "education": {
+          "title": "Éducation",
+          "desc": "50€ finance les frais de scolarité et les fournitures annuelles."
+        },
+        "health": {
+          "title": "Santé",
+          "desc": "100€ permet de couvrir les soins médicaux d'urgence pour l'orphelinat."
+        }
+      }
+    },
+    "travaux": {
+      "heroSubtitle": "Transparence & Action",
+      "heroTitle": "Nos réalisations sur le terrain",
+      "financing": "Financement"
+    },
+    "team": {
+      "subtitle": "Notre Équipe",
+      "title": "Les visages de l'engagement",
+      "memberTag": "Membre de l'équipe"
     }
   }
 }

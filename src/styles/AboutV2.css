@@ -1,7 +1,7 @@
 /* ABOUT V2 - STORYTELLING DESIGN */
 .about-v2-hero {
   height: 50vh;
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("/assets/Solidarity-and-unity.png") center/cover;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("/assets/about-hero.jpg") center/cover;
   display: flex;
   align-items: center;
   padding-top: 80px;

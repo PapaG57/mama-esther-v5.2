@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHandPointLeft } from "@fortawesome/free-solid-svg-icons";
+import { faHandPointLeft, faTrash, faEye } from "@fortawesome/free-solid-svg-icons";
 import "../styles/admin.css";
 import CamerounButton from "../components/CamerounButton";
 import PasswordField from "../components/PasswordField";
 import confetti from "canvas-confetti";
 import { useTranslation } from "react-i18next";
+import { adminService } from "../api/services";
 
 function evaluatePasswordStrength(password) {
   const len = password.length;
@@ -24,15 +25,15 @@ export default function Admin() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // 🔒 Protection de la page : vérifie le token dès le montage
+  // 🔒 Protection de la page
   const [showSecureModal, setShowSecureModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
     if (!token) {
-      setShowSecureModal(true); // affiche la modale sécurisée
+      setShowSecureModal(true);
     }
-  }, [navigate]);
+  }, []);
 
   // États Admin
   const [identifiant, setIdentifiant] = useState("");
@@ -61,6 +62,22 @@ export default function Admin() {
     }
   }, [motDePasse]);
 
+  const fetchDons = async () => {
+    try {
+      const res = await adminService.getDons();
+      setDons(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Erreur récupération dons :", err);
+      setDons([]);
+    }
+  };
+
+  useEffect(() => {
+    if (!showSecureModal) {
+      fetchDons();
+    }
+  }, [showSecureModal]);
+
   const handleAdminSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -76,99 +93,63 @@ export default function Admin() {
     }
 
     const strength = evaluatePasswordStrength(motDePasse);
-    setPasswordStrength(strength);
     if (strength === "faible") {
       setMessage(t("admin.messages.passwordWeak"));
       return;
     }
 
-    const token = localStorage.getItem("adminToken");
-
     try {
-      const res = await fetch("/api/admin/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ identifiant, motDePasse }),
-      });
-
-      const result = await res.json();
-      setMessage(result.message || result.error || t("admin.messages.creationSuccess"));
-
-      if (res.ok) {
-        localStorage.setItem("adminName", identifiant);
-        confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
-        setShowSuccessModal(true);
-        setIdentifiant("");
-        setMotDePasse("");
-        setConfirmationMotDePasse("");
-        setPasswordStrength("");
-      }
-    } catch {
-      setMessage(t("admin.messages.networkError"));
+      await adminService.register({ identifiant, motDePasse });
+      setShowSuccessModal(true);
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      setIdentifiant("");
+      setMotDePasse("");
+      setConfirmationMotDePasse("");
+    } catch (err) {
+      setMessage(err.response?.data?.error || t("admin.messages.networkError"));
     }
   };
 
-  const demanderConfirmationSuppression = (don) => {
-    setDonASupprimer(don);
-    setShowConfirmModal(true);
-  };
+  const handleManualDonation = async (e) => {
+    e.preventDefault();
+    setDonFeedback("");
 
-  const annulerSuppression = () => {
-    setDonASupprimer(null);
-    setShowConfirmModal(false);
-  };
-
-  const confirmerSuppression = async () => {
-    if (!donASupprimer) return;
-    const token = localStorage.getItem("adminToken");
-    const id = donASupprimer.id ?? donASupprimer._id;
+    const data = {
+      nomDonateur,
+      montant: parseFloat(montant),
+      message: commentaires,
+      source: source === "Autres (préciser)" ? sourcePrecise : source,
+    };
 
     try {
-      const res = await fetch(`/api/admin/dons/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await adminService.addManualDonation(data);
+      setDonFeedback(t("admin.messages.donAdded"));
+      setNomDonateur("");
+      setMontant("");
+      setCommentaires("");
+      setSource("");
+      setSourcePrecise("");
+      fetchDons();
+    } catch (err) {
+      setDonFeedback(err.response?.data?.error || t("admin.messages.networkError"));
+    }
+  };
 
-      let result = {};
-      if (res.status !== 204) {
-        try {
-          result = await res.json();
-        } catch {}
-      }
+  const handleSupprimerDon = async () => {
+    if (!donASupprimer) return;
+    const id = donASupprimer._id || donASupprimer.id;
 
-      if (!res.ok) {
-        setDonFeedback(result.error || `Erreur serveur (${res.status})`);
-      } else {
-        setDonFeedback(result.message || t("admin.messages.donDeleted"));
-        fetchDons();
-      }
-    } catch {
+    try {
+      await adminService.deleteDon(id);
+      setDonFeedback(t("admin.messages.donDeleted"));
+      fetchDons();
+    } catch (err) {
       setDonFeedback(t("admin.messages.networkError"));
     } finally {
       setDonASupprimer(null);
       setShowConfirmModal(false);
     }
   };
-
-  const fetchDons = async () => {
-    const token = localStorage.getItem("adminToken");
-    try {
-      const res = await fetch("/api/admin/dons", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setDons(Array.isArray(data) ? data : []);
-    } catch {
-      setDons([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchDons();
-  }, []);
 
   const strengthClass =
     passwordStrength === "fort"
@@ -179,174 +160,128 @@ export default function Admin() {
       ? "msg-red-bold"
       : "";
 
-  return (
-    <div className="admin-container">
-      {showSecureModal ? (
-        // 🔒 Modale sécurisée uniquement
-        <div className="admin-modal-overlay" onClick={() => navigate("/")}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-            <h2>{t("admin.accessGate.secureAccess")}</h2>
-            <p>{t("admin.accessGate.secureText")}</p>
-            <div className="admin-modal-buttons">
-              <button onClick={() => navigate("/")}>{t("admin.accessGate.back")}</button>
-            </div>
+  if (showSecureModal) {
+    return (
+      <div className="admin-modal-overlay" onClick={() => navigate("/")}>
+        <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+          <h2>{t("admin.accessGate.secureAccess")}</h2>
+          <p>{t("admin.accessGate.secureText")}</p>
+          <div className="admin-modal-buttons">
+            <button onClick={() => navigate("/")}>{t("admin.accessGate.back")}</button>
           </div>
         </div>
-      ) : (
-        <>
-          <h1>{t("admin.dashboard.title")}</h1>
+      </div>
+    );
+  }
 
-          {/* Formulaire connexion admin */}
-          <form onSubmit={handleAdminSubmit}>
+  return (
+    <div className="admin-container v2-layout">
+      <div className="v2-container">
+        <h1>{t("admin.dashboard.title")}</h1>
+
+        <div className="admin-grid">
+          {/* Section Administrateurs */}
+          <div className="admin-card">
             <h2>{t("admin.dashboard.addAdminTitle")}</h2>
-            <input
-              type="text"
-              className="input-standard"
-              placeholder={t("admin.forms.idPlaceholder")}
-              value={identifiant}
-              onChange={(e) => setIdentifiant(e.target.value)}
-              required
-            />
-            <PasswordField
-              value={motDePasse}
-              onChange={(e) => setMotDePasse(e.target.value)}
-              label={t("admin.forms.password")}
-              placeholder={t("admin.forms.passwordPlaceholder")}
-              required
-            />
-            {passwordStrength && (
-              <p className={strengthClass}>
-                {passwordStrength === "faible"
-                  ? t("admin.messages.strengthFaible")
-                  : passwordStrength === "moyen"
-                  ? t("admin.messages.strengthMoyen")
-                  : t("admin.messages.strengthFort")}
-              </p>
-            )}
-            <PasswordField
-              value={confirmationMotDePasse}
-              onChange={(e) => setConfirmationMotDePasse(e.target.value)}
-              label={t("admin.forms.confirmPassword")}
-              placeholder={t("admin.forms.passwordPlaceholder")}
-              required
-            />
-            {message && <p className="msg-red-bold">{message}</p>}
-            <p className="msg-green-bold">
-              {t("admin.messages.passwordInfo")}
-            </p>
-            <button type="submit">{t("admin.forms.submitCreate")}</button>
-          </form>
-
-          {/* 🎉 Modale succès */}
-          {showSuccessModal && (
-            <div
-              className="admin-modal-overlay"
-              onClick={() => setShowSuccessModal(false)}
-            >
-              <div
-                className="admin-modal success-modal"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h2>{t("admin.modals.successTitle")}</h2>
-                <p>{t("admin.modals.successText")}</p>
-                <button onClick={() => setShowSuccessModal(false)}>
-                  {t("admin.modals.close")}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Formulaire ajout don manuel */}
-          <form onSubmit={async (e) => {
-              e.preventDefault();
-              const token = localStorage.getItem("adminToken");
-              const adminName = localStorage.getItem("adminName");
-
-              try {
-                const res = await fetch("/api/donations/manual", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: JSON.stringify({
-                    nomDonateur,
-                    montant: parseFloat(montant),
-                    commentaires,
-                    source: source === "autres" ? sourcePrecise : source,
-                    admin: adminName,
-                  }),
-                });
-
-                const result = await res.json();
-                setDonFeedback(result.message || result.error || t("admin.messages.donAdded"));
-                setNomDonateur("");
-                setMontant("");
-                setCommentaires("");
-                setSource("");
-                setSourcePrecise("");
-                fetchDons();
-              } catch (err) {
-                setDonFeedback(t("admin.messages.networkError"));
-              }
-            }}>
-            <h2>{t("admin.dashboard.addDonationTitle")}</h2>
-            <input
-              type="text"
-              className="input-standard"
-              placeholder={t("admin.forms.donatorName")}
-              value={nomDonateur}
-              onChange={(e) => setNomDonateur(e.target.value)}
-              required
-            />
-            <input
-              type="number"
-              className="input-standard"
-              placeholder={t("admin.forms.amount")}
-              value={montant}
-              onChange={(e) => setMontant(e.target.value)}
-              required
-            />
-
-            <select
-              className="input-standard"
-              value={source}
-              onChange={(e) => setSource(e.target.value)}
-              required
-            >
-              <option value="">{t("admin.forms.source")}</option>
-              <option value="chèque">{t("admin.forms.sourceCheque")}</option>
-              <option value="virement">{t("admin.forms.sourceTransfer")}</option>
-              <option value="espèces">{t("admin.forms.sourceCash")}</option>
-              <option value="autres">{t("admin.forms.sourceOther")}</option>
-            </select>
-
-            {source === "autres" && (
+            <form onSubmit={handleAdminSubmit}>
               <input
                 type="text"
                 className="input-standard"
-                placeholder={t("admin.forms.sourceOtherPlaceholder")}
-                value={sourcePrecise}
-                onChange={(e) => setSourcePrecise(e.target.value)}
+                placeholder={t("admin.forms.idPlaceholder")}
+                value={identifiant}
+                onChange={(e) => setIdentifiant(e.target.value)}
                 required
               />
-            )}
+              <PasswordField
+                value={motDePasse}
+                onChange={(e) => setMotDePasse(e.target.value)}
+                label={t("admin.forms.password")}
+                placeholder={t("admin.forms.passwordPlaceholder")}
+                required
+              />
+              {passwordStrength && (
+                <p className={strengthClass}>
+                  {passwordStrength === "faible"
+                    ? t("admin.messages.strengthFaible")
+                    : passwordStrength === "moyen"
+                    ? t("admin.messages.strengthMoyen")
+                    : t("admin.messages.strengthFort")}
+                </p>
+              )}
+              <PasswordField
+                value={confirmationMotDePasse}
+                onChange={(e) => setConfirmationMotDePasse(e.target.value)}
+                label={t("admin.forms.confirmPassword")}
+                placeholder={t("admin.forms.passwordPlaceholder")}
+                required
+              />
+              {message && <p className="msg-error">{message}</p>}
+              <button type="submit" className="v2-btn v2-btn-primary">
+                {t("admin.forms.submitCreate")}
+              </button>
+            </form>
+          </div>
 
-            <textarea
-              className="input-standard"
-              placeholder={t("admin.forms.comments")}
-              value={commentaires}
-              onChange={(e) => setCommentaires(e.target.value)}
-            />
-            <button type="submit">{t("admin.forms.submitAddDon")}</button>
-            {donFeedback && <p>{donFeedback}</p>}
-          </form>
+          {/* Section Dons Manuels */}
+          <div className="admin-card">
+            <h2>{t("admin.dashboard.addDonationTitle")}</h2>
+            <form onSubmit={handleManualDonation}>
+              <input
+                type="text"
+                className="input-standard"
+                placeholder={t("admin.forms.donatorName")}
+                value={nomDonateur}
+                onChange={(e) => setNomDonateur(e.target.value)}
+                required
+              />
+              <input
+                type="number"
+                className="input-standard"
+                placeholder={t("admin.forms.amount")}
+                value={montant}
+                onChange={(e) => setMontant(e.target.value)}
+                required
+              />
+              <select
+                className="input-standard"
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
+                required
+              >
+                <option value="">{t("admin.forms.source")}</option>
+                <option value="Chèque">{t("admin.forms.sourceCheque")}</option>
+                <option value="Virement">{t("admin.forms.sourceTransfer")}</option>
+                <option value="Espèces">{t("admin.forms.sourceCash")}</option>
+                <option value="Autres (préciser)">{t("admin.forms.sourceOther")}</option>
+              </select>
+              {source === "Autres (préciser)" && (
+                <input
+                  type="text"
+                  className="input-standard"
+                  placeholder={t("admin.forms.sourceOtherPlaceholder")}
+                  value={sourcePrecise}
+                  onChange={(e) => setSourcePrecise(e.target.value)}
+                  required
+                />
+              )}
+              <textarea
+                className="input-standard"
+                placeholder={t("admin.forms.comments")}
+                value={commentaires}
+                onChange={(e) => setCommentaires(e.target.value)}
+              />
+              {donFeedback && <p className="msg-feedback">{donFeedback}</p>}
+              <button type="submit" className="v2-btn v2-btn-primary">
+                {t("admin.forms.submitAddDon")}
+              </button>
+            </form>
+          </div>
+        </div>
 
-          {/* Liste des dons */}
+        {/* Liste des dons */}
+        <div className="admin-list-section">
           <h2>{t("admin.dashboard.donationListTitle")}</h2>
-          {dons.length === 0 ? (
-            <p>{t("admin.dashboard.noDonations")}</p>
-          ) : (
+          <div className="table-wrapper">
             <table>
               <thead>
                 <tr>
@@ -354,69 +289,70 @@ export default function Admin() {
                   <th>{t("admin.table.amount")}</th>
                   <th>{t("admin.table.source")}</th>
                   <th>{t("admin.table.date")}</th>
-                  <th>{t("admin.table.comments")}</th>
-                  <th>{t("admin.table.addedBy")}</th>
                   <th>{t("admin.table.action")}</th>
                 </tr>
               </thead>
               <tbody>
-                {dons.map((don, index) => (
-                  <tr
-                    key={
-                      don.id ??
-                      don._id ??
-                      `${don.nomDonateur}-${don.montant}-${don.date}-${index}`
-                    }
-                  >
+                {dons.map((don) => (
+                  <tr key={don._id || don.id}>
                     <td>{don.nomDonateur}</td>
-                    <td>{don.montant}</td>
+                    <td>{don.montant} €</td>
                     <td>{don.source}</td>
-                    <td>{new Date(don.date).toLocaleString()}</td>
-                    <td>{don.commentaires || "-"}</td>
-                    <td>{don.admin || "-"}</td>
-                    <td>
-                      <button
-                        onClick={() => demanderConfirmationSuppression(don)}
-                      >
-                        {t("admin.table.delete")}
+                    <td>{new Date(don.date).toLocaleDateString()}</td>
+                    <td className="actions-cell">
+                      <button className="btn-icon delete" onClick={() => { setDonASupprimer(don); setShowConfirmModal(true); }}>
+                        <FontAwesomeIcon icon={faTrash} />
                       </button>
                     </td>
                   </tr>
                 ))}
+                {dons.length === 0 && (
+                  <tr>
+                    <td colSpan="5" style={{textAlign: 'center', padding: '40px'}}>
+                      {t("admin.dashboard.noDonations")}
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
-          )}
-
-          {/* Modale de confirmation de suppression */}
-          {showConfirmModal && (
-            <div className="admin-modal-overlay" onClick={annulerSuppression}>
-              <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-                <h2>{t("admin.modals.confirmDeleteTitle")}</h2>
-                <p>
-                  {t("admin.modals.confirmDeleteText")}
-                </p>
-                <div className="admin-modal-buttons">
-                  <button onClick={confirmerSuppression}>{t("admin.modals.confirm")}</button>
-                  <button onClick={annulerSuppression}>{t("admin.modals.cancel")}</button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Bouton retour */}
-          <div className="floating-contact fixed-bottom-right">
-            <CamerounButton
-              onClick={() => navigate(-1)}
-              className="about-button"
-            >
-              <FontAwesomeIcon
-                icon={faHandPointLeft}
-                style={{ marginRight: "8px" }}
-              />
-              {t("admin.accessGate.back")}
-            </CamerounButton>
           </div>
-        </>
+        </div>
+
+        <CamerounButton onClick={() => navigate("/")} className="v2-btn-outline" style={{marginTop: '40px'}}>
+          <FontAwesomeIcon icon={faHandPointLeft} style={{ marginRight: "8px" }} />
+          {t("admin.accessGate.back")}
+        </CamerounButton>
+      </div>
+
+      {/* Modale Succès */}
+      {showSuccessModal && (
+        <div className="admin-modal-overlay" onClick={() => setShowSuccessModal(false)}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>{t("admin.modals.successTitle")}</h2>
+            <p>{t("admin.modals.successText")}</p>
+            <button className="v2-btn v2-btn-primary" onClick={() => setShowSuccessModal(false)}>
+              {t("admin.modals.close")}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modale Confirmation Suppression */}
+      {showConfirmModal && (
+        <div className="admin-modal-overlay" onClick={() => setShowConfirmModal(false)}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>{t("admin.modals.confirmDeleteTitle")}</h2>
+            <p>{t("admin.modals.confirmDeleteText")}</p>
+            <div className="admin-modal-buttons">
+              <button className="v2-btn v2-btn-outline" onClick={() => setShowConfirmModal(false)}>
+                {t("admin.modals.cancel")}
+              </button>
+              <button className="v2-btn v2-btn-primary" onClick={handleSupprimerDon}>
+                {t("admin.modals.confirm")}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

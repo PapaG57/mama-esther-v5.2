@@ -1,5 +1,5 @@
 import React from "react";
-import "./ContactV2.css";
+import "../styles/ContactV2.css";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,8 +17,8 @@ const ContactV2 = () => {
       <section className="contact-v2-hero">
         <div className="v2-container">
           <div className="contact-v2-hero-content">
-            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>Parlons-nous</span>
-            <h1 className="v2-title" style={{color: "white"}}>Nous sommes à <br/>votre écoute</h1>
+            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>{t("v2.contact.heroSubtitle")}</span>
+            <h1 className="v2-title" style={{color: "white"}}>{t("v2.contact.heroTitle")}</h1>
           </div>
         </div>
       </section>
@@ -31,8 +31,8 @@ const ContactV2 = () => {
             {/* INFO SIDE */}
             <div className="contact-info-side">
               <div className="info-header">
-                <h2>Envie de nous rejoindre ou de poser une question ?</h2>
-                <p>Que vous soyez un particulier, une entreprise ou une autre association, chaque message compte pour nous.</p>
+                <h2>{t("v2.contact.infoTitle")}</h2>
+                <p>{t("v2.contact.infoText")}</p>
               </div>
 
               <div className="contact-methods">
@@ -46,21 +46,21 @@ const ContactV2 = () => {
                 <div className="method-item">
                   <div className="method-icon"><FontAwesomeIcon icon={faPhone} /></div>
                   <div className="method-text">
-                    <h4>Téléphone</h4>
+                    <h4>{t("contact.phoneTitle")}</h4>
                     <p>+33 06 XX XX XX XX</p>
                   </div>
                 </div>
                 <div className="method-item">
                   <div className="method-icon"><FontAwesomeIcon icon={faMapMarkerAlt} /></div>
                   <div className="method-text">
-                    <h4>Siège Social</h4>
+                    <h4>{t("contact.addressTitle")}</h4>
                     <p>1, Rue des Troènes, 57700 Hayange, France</p>
                   </div>
                 </div>
               </div>
 
               <div className="contact-socials">
-                <h4>Suivez-nous</h4>
+                <h4>{t("v2.contact.followUs")}</h4>
                 <div className="social-links">
                   <a href="#"><FontAwesomeIcon icon={faFacebookF} /></a>
                   <a href="#"><FontAwesomeIcon icon={faWhatsapp} /></a>
@@ -72,31 +72,31 @@ const ContactV2 = () => {
 
             {/* FORM SIDE */}
             <div className="contact-form-side">
-              <form className="v2-contact-form" onSubmit={(e) => e.preventDefault()}>
+              <form id="contact-form" className="v2-contact-form" onSubmit={(e) => e.preventDefault()}>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Nom complet</label>
-                    <input type="text" placeholder="Jean Dupont" required />
+                    <label>{t("v2.contact.formName")}</label>
+                    <input type="text" placeholder={t("v2.contact.formNamePlaceholder")} required />
                   </div>
                   <div className="form-group">
-                    <label>Email</label>
-                    <input type="email" placeholder="jean@exemple.com" required />
+                    <label>{t("v2.contact.formEmail")}</label>
+                    <input type="email" placeholder={t("v2.contact.formEmailPlaceholder")} required />
                   </div>
                 </div>
                 <div className="form-group">
-                  <label>Sujet</label>
+                  <label>{t("v2.contact.formSubject")}</label>
                   <select>
-                    <option>Devenir bénévole</option>
-                    <option>Faire un don / Parrainage</option>
-                    <option>Partenariat entreprise</option>
-                    <option>Autre question</option>
+                    <option>{t("v2.contact.formSubjectOptions.volunteer")}</option>
+                    <option>{t("v2.contact.formSubjectOptions.donation")}</option>
+                    <option>{t("v2.contact.formSubjectOptions.partnership")}</option>
+                    <option>{t("v2.contact.formSubjectOptions.other")}</option>
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Votre message</label>
-                  <textarea rows="5" placeholder="Comment pouvons-nous vous aider ?"></textarea>
+                  <label>{t("v2.contact.formMessage")}</label>
+                  <textarea rows="5" placeholder={t("v2.contact.formMessagePlaceholder")}></textarea>
                 </div>
-                <button type="submit" className="v2-btn v2-btn-primary">Envoyer le message</button>
+                <button type="submit" className="v2-btn v2-btn-primary">{t("v2.btns.send")}</button>
               </form>
             </div>
 
@@ -104,21 +104,6 @@ const ContactV2 = () => {
         </div>
       </section>
 
-      {/* MAP PLACEHOLDER / TERRAIN */}
-      <section className="contact-v2-map">
-        <div className="v2-container">
-          <div className="map-card">
-            <div className="map-text">
-              <h3>Notre impact est local</h3>
-              <p>Nous agissons principalement dans les régions de Yaoundé et Douala au Cameroun.</p>
-            </div>
-            {/* Ici on pourrait mettre une vraie map Google, mais restons sur un design propre */}
-            <div className="map-visual">
-               <img src="/assets/flags/CM.svg" alt="Cameroun" style={{width: '100px', opacity: 0.2}} />
-            </div>
-          </div>
-        </div>
-      </section>
 
     </div>
   );

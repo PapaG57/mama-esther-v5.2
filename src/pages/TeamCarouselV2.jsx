@@ -1,53 +1,34 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import "./TeamCarouselV2.css";
+import React, { useState } from "react";
+import "../styles/TeamCarouselV2.css";
 import { useTranslation } from "react-i18next";
-
-const teamMembers = [
-  { id: "esther", name: "Esther GERARD", roleKey: "team.roles.president", img: "/assets/team/esther.png", descKey: "team.descriptions.esther" },
-  { id: "florent", name: "Florent GERARD", roleKey: "team.roles.vicePresident", img: "/assets/team/florent.png", descKey: "team.descriptions.florent" },
-  { id: "maeva", name: "Maeva DAHER-KHATER", roleKey: "team.roles.treasurer", img: "/assets/team/maeva.png", descKey: "team.descriptions.maeva" },
-  { id: "aziz", name: "Aziz DAHER-KHATER", roleKey: "team.roles.logistics", img: "/assets/team/aziz.png", descKey: "team.descriptions.aziz" },
-  { id: "margault", name: "Margault WILLEMS", roleKey: "team.roles.nurse", img: "/assets/team/margault.png", descKey: "team.descriptions.margault" },
-  { id: "marie", name: "Marie JADDAOUI", roleKey: "team.roles.nurse", img: "/assets/team/marie.png", descKey: "team.descriptions.marie" },
-  { id: "melanie", name: "Melanie LOPES", roleKey: "team.roles.nurse", img: "/assets/team/melanie.png", descKey: "team.descriptions.melanie" },
-  { id: "jules", name: "Jules BILLONG", roleKey: "team.roles.admin", img: "/assets/team/jules.png", descKey: "" },
-  { id: "odette", name: "Odette NGO BIHAÏ", roleKey: "team.roles.projectManager", img: "/assets/team/odette.png", descKey: "" },
-];
 
 const TeamCarouselV2 = () => {
   const { t } = useTranslation();
-  const [index, setIndex] = useState(0);
-  const [animating, setAnimating] = useState(false);
+  const [active, setActive] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [activeMember, setActiveMember] = useState(null);
-  const touch = useRef({ startX: 0, endX: 0 });
 
-  const goTo = useCallback((delta) => {
-    if (animating) return;
-    setAnimating(true);
-    setIndex((prev) => (prev + delta + teamMembers.length) % teamMembers.length);
-    setTimeout(() => setAnimating(false), 500);
-  }, [animating]);
+  const team = [
+    { name: "Esther Gérard", role: t("team.roles.president"), img: "/assets/team/esther.png", desc: t("team.descriptions.esther") },
+    { name: "Florent Gérard", role: t("team.roles.vicePresident"), img: "/assets/team/florent.png", desc: t("team.descriptions.florent") },
+    { name: "Maryam", role: t("team.roles.treasurer"), img: "/assets/team/maeva.png", desc: t("team.descriptions.maeva") },
+    { name: "Aziz", role: t("team.roles.logistics"), img: "/assets/team/aziz.png", desc: t("team.descriptions.aziz") },
+    { name: "Margault", role: t("team.roles.nurse"), img: "/assets/team/margault.png", desc: t("team.descriptions.margault") },
+    { name: "Marie", role: t("team.roles.nurse"), img: "/assets/team/marie.png", desc: t("team.descriptions.marie") },
+    { name: "Mélanie", role: t("team.roles.nurse"), img: "/assets/team/melanie.png", desc: t("team.descriptions.melanie") },
+  ];
 
-  const openModal = (member) => {
-    setActiveMember(member);
-    setShowModal(true);
+  const goTo = (dir) => {
+    setActive((prev) => (prev + dir + team.length) % team.length);
   };
 
-  const onTouchStart = (e) => { touch.current.startX = e.changedTouches[0].screenX; };
-  const onTouchEnd = (e) => {
-    touch.current.endX = e.changedTouches[0].screenX;
-    const delta = touch.current.startX - touch.current.endX;
-    if (Math.abs(delta) > 50) goTo(delta > 0 ? 1 : -1);
-  };
-
-  const getPositionClass = (i) => {
-    const offset = (i - index + teamMembers.length) % teamMembers.length;
-    if (offset === 0) return "v2-center";
-    if (offset === 1) return "v2-right-1";
-    if (offset === 2) return "v2-right-2";
-    if (offset === teamMembers.length - 1) return "v2-left-1";
-    if (offset === teamMembers.length - 2) return "v2-left-2";
+  const getPosClass = (index) => {
+    const diff = (index - active + team.length) % team.length;
+    
+    if (diff === 0) return "v2-center";
+    if (diff === 1) return "v2-right-1";
+    if (diff === 2) return "v2-right-2";
+    if (diff === team.length - 1) return "v2-left-1";
+    if (diff === team.length - 2) return "v2-left-2";
     return "v2-hidden";
   };
 
@@ -55,65 +36,64 @@ const TeamCarouselV2 = () => {
     <section className="v2-team-carousel-section">
       <div className="v2-container">
         <div className="v2-section-header">
-          <span className="v2-subtitle">Notre Équipe</span>
-          <h2 className="v2-title">Les visages de l'engagement</h2>
+          <span className="v2-subtitle">{t("v2.team.subtitle")}</span>
+          <h2 className="v2-title">{t("v2.team.title")}</h2>
         </div>
 
-        <div className="v2-carousel-wrapper" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <div className="v2-carousel-wrapper">
           <button className="v2-nav-btn v2-prev" onClick={() => goTo(-1)}>‹</button>
           
           <div className="v2-carousel-track">
-            {teamMembers.map((member, i) => (
-              <div 
-                key={i} 
-                className={`v2-team-card ${getPositionClass(i)}`}
-                onClick={() => i === index && openModal(member)}
-              >
-                <div className="v2-card-inner">
-                  <div className="v2-member-photo">
-                    <img src={member.img} alt={member.name} />
-                  </div>
-                  <div className="v2-member-details">
-                    <h4>{member.name}</h4>
-                    <p>{t(member.roleKey)}</p>
+            {team.map((m, i) => {
+              const posClass = getPosClass(i);
+              return (
+                <div 
+                  className={`v2-team-card ${posClass}`} 
+                  key={i} 
+                  onClick={() => posClass === 'v2-center' && setShowModal(true)}
+                >
+                  <div className="v2-card-inner">
+                    <div className="v2-member-photo">
+                      <img src={m.img} alt={m.name} />
+                    </div>
+                    <div className="v2-member-details">
+                      <h4>{m.name}</h4>
+                      <p>{m.role}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <button className="v2-nav-btn v2-next" onClick={() => goTo(1)}>›</button>
         </div>
 
         <div className="v2-carousel-dots">
-          {teamMembers.map((_, i) => (
-            <span 
+          {team.map((_, i) => (
+            <div 
               key={i} 
-              className={`v2-dot ${i === index ? "active" : ""}`}
-              onClick={() => {
-                const diff = i - index;
-                if (diff !== 0) goTo(diff);
-              }}
-            ></span>
+              className={`v2-dot ${i === active ? "active" : ""}`}
+              onClick={() => setActive(i)}
+            />
           ))}
         </div>
       </div>
 
-      {/* MODALE V2 */}
-      {showModal && activeMember && (
+      {/* MODALE TEAM */}
+      {showModal && (
         <div className="v2-modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="v2-modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="v2-modal-card" onClick={(e) => e.stopPropagation()}>
             <button className="v2-modal-close" onClick={() => setShowModal(false)}>×</button>
-            <div className="v2-modal-grid">
+            <div className="v2-modal-content">
               <div className="v2-modal-img">
-                <img src={activeMember.img} alt={activeMember.name} />
+                <img src={team[active].img} alt={team[active].name} />
               </div>
               <div className="v2-modal-text">
-                <span className="v2-modal-tag">Membre de l'équipe</span>
-                <h2>{activeMember.name}</h2>
-                <h4 className="v2-modal-role">{t(activeMember.roleKey)}</h4>
-                <div className="v2-modal-divider"></div>
-                <p>{activeMember.descKey ? t(activeMember.descKey) : "Dévoué à la cause des enfants orphelins au Cameroun."}</p>
+                <span className="v2-modal-tag">{t("v2.team.memberTag")}</span>
+                <h3>{team[active].name}</h3>
+                <span className="v2-modal-role">{team[active].role}</span>
+                <p>{team[active].desc}</p>
               </div>
             </div>
           </div>

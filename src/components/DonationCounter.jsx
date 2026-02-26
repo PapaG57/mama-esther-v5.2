@@ -11,48 +11,48 @@ import {
   Legend,
 } from "chart.js";
 import { useTranslation } from "react-i18next";
+import { donationService } from "../api/services";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const DonationCounter = () => {
   const { t } = useTranslation();
-  const [totalCumulé, setTotalCumulé] = useState(null); // total depuis le premier don
-  const [totalAnnuel, setTotalAnnuel] = useState(null); // total de l'année en cours
-  const [monthlyData, setMonthlyData] = useState([]);
+  const [cumulTotal, setCumulTotal] = useState(0);
+  const [anneeTotal, setAnneeTotal] = useState(0);
+  const [mensuelData, setMensuelData] = useState([]);
 
   useEffect(() => {
-    // récupération du total cumulé
-    fetch("http://localhost:5000/api/donations/count")
-      .then((res) => res.json())
-      .then((data) => setTotalCumulé(data.total))
-      .catch((err) => console.error("Erreur chargement total cumulé", err));
+    const fetchData = async () => {
+      try {
+        const [countRes, anneeRes, moisRes] = await Promise.all([
+          donationService.getCount(),
+          donationService.getAnnual(),
+          donationService.getMonthly()
+        ]);
+        
+        setCumulTotal(countRes.data.total || 0);
+        setAnneeTotal(anneeRes.data.total || 0);
+        setMensuelData(moisRes.data || []);
+      } catch (err) {
+        console.error("Erreur lors de la récupération des dons :", err);
+      }
+    };
 
-    // récupération du total annuel
-    fetch("http://localhost:5000/api/donations/annee")
-      .then((res) => res.json())
-      .then((data) => setTotalAnnuel(data.total))
-      .catch((err) => console.error("Erreur chargement total annuel", err));
-
-    // récupération des dons mensuels
-    fetch("http://localhost:5000/api/donations/mois")
-      .then((res) => res.json())
-      .then((data) => setMonthlyData(data.donsParMois))
-      .catch((err) => console.error("Erreur chargement graphique", err));
+    fetchData();
   }, []);
 
-  // ouverture du PDF dans un onglet
-  const handleDownloadPDF = () => {
-    const url = "http://localhost:5000/api/donations/mois/pdf";
-    window.open(url, "_blank");
-  };
-
   const chartData = {
-    labels: monthlyData.map((d) => `M${d.mois}`),
+    labels: [
+      "Jan", "Fév", "Mar", "Avr", "Mai", "Juin",
+      "Juil", "Août", "Sept", "Oct", "Nov", "Déc"
+    ],
     datasets: [
       {
         label: t("donationCounter.monthlyLabel"),
-        data: monthlyData.map((d) => d.total),
-        backgroundColor: "#007a3d", // vert drapeau Cameroun
+        data: mensuelData,
+        backgroundColor: "rgba(252, 209, 22, 0.8)", // Jaune Cameroun
+        borderColor: "#fcd116",
+        borderWidth: 1,
         borderRadius: 5,
       },
     ],
@@ -60,13 +60,19 @@ const DonationCounter = () => {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
     },
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { stepSize: 50 },
+        ticks: { color: "#ffffff" },
+        grid: { color: "rgba(255, 255, 255, 0.1)" },
+      },
+      x: {
+        ticks: { color: "#ffffff" },
+        grid: { display: false },
       },
     },
   };
@@ -76,39 +82,30 @@ const DonationCounter = () => {
       <div className="counter-content">
         <img src={logoMama} alt="Logo Mama Esther" className="logo" />
 
-        {/* total cumulé depuis le premier don */}
-        <h2 className="counter-title">
-          <span className="counter-label">{t("donationCounter.cumulatedSupport")}</span>{" "}
-          <span
-            className={`counter-number ${
-              typeof totalCumulé === "number" && totalCumulé === 0 ? "zero" : "positive"
-            }`}
-          >
-            {Number.isFinite(totalCumulé) ? totalCumulé.toLocaleString() : "0"} €
-          </span>
-        </h2>
-
-        {/* compteur annuel */}
-        <h2 className="counter-title">
-          <span className="counter-label">{t("donationCounter.annualDons", { year: new Date().getFullYear() })}</span>{" "}
-          <span
-            className={`counter-number ${
-              typeof totalAnnuel === "number" && totalAnnuel === 0 ? "zero" : "positive"
-            }`}
-          >
-            {Number.isFinite(totalAnnuel) ? totalAnnuel.toLocaleString() : "0"} €
-          </span>
-        </h2>
-
-        <p className="counter-text">{t("donationCounter.thanks")}</p>
+        <div className="counter-title">
+          <span className="counter-label">{t("donationCounter.cumulatedSupport")}</span>
+          <div className={`counter-number ${cumulTotal === 0 ? "zero" : ""}`}>
+            {cumulTotal.toLocaleString()} €
+          </div>
+        </div>
 
         <div className="divLine">
           <hr className="line" />
-          <h1 className="counter-title">{t("donationCounter.seePdf")}</h1>
+          <span className="counter-label">
+            {t("donationCounter.annualDons", { year: new Date().getFullYear() })}
+          </span>
+          <div className="counter-number">
+            {anneeTotal.toLocaleString()} €
+          </div>
         </div>
 
+        <p className="counter-text">{t("donationCounter.thanks")}</p>
+
         <div className="download-buttons">
-          <button onClick={handleDownloadPDF} title={t("donationCounter.createPdf")}>
+          <button onClick={() => window.open("/donations-report.pdf", "_blank")}>
+            {t("donationCounter.seePdf")}
+          </button>
+          <button>
             {t("donationCounter.createPdf")}
           </button>
         </div>

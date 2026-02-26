@@ -1,11 +1,11 @@
-/* ========= BASE GÉNÉRALE - V5.2 DESIGN SYSTEM ========= */
+/* ========= BASE GÃ‰NÃ‰RALE - V5.2 DESIGN SYSTEM ========= */
 
 :root {
   /* Charte Graphique (Cameroun) */
   --color-green: #007a5e; /* Structure, confiance */
   --color-green-dark: #003d29;
   --color-red: #ce1126;   /* Urgence, CTA */
-  --color-yellow: #fcd116; /* Accents, lumière */
+  --color-yellow: #fcd116; /* Accents, lumiÃ¨re */
   
   /* Neutrals */
   --color-dark: #1a1a1a;
@@ -14,7 +14,7 @@
   --color-text-main: #242424;
   --color-text-muted: #666666;
 
-  /* Shapes - Arrondis généreux */
+  /* Shapes - Arrondis gÃ©nÃ©reux */
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;

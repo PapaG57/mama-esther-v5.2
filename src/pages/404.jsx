@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/Navbar";
-import "./404V2.css";
+import "../styles/404V2.css";
 import { useTranslation } from "react-i18next";
 
 const MatrixBackground = () => {

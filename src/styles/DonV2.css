@@ -1,0 +1,184 @@
+.don-v2-hero {
+  height: 50vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/assets/don/banniere.png") center/cover;
+  display: flex;
+  align-items: center;
+  padding-top: 80px;
+}
+
+/* SECTION IMPACT */
+.don-v2-impact {
+  padding: 80px 0;
+  background: var(--color-white);
+  margin-top: -60px;
+  position: relative;
+  z-index: 10;
+}
+
+.don-impact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.don-impact-card {
+  background: var(--color-white);
+  padding: 40px 30px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+  transition: var(--transition-default);
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.don-impact-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-hover);
+}
+
+.don-impact-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.don-impact-card h3 {
+  color: var(--color-green);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.don-impact-card p {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* SECTION DONATION */
+.don-v2-section {
+  padding: 100px 0;
+  background: var(--color-light);
+}
+
+.don-v2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.don-info-side h2 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 25px;
+  color: var(--color-dark);
+}
+
+.don-info-side p {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  margin-bottom: 40px;
+}
+
+.don-trust-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.trust-card {
+  display: flex;
+  gap: 20px;
+  background: var(--color-white);
+  padding: 25px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.trust-card:hover {
+  box-shadow: var(--shadow-soft);
+}
+
+.trust-icon {
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 122, 94, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 1.5rem;
+}
+
+.trust-text h4 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-green);
+  margin-bottom: 5px;
+}
+
+.trust-text p {
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* CARD ACTION */
+.don-form-card {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: 60px 40px;
+  box-shadow: var(--shadow-hover);
+  text-align: center;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.don-form-card h3 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 30px;
+  color: var(--color-dark);
+}
+
+.form-instruction {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  margin-bottom: 40px;
+}
+
+.placeholder-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 350px;
+  margin: 0 auto 40px;
+}
+
+.don-form-card .v2-btn {
+  width: 100%;
+}
+
+.form-footer {
+  font-size: 0.85rem;
+  color: #999;
+  font-style: italic;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .don-v2-grid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  
+  .don-impact-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .don-info-side h2 {
+    font-size: 2.2rem;
+  }
+}

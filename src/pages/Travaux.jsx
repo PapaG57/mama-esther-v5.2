@@ -1,50 +1,39 @@
-import React, { useState } from "react";
-import "./TravauxV2.css";
+import React from "react";
+import "../styles/TravauxV2.css";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 const TravauxV2 = () => {
   const { t } = useTranslation();
-  const [filter, setFilter] = useState("all");
+  const navigate = useNavigate();
 
   const projects = [
     {
       id: 1,
-      title: "Rénovation du Dortoir",
-      category: "ongoing",
+      title: "Rénovation du dortoir principal",
+      status: "terminé",
       img: "/assets/travaux-mama.png",
-      desc: "Création d'un espace de vie sécurisé et salubre pour 50 enfants.",
-      progress: 65,
-      location: "Yaoundé"
+      desc: "Mise aux normes électriques et réfection des peintures pour un environnement sain.",
+      tags: ["Infrastructure", "Santé"]
     },
     {
       id: 2,
-      title: "Distribution de Kits Scolaires",
-      category: "completed",
-      img: "/assets/soutien.png",
-      desc: "200 enfants équipés pour la rentrée 2024.",
-      location: "Douala"
+      title: "Installation du système de pompage",
+      status: "en cours",
+      img: "/assets/actualities/news.png",
+      desc: "Forage d'un puits et installation d'une pompe solaire pour l'accès à l'eau potable.",
+      tags: ["Eau", "Énergie Solaire"]
     },
     {
       id: 3,
-      title: "Forage d'un Puits",
-      category: "ongoing",
-      img: "/assets/don/banniere.png",
-      desc: "Accès à l'eau potable pour l'orphelinat et le quartier voisin.",
-      progress: 30,
-      location: "Nord Cameroun"
-    },
-    {
-      id: 4,
-      title: "Construction de l'Infirmerie",
-      category: "completed",
-      img: "/assets/comptabilite.png",
-      desc: "Accès aux premiers soins 24h/24 pour les pensionnaires.",
-      location: "Yaoundé"
+      title: "Construction de la salle d'étude",
+      status: "planifié",
+      img: "/assets/actualities/actuality2.png",
+      desc: "Création d'un espace calme et équipé pour le soutien scolaire des enfants.",
+      tags: ["Éducation"]
     }
   ];
-
-  const filteredProjects = filter === "all" ? projects : projects.filter(p => p.category === filter);
 
   return (
     <div className="v2-layout">
@@ -54,67 +43,51 @@ const TravauxV2 = () => {
       <section className="travaux-v2-hero">
         <div className="v2-container">
           <div className="travaux-v2-hero-content">
-            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>Transparence & Action</span>
-            <h1 className="v2-title" style={{color: "white"}}>Nos réalisations <br/>sur le terrain</h1>
+            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>{t("v2.travaux.heroSubtitle")}</span>
+            <h1 className="v2-title" style={{color: "white"}}>{t("v2.travaux.heroTitle")}</h1>
           </div>
         </div>
       </section>
 
-      {/* FILTER TABS */}
-      <section className="travaux-v2-content">
+      {/* PROJECTS LIST */}
+      <section className="travaux-v2-list">
         <div className="v2-container">
-          <div className="v2-filters">
-            <button 
-              className={`filter-btn ${filter === 'all' ? 'active' : ''}`} 
-              onClick={() => setFilter('all')}
-            >
-              Tous les projets
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'ongoing' ? 'active' : ''}`} 
-              onClick={() => setFilter('ongoing')}
-            >
-              En cours 🚧
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'completed' ? 'active' : ''}`} 
-              onClick={() => setFilter('completed')}
-            >
-              Réalisés ✅
-            </button>
-          </div>
-
           <div className="projects-grid">
-            {filteredProjects.map((project) => (
-              <div className="v2-project-card" key={project.id}>
-                <div className="project-img-wrapper">
-                  <img src={project.img} alt={project.title} />
-                  <span className={`status-badge ${project.category}`}>
-                    {project.category === 'ongoing' ? 'En cours' : 'Terminé'}
-                  </span>
+            {projects.map((p) => (
+              <div className="project-card" key={p.id}>
+                <div className="project-img">
+                  <img src={p.img} alt={p.title} />
+                  <span className={`status-tag ${p.status}`}>{p.status}</span>
                 </div>
                 <div className="project-body">
-                  <span className="project-location">📍 {project.location}</span>
-                  <h3>{project.title}</h3>
-                  <p>{project.desc}</p>
-                  
-                  {project.category === 'ongoing' && (
-                    <div className="progress-section">
-                      <div className="progress-header">
-                        <span>Financement</span>
-                        <strong>{project.progress}%</strong>
-                      </div>
-                      <div className="progress-bar">
-                        <div className="progress-fill" style={{width: `${project.progress}%`}}></div>
-                      </div>
-                      <button className="v2-btn-sm" onClick={() => window.location.href='/v2/don'}>
-                        Contribuer →
-                      </button>
+                  <div className="project-tags">
+                    {p.tags.map(tag => <span key={tag}>{tag}</span>)}
+                  </div>
+                  <h3>{p.title}</h3>
+                  <p>{p.desc}</p>
+                  <div className="project-footer">
+                    <div className="progress-bar">
+                      <div className="progress-fill" style={{width: p.status === 'terminé' ? '100%' : (p.status === 'en cours' ? '60%' : '5%')}}></div>
                     </div>
-                  )}
+                    <div className="footer-meta">
+                      <span>{t("v2.travaux.financing")}</span>
+                      <strong>100% {t("registration.success")}</strong>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA SUPPORT */}
+      <section className="travaux-v2-cta">
+        <div className="v2-container">
+          <div className="cta-banner">
+            <h2>{t("v2.cta.title")}</h2>
+            <p>{t("v2.cta.text")}</p>
+            <button className="v2-btn v2-btn-red" onClick={() => navigate('/don')}>{t("v2.btns.makeImpact")}</button>
           </div>
         </div>
       </section>

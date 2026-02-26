@@ -16,6 +16,7 @@ import {
 import "./footer.css";
 import PasswordField from "../components/PasswordField";
 import { useTranslation } from "react-i18next";
+import { adminService } from "../api/services";
 
 function Footer() {
   const { t } = useTranslation();
@@ -31,29 +32,23 @@ function Footer() {
   };
 
   const handleAdminLogin = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const res = await fetch("http://localhost:5000/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ identifiant, motDePasse }),
-    });
+    try {
+      const res = await adminService.login({ identifiant, motDePasse });
 
-    const data = await res.json();
-
-    if (res.ok && data.token) {
-      localStorage.setItem("adminToken", data.token);
-      navigate("/admin", { state: { viaAdminButton: true } });
-      setShowAdminModal(false);
-    } else {
-      alert(data.error || "Identifiants incorrects");
+      if (res.data && res.data.token) {
+        localStorage.setItem("adminToken", res.data.token);
+        navigate("/admin", { state: { viaAdminButton: true } });
+        setShowAdminModal(false);
+      } else {
+        alert("Identifiants incorrects");
+      }
+    } catch (err) {
+      console.error("Erreur de connexion admin :", err);
+      alert(err.response?.data?.error || "Erreur réseau");
     }
-  } catch (err) {
-    console.error("Erreur de connexion admin :", err);
-    alert("Erreur réseau");
-  }
-};
+  };
 
   return (
     <footer className="footer">
@@ -98,7 +93,7 @@ function Footer() {
                 <Link to="/mentions-legales">{t("footer.serviceLegal")}</Link>
               </li>
               <li>
-                <Link to="/lien-mort">{t("footer.serviceIssue")}</Link>
+                <Link to="/contact">{t("footer.serviceIssue")}</Link>
               </li>
             </ul>
           </div>

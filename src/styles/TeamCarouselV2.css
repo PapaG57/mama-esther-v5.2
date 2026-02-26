@@ -34,6 +34,9 @@
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
   border: 1px solid rgba(0,0,0,0.02);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 
@@ -173,7 +176,7 @@
   transform: scale(1.4);
 }
 
-/* MODALE V2 - VERSION FENÊTRE ÉLÉGANTE ET CENTRÉE */
+/* MODALE V2 */
 .v2-modal-overlay {
   position: fixed;
   inset: 0;
@@ -187,12 +190,12 @@
   animation: fadeIn 0.3s ease;
 }
 
-.v2-modal-content {
+.v2-modal-card {
   background: #fdfdfd;
   width: 100%;
-  max-width: 500px; /* Fenêtre compacte type "Fiche Portrait" */
-  max-height: 90vh; /* Limite la hauteur pour qu'elle tienne toujours dans l'écran */
-  overflow-y: auto; /* Permet de scroller si le texte est trop long */
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
   border-radius: 40px;
   position: relative;
   box-shadow: 0 50px 100px rgba(0,0,0,0.3);
@@ -202,10 +205,9 @@
 }
 
 .v2-modal-close {
-  position: sticky;
-  top: 0;
-  float: right;
-  margin-right: -10px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
   width: 35px;
   height: 35px;
   border-radius: 50%;
@@ -226,16 +228,15 @@
   color: white;
 }
 
-.v2-modal-grid {
+.v2-modal-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  clear: both;
 }
 
 .v2-modal-img {
-  width: 180px; /* Taille identique à l'ancienne version pour le confort visuel */
+  width: 180px;
   height: 180px;
   border-radius: 50%;
   overflow: hidden;
@@ -250,10 +251,6 @@
   object-fit: cover;
 }
 
-.v2-modal-text {
-  padding: 0;
-}
-
 .v2-modal-tag {
   color: #999;
   font-weight: 700;
@@ -264,7 +261,7 @@
   margin-bottom: 10px;
 }
 
-.v2-modal-text h2 {
+.v2-modal-text h3 {
   font-size: 1.8rem;
   font-weight: 900;
   color: #1a1a1a;
@@ -277,14 +274,7 @@
   text-transform: uppercase;
   font-size: 0.9rem;
   margin-bottom: 20px;
-}
-
-.v2-modal-divider {
-  width: 40px;
-  height: 4px;
-  background: #fcd116;
-  border-radius: 10px;
-  margin: 0 auto 25px;
+  display: block;
 }
 
 .v2-modal-text p {
@@ -305,38 +295,7 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
 /* Responsive */
-@media (max-width: 768px) {
-  .v2-modal-content {
-    padding: 30px 20px;
-    width: 92%;
-    max-height: 85vh;
-    border-radius: 30px;
-  }
-
-  .v2-modal-img {
-    width: 130px;
-    height: 130px;
-  }
-
-  .v2-modal-text h2 {
-    font-size: 1.5rem;
-  }
-
-  .v2-modal-grid {
-    grid-template-columns: 1fr;
-  }
-
 @media (max-width: 1200px) {
   .v2-left-1 { transform: translateX(-280px) scale(0.8); }
   .v2-right-1 { transform: translateX(280px) scale(0.8); }
@@ -349,4 +308,20 @@
   .v2-left-1, .v2-right-1 { opacity: 0; pointer-events: none; }
   .v2-prev { left: 10px; }
   .v2-next { right: 10px; }
+  
+  .v2-modal-card {
+    padding: 30px 20px;
+    width: 92%;
+    max-height: 85vh;
+    border-radius: 30px;
+  }
+
+  .v2-modal-img {
+    width: 130px;
+    height: 130px;
+  }
+
+  .v2-modal-text h3 {
+    font-size: 1.5rem;
+  }
 }
