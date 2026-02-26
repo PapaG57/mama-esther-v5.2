@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CamerounButton from "./CamerounButton";
 import { useTranslation } from "react-i18next";
+import "./ScrollToTopButton.css";
 
 // Bouton flottant qui remonte la page
 export default function ScrollToTopButton() {
