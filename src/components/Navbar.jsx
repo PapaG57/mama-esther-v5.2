@@ -77,8 +77,8 @@ export default function Navbar({ hideDonate = false }) {
           <li>
             <Link
               className="custom-nav-link"
-              to="/#engagement"
-              onClick={(e) => handleNavClick(e, "#engagement")}
+              to="/missions"
+              onClick={() => setMenuOpen(false)}
             >
               {t("navbar.commitment")}
             </Link>

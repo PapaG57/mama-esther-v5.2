@@ -76,39 +76,39 @@ const HomeV2 = () => {
             {/* Mission 1 */}
             <div className="v2-mission-card">
               <div className="v2-mission-img">
-                <img src="/assets/soutien.png" alt="Soutien" />
+                <img src="/assets/education.jpg" alt="Education" />
                 <span className="v2-mission-tag">{t("v2.tags.education")}</span>
               </div>
               <div className="v2-mission-body">
                 <h4>{t("v2.missions.eduTitle")}</h4>
                 <p>{t("v2.missions.eduDesc")}</p>
-                <button className="v2-link-btn" onClick={() => navigate('/about')}>{t("v2.btns.learnMore")} →</button>
+                <button className="v2-link-btn" onClick={() => navigate('/missions')}>{t("v2.btns.learnMore")} →</button>
               </div>
             </div>
 
             {/* Mission 2 */}
             <div className="v2-mission-card">
               <div className="v2-mission-img">
-                <img src="/assets/travaux-mama.png" alt="Travaux" />
+                <img src="/assets/infrastructure.jpg" alt="Infrastructure" />
                 <span className="v2-mission-tag">{t("v2.tags.infrastructure")}</span>
               </div>
               <div className="v2-mission-body">
                 <h4>{t("v2.missions.infraTitle")}</h4>
                 <p>{t("v2.missions.infraDesc")}</p>
-                <button className="v2-link-btn" onClick={() => navigate('/travaux')}>{t("v2.btns.learnMore")} →</button>
+                <button className="v2-link-btn" onClick={() => navigate('/missions')}>{t("v2.btns.learnMore")} →</button>
               </div>
             </div>
 
             {/* Mission 3 */}
             <div className="v2-mission-card">
               <div className="v2-mission-img">
-                <img src="/assets/comptabilite.png" alt="Transparence" />
+                <img src="/assets/trust.jpg" alt="Transparence" />
                 <span className="v2-mission-tag">{t("v2.tags.transparency")}</span>
               </div>
               <div className="v2-mission-body">
                 <h4>{t("v2.missions.transTitle")}</h4>
                 <p>{t("v2.missions.transDesc")}</p>
-                <button className="v2-link-btn" onClick={() => navigate('/contact')}>{t("v2.btns.learnMore")} →</button>
+                <button className="v2-link-btn" onClick={() => navigate('/missions')}>{t("v2.btns.learnMore")} →</button>
               </div>
             </div>
           </div>

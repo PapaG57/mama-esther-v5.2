@@ -18,6 +18,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const MentionsLegales = lazy(() => import("./pages/MentionsLegales"));
 const Admin = lazy(() => import("./pages/Admin"));
+const Missions = lazy(() => import("./pages/Missions"));
 const Page404 = lazy(() => import("./pages/404"));
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/actualities" element={<Actuality />} />
           <Route path="/travaux" element={<Travaux />} />
+          <Route path="/missions" element={<Missions />} />
           <Route path="/don" element={<Don />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />

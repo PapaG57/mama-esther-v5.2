@@ -412,12 +412,17 @@
     "missions": {
       "subtitle": "Our areas of action",
       "title": "How we act daily",
-      "eduTitle": "Education & Future",
-      "eduDesc": "We fund schooling and supplies to guarantee a future for orphans.",
-      "infraTitle": "Infrastructure",
-      "infraDesc": "Renovation of buildings and creation of safe living spaces for children.",
-      "transTitle": "Ethics & Rigor",
-      "transDesc": "Rigorous management so that 100% of your donations arrive on the ground."
+      "heroTitle": "Our Missions: A Commitment",
+      "heroTitleSpan": "to the Future",
+      "eduTitle": "Education & Fulfillment",
+      "eduDesc": "We fund schooling, provide pedagogical material and follow the journey of each child to guarantee a successful insertion.",
+      "eduFull": "Education is the pillar of our action. Beyond simple schooling, we ensure that each child has an environment conducive to learning. We fund registration fees, uniforms, books and school supplies. Our goal is to break the cycle of poverty through knowledge.",
+      "infraTitle": "Infrastructure & Safety",
+      "infraDesc": "Renovation of buildings, access to drinking water and creation of healthy and secure living spaces for the most deprived.",
+      "infraFull": "A healthy environment is essential for the development of children. We intervene on the renovation of dormitories, electrical standards and access to drinking water through well drilling. Each stone laid is a brick towards a more dignified and secure life.",
+      "transTitle": "Support & Dignity",
+      "transDesc": "We support women in distress and vulnerable people through rigorous human and material support.",
+      "transFull": "Our mission extends to women victims of violence and people in situations of great precariousness. We offer attentive listening, emergency material support and help with social reintegration. Human dignity is at the heart of every gesture of the association."
     },
     "tags": {
       "education": "Education",

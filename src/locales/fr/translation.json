@@ -412,12 +412,17 @@
     "missions": {
       "subtitle": "Nos domaines d'action",
       "title": "Comment nous agissons au quotidien",
-      "eduTitle": "Éducation & Avenir",
-      "eduDesc": "Nous finançons la scolarité et le matériel pour garantir un futur aux orphelins.",
-      "infraTitle": "Infrastructures",
-      "infraDesc": "Rénovation de bâtiments et création de lieux de vie sécurisés pour les enfants.",
-      "transTitle": "Éthique & Rigueur",
-      "transDesc": "Une gestion rigoureuse pour que 100% de vos dons arrivent sur le terrain."
+      "heroTitle": "Nos Missions : Un Engagement",
+      "heroTitleSpan": "pour l'Avenir",
+      "eduTitle": "Éducation & Épanouissement",
+      "eduDesc": "Nous finançons la scolarité, fournissons le matériel pédagogique et suivons le parcours de chaque enfant pour lui garantir une insertion réussie.",
+      "eduFull": "L'éducation est le pilier de notre action. Au-delà de la simple scolarisation, nous veillons à ce que chaque enfant dispose d'un environnement propice à l'apprentissage. Nous finançons les frais d'inscription, les uniformes, les livres et les fournitures scolaires. Notre objectif est de briser le cycle de la pauvreté par le savoir.",
+      "infraTitle": "Infrastructures & Sécurité",
+      "infraDesc": "Rénovation de bâtiments, accès à l'eau potable et création de lieux de vie sains et sécurisés pour les plus démunis.",
+      "infraFull": "Un environnement sain est indispensable au développement des enfants. Nous intervenons sur la rénovation des dortoirs, la mise aux normes de l'électricité et l'accès à l'eau potable via le forage de puits. Chaque pierre posée est une brique vers une vie plus digne et sécurisée.",
+      "transTitle": "Accompagnement & Dignité",
+      "transDesc": "Nous soutenons les femmes en détresse et les personnes vulnérables par un accompagnement humain et matériel rigoureux.",
+      "transFull": "Notre mission s'étend aux femmes victimes de violences et aux personnes en situation de grande précarité. Nous offrons une écoute attentive, un soutien matériel d'urgence et une aide à la réinsertion sociale. La dignité humaine est au cœur de chaque geste de l'association."
     },
     "tags": {
       "education": "Éducation",
