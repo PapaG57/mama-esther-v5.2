@@ -11,24 +11,24 @@ const Missions = () => {
   const missionList = [
     {
       id: "edu",
-      title: t("v2.missions.eduTitle"),
-      desc: t("v2.missions.eduFull"),
+      titleKey: "v2.missions.eduTitle",
+      descKey: "v2.missions.eduFull",
       img: "/assets/education.jpg",
-      tag: t("v2.tags.education")
+      tagKey: "v2.tags.education"
     },
     {
       id: "infra",
-      title: t("v2.missions.infraTitle"),
-      desc: t("v2.missions.infraFull"),
+      titleKey: "v2.missions.infraTitle",
+      descKey: "v2.missions.infraFull",
       img: "/assets/infrastructure.jpg",
-      tag: t("v2.tags.infrastructure")
+      tagKey: "v2.tags.infrastructure"
     },
     {
       id: "trust",
-      title: t("v2.missions.transTitle"),
-      desc: t("v2.missions.transFull"),
+      titleKey: "v2.missions.transTitle",
+      descKey: "v2.missions.transFull",
       img: "/assets/trust.jpg",
-      tag: t("v2.tags.transparency")
+      tagKey: "v2.tags.transparency"
     }
   ];
 
@@ -52,12 +52,12 @@ const Missions = () => {
           {missionList.map((m, index) => (
             <div className={`mission-row ${index % 2 !== 0 ? "reverse" : ""}`} key={m.id}>
               <div className="mission-image">
-                <img src={m.img} alt={m.title} />
-                <span className="mission-tag-label">{m.tag}</span>
+                <img src={m.img} alt={t(m.titleKey)} />
+                <span className="mission-tag-label">{t(m.tagKey)}</span>
               </div>
               <div className="mission-text">
-                <h2>{m.title}</h2>
-                <p>{m.desc}</p>
+                <h2>{t(m.titleKey)}</h2>
+                <p>{t(m.descKey)}</p>
                 <div className="mission-accent-line"></div>
               </div>
             </div>

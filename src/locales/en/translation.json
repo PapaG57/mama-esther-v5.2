@@ -150,7 +150,7 @@
       },
       "news2": {
         "title": "Newsletter #2",
-        "summary": "Shipments of supplies and construction progress.",
+        "summary": "Report on supply delivery and progress.",
         "tags": {
           "envois": "shipments",
           "chantier": "construction",
