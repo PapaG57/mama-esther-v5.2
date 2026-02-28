@@ -1,0 +1,161 @@
+/* ADMIN V2 - PROFESSIONAL NGO LOOK */
+.admin-v2-container {
+  padding: 80px 0;
+  background: var(--color-light);
+  min-height: 100vh;
+}
+
+.admin-v2-container h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--color-dark);
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.admin-v2-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.admin-v2-card {
+  background: white;
+  padding: 40px;
+  border-radius: 40px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.admin-v2-card h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-green);
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid var(--color-light);
+  padding-bottom: 15px;
+}
+
+.admin-v2-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-v2-input {
+  width: 100%;
+  padding: 15px 20px;
+  border: 2px solid var(--color-light);
+  border-radius: 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.admin-v2-input:focus {
+  border-color: var(--color-green);
+  outline: none;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 122, 94, 0.05);
+}
+
+.admin-v2-list-section {
+  background: white;
+  padding: 40px;
+  border-radius: 40px;
+  box-shadow: var(--shadow-soft);
+  margin-top: 40px;
+}
+
+.admin-v2-list-section h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-dark);
+  margin-bottom: 30px;
+}
+
+.admin-v2-table-wrapper {
+  overflow-x: auto;
+  border-radius: 20px;
+}
+
+.admin-v2-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-v2-table th {
+  background: var(--color-light);
+  padding: 20px;
+  font-weight: 800;
+  color: var(--color-dark);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.admin-v2-table td {
+  padding: 20px;
+  border-bottom: 1px solid var(--color-light);
+  color: var(--color-text-muted);
+}
+
+.admin-v2-table tr:hover td {
+  background: #fafafa;
+}
+
+.admin-v2-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-v2-btn-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-v2-btn-icon.delete {
+  background: rgba(206, 17, 38, 0.1);
+  color: var(--color-red);
+}
+
+.admin-v2-btn-icon.delete:hover {
+  background: var(--color-red);
+  color: white;
+  transform: scale(1.1);
+}
+
+.password-strength-v2 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-top: -10px;
+  padding-left: 5px;
+}
+
+.strength-faible { color: var(--color-red); }
+.strength-moyen { color: var(--color-yellow); }
+.strength-fort { color: var(--color-green); }
+
+@media (max-width: 768px) {
+  .admin-v2-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-v2-card {
+    padding: 25px;
+  }
+  
+  .admin-v2-list-section {
+    padding: 20px;
+  }
+}

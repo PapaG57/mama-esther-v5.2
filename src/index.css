@@ -145,6 +145,30 @@ button {
   background: #b00e20;
 }
 
+.v2-btn-red {
+  background: var(--color-red);
+  color: white;
+  box-shadow: 0 10px 20px rgba(206, 17, 38, 0.2);
+}
+
+.v2-btn-red:hover {
+  background: #9a0d1d;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(206, 17, 38, 0.4);
+}
+
+.v2-btn-green {
+  background: var(--color-green);
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 122, 94, 0.2);
+}
+
+.v2-btn-green:hover {
+  background: var(--color-green-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 122, 94, 0.4);
+}
+
 .v2-btn-outline {
   background: transparent;
   color: white;

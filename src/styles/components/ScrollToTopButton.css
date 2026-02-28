@@ -1,28 +1,34 @@
-.scroll-top-button {
+.v2-scroll-top {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  z-index: 9999;
+  width: 50px;
+  height: 50px;
+  background-color: var(--color-green);
+  color: white;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 20px !important;
-  border-radius: var(--radius-full) !important;
-  box-shadow: var(--shadow-hover) !important;
-  font-size: 0.9rem !important;
-  animation: slideIn 0.3s ease forwards;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: var(--shadow-hover);
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  border: none;
 }
 
-@keyframes slideIn {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.v2-scroll-top:hover {
+  background-color: var(--color-yellow);
+  color: var(--color-dark);
+  transform: translateY(-5px) scale(1.1);
 }
 
 @media (max-width: 768px) {
-  .scroll-top-button {
+  .v2-scroll-top {
     bottom: 20px;
     right: 20px;
-    padding: 10px 16px !important;
-    font-size: 0.8rem !important;
+    width: 45px;
+    height: 45px;
   }
 }
