@@ -10,6 +10,13 @@ const Missions = () => {
 
   const missionList = [
     {
+      id: "trust",
+      titleKey: "v2.missions.transTitle",
+      descKey: "v2.missions.transFull",
+      img: "/assets/trust.jpg",
+      tagKey: "v2.tags.transparency"
+    },
+    {
       id: "edu",
       titleKey: "v2.missions.eduTitle",
       descKey: "v2.missions.eduFull",
@@ -22,13 +29,6 @@ const Missions = () => {
       descKey: "v2.missions.infraFull",
       img: "/assets/infrastructure.jpg",
       tagKey: "v2.tags.infrastructure"
-    },
-    {
-      id: "trust",
-      titleKey: "v2.missions.transTitle",
-      descKey: "v2.missions.transFull",
-      img: "/assets/trust.jpg",
-      tagKey: "v2.tags.transparency"
     }
   ];
 
