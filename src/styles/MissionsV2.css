@@ -76,6 +76,8 @@
   line-height: 1.7;
   color: var(--color-text-muted);
   margin-bottom: 40px;
+  text-align: justify;
+  hyphens: auto;
 }
 
 .mission-accent-line {
