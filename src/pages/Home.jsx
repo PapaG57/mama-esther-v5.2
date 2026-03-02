@@ -44,7 +44,7 @@ const HomeV2 = () => {
         <div className="v2-scroll-indicator"></div>
       </section>
 
-      {/* 2. IMPACT STATS - TRUST & TRANSPARENCY */}
+      {/* 2. IMPACT STATS - Masqué temporairement car l'association est en construction
       <section id="aboutSection" className="v2-impact">
         <div className="v2-container">
           <div className="v2-impact-grid">
@@ -63,6 +63,7 @@ const HomeV2 = () => {
           </div>
         </div>
       </section>
+      */}
 
       {/* 3. MISSIONS GRID - ACTION ORIENTED */}
       <section id="engagement" className="v2-missions">

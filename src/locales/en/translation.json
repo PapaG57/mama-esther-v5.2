@@ -52,7 +52,11 @@
         "content": "\"The sun shone gently over the vast land, highlighting the enthusiasm and hope that permeated the air. Today, a crucial step in the Mama Esther association's project was about to take shape. The president of the association, Mrs. Esther GERARD, was on site to visit the land intended to host the future orphanage building, a project that promises to transform many lives. The land, currently a vast and open stretch of ground, was about to become a haven for children in need. The Mama Esther association, known for its commitment to the well-being of orphaned children and vulnerable people, had worked tirelessly to begin the construction of this new facility. \n\nWhile walking across the field, the president took the time to discuss with members of the local community, listening to their ideas and suggestions with benevolent attention. 'This project is not only that of the association 'Mama Esther' she declared. It belongs to each of us. Together, we are building a better future for these children, offering them not only a roof, but also a home where they can thrive. \n\nThe president of the 'Mama Esther' association left the field with a heart filled with hope and enthusiasm, ready to continue working tirelessly to make this dream a reality. Today's visit was much more than a simple inspection; it symbolized the realization of a vision, carried by a community united by a common goal: to offer a safe and loving home to the children who need it most. \n\nThe Webmaster\""
       },
       "article3": {
-        "title": "First shovel stroke!"
+        "title": "First shovel stroke!",
+        "content": "The drilling is finished. A new life begins for the residents and the neighborhood. Access to drinking water is now a reality for the orphanage and the surrounding communities. This project, a pillar of our commitment to health and hygiene, marks a crucial step in the development of our infrastructure."
+      },
+      "article4": {
+        "title": "At the heart of our action: Cameroon"
       }
     }
   },
@@ -185,13 +189,6 @@
     }
   },
 
-  "don": {
-    "title": "Make a donation",
-    "iframeTitle": "Donation form",
-    "quote": "“It is in small attentions that we build the greatest hopes.”",
-    "back": "Back"
-  },
-
   "contact": {
     "title": "CONTACT US",
     "back": "Back",
@@ -305,7 +302,16 @@
     "thanks": "Thank you for your generosity 💚",
     "seePdf": "📄View the file in PDF format",
     "createPdf": "create the PDF file",
-    "monthlyLabel": "Monthly donations (€)"
+    "monthlyLabel": "Monthly donations (€)",
+    "impactVerified": "100% Verified Impact",
+    "quote": "“Every cent is a stone laid for the future of orphans.”",
+    "harvestedIn": "Harvested in {{year}}",
+    "engagedDonors": "Engaged Donors",
+    "showDetails": "View impact details",
+    "hideDetails": "Hide impact details",
+    "annualReport": "Annual Report PDF",
+    "lastNewsletter": "Latest Newsletter",
+    "supportBtn": "Support our mission"
   },
 
   "bibleVerses": {
@@ -506,6 +512,13 @@
       "donateViaHelloAsso": "Donate via HelloAsso",
       "formInstruction": "Choose your means of support:",
       "formFooter": "You will be redirected to our secure payment partner.",
+      "transparencyModal": {
+        "title": "Responsible and transparent use of donations",
+        "p1": "As the association is still in the construction phase, an essential part of the donations is currently dedicated to the development of the infrastructure necessary for the reception and accompaniment of the beneficiaries. This priority ensures that our future actions can take place in a safe, sustainable and adapted framework for the needs of the people we support.",
+        "p2": "However, we sometimes intervene in emergencies when critical situations arise. In these cases, the available resources are mobilized to provide immediate and targeted aid to the most vulnerable people.",
+        "p3": "Transparency remains a fundamental principle of our operation. All expenses, actions taken and the progress of projects will be detailed in our annual report, and we remain available to provide any additional information upon request.",
+        "close": "I understand"
+      },
       "impact": {
         "nutrition": {
           "title": "Nutrition",

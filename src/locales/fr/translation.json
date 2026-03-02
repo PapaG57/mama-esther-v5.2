@@ -53,6 +53,9 @@
       },
       "article3": {
         "title": "Premier coup de pelle !"
+      },
+      "article4": {
+        "title": "Au cœur de notre action : le Cameroun"
       }
     }
   },
@@ -185,13 +188,6 @@
     }
   },
 
-  "don": {
-    "title": "Faire un don",
-    "iframeTitle": "Formulaire de don",
-    "quote": "“C’est dans les petites attentions que nous bâtissons les plus grands espoirs.”",
-    "back": "Retour"
-  },
-
   "contact": {
     "title": "CONTACTEZ-NOUS",
     "back": "Retour",
@@ -305,7 +301,16 @@
     "thanks": "Merci pour votre générosité 💚",
     "seePdf": "📄Voir le fichier au format PDF",
     "createPdf": "créer le fichier PDF",
-    "monthlyLabel": "Dons mensuels (€)"
+    "monthlyLabel": "Dons mensuels (€)",
+    "impactVerified": "Impact 100% Vérifié",
+    "quote": "“Chaque centime est une pierre posée pour l'avenir des orphelins.”",
+    "harvestedIn": "Récoltés en {{year}}",
+    "engagedDonors": "Donateurs Engagés",
+    "showDetails": "Consulter les détails de l'impact",
+    "hideDetails": "Masquer les détails de l'impact",
+    "annualReport": "Rapport Annuel PDF",
+    "lastNewsletter": "Dernière Newsletter",
+    "supportBtn": "Soutenir notre mission"
   },
 
   "bibleVerses": {
@@ -506,6 +511,13 @@
       "donateViaHelloAsso": "Donner via HelloAsso",
       "formInstruction": "Choisissez votre moyen de soutien :",
       "formFooter": "Vous allez être redirigé vers notre partenaire de paiement sécurisé.",
+      "transparencyModal": {
+        "title": "Une utilisation responsable et transparente des dons",
+        "p1": "L’association étant encore en phase de construction, une part essentielle des dons est actuellement dédiée au développement des infrastructures nécessaires à l’accueil et à l’accompagnement des bénéficiaires. Cette priorité garantit que nos futures actions pourront s’inscrire dans un cadre sûr, durable et adapté aux besoins des personnes que nous soutenons.",
+        "p2": "Il arrive toutefois que nous intervenions en urgence lorsque des situations critiques se présentent. Dans ces cas, les ressources disponibles sont mobilisées pour apporter une aide immédiate et ciblée aux personnes les plus vulnérables.",
+        "p3": "La transparence demeure un principe fondamental de notre fonctionnement. L’ensemble des dépenses, des actions menées et de l’avancement des projets sera détaillé dans notre rapport annuel, et nous restons disponibles pour fournir toute information complémentaire sur simple demande.",
+        "close": "J'ai compris"
+      },
       "impact": {
         "nutrition": {
           "title": "Nutrition",

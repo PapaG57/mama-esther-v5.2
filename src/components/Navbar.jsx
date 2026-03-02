@@ -67,8 +67,8 @@ export default function Navbar({ hideDonate = false }) {
           <li>
             <Link
               className="custom-nav-link"
-              to="/#aboutSection"
-              onClick={(e) => handleNavClick(e, "#aboutSection")}
+              to="/about"
+              onClick={() => setMenuOpen(false)}
             >
               {t("navbar.about")}
             </Link>
@@ -87,8 +87,8 @@ export default function Navbar({ hideDonate = false }) {
           <li>
             <Link
               className="custom-nav-link"
-              to="/#actualitySection"
-              onClick={(e) => handleNavClick(e, "#actualitySection")}
+              to="/actualities"
+              onClick={() => setMenuOpen(false)}
             >
               {t("navbar.news")}
             </Link>

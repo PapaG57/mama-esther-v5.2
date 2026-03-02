@@ -1,12 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/DonV2.css";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faShieldAlt } from "@fortawesome/free-solid-svg-icons";
 
 const DonV2 = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [showTransparencyModal, setShowTransparencyModal] = useState(true);
+
+  // Block scroll when modal is open
+  useEffect(() => {
+    if (showTransparencyModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => { document.body.style.overflow = "unset"; };
+  }, [showTransparencyModal]);
 
   const impactPoints = [
     { icon: "🥣", title: t("v2.don.impact.nutrition.title"), desc: t("v2.don.impact.nutrition.desc") },
@@ -28,7 +41,7 @@ const DonV2 = () => {
         </div>
       </section>
 
-      {/* 1. IMPACT PREVIEW - MAKES IT LESS AUSTERE */}
+      {/* 1. IMPACT PREVIEW */}
       <section className="don-v2-impact">
         <div className="v2-container">
           <div className="don-impact-grid">
@@ -48,7 +61,6 @@ const DonV2 = () => {
         <div className="v2-container">
           <div className="don-v2-grid">
             
-            {/* TEXT SIDE */}
             <div className="don-info-side">
               <h2>{t("v2.don.supportTitle")}</h2>
               <p>{t("v2.don.supportText")}</p>
@@ -71,7 +83,6 @@ const DonV2 = () => {
               </div>
             </div>
 
-            {/* ACTION CARD */}
             <div className="don-form-side">
               <div className="don-form-card">
                 <h3>{t("v2.don.makeDonation")}</h3>
@@ -101,6 +112,35 @@ const DonV2 = () => {
           </div>
         </div>
       </section>
+
+      {/* TRANSPARENCY MODAL */}
+      {showTransparencyModal && (
+        <div className="v2-modal-overlay">
+          <div className="v2-modal-card transparency-modal">
+            <button className="v2-modal-close-left" onClick={() => setShowTransparencyModal(false)}>
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+            
+            <div className="v2-modal-content">
+              <div className="v2-modal-icon-header">
+                <FontAwesomeIcon icon={faShieldAlt} className="trust-icon-main" />
+              </div>
+              
+              <h3>{t("v2.don.transparencyModal.title")}</h3>
+              
+              <div className="transparency-text-content">
+                <p>{t("v2.don.transparencyModal.p1")}</p>
+                <p>{t("v2.don.transparencyModal.p2")}</p>
+                <p>{t("v2.don.transparencyModal.p3")}</p>
+              </div>
+              
+              <button className="v2-btn v2-btn-green" onClick={() => setShowTransparencyModal(false)}>
+                {t("v2.don.transparencyModal.close")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

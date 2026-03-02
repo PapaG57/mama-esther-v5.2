@@ -7,13 +7,34 @@ const ActualityV2 = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // On peut réutiliser les assets existants
   const newsItems = [
-    { img: "/assets/actualities/actuality1.png", title: t("actuality.articles.article1.title") },
-    { img: "/assets/actualities/actuality2.png", title: t("actuality.articles.article2.title") },
-    { img: "/assets/actualities/news.png", title: t("actuality.articles.article3.title") },
-    { img: "/assets/actualities/actuality1.png", title: t("actuality.articles.article1.title") },
+    { 
+      slug: "visite-terrain",
+      img: "/assets/actualities/actuality1.png", 
+      title: t("actuality.articles.article2.title") 
+    },
+    { 
+      slug: "signature-agrement",
+      img: "/assets/actualities/actuality2.png", 
+      title: t("actuality.articles.article1.title") 
+    },
+    { 
+      slug: "premier-coup-de-pelle",
+      img: "/assets/actualities/actuality3.png", 
+      title: t("actuality.articles.article3.title") 
+    },
+    { 
+      slug: "cameroun",
+      img: "/assets/actualities/cameroun-village.jpg", 
+      title: t("actuality.articles.article4.title"), 
+      isNeutral: true 
+    },
   ];
+
+  const handleNavigate = (slug) => {
+    // Naviguer vers la page avec le hash qui déclenchera l'ouverture de la modale
+    navigate(`/actualities#${slug}`);
+  };
 
   return (
     <section className="v2-news">
@@ -25,18 +46,26 @@ const ActualityV2 = () => {
 
         <div className="v2-news-slider">
           <div className="v2-news-track">
-            {/* On double les items pour l'effet infini fluide */}
             {[...newsItems, ...newsItems].map((item, index) => (
-              <div className="v2-news-card" key={index} onClick={() => navigate('/actualities')}>
+              <div 
+                className={`v2-news-card ${item.isNeutral ? "is-neutral" : ""}`} 
+                key={index} 
+                onClick={() => !item.isNeutral && handleNavigate(item.slug)}
+                style={{ cursor: item.isNeutral ? "default" : "pointer" }}
+              >
                 <div className="v2-news-img-wrapper">
                   <img src={item.img} alt={item.title} />
-                  <div className="v2-news-overlay">
-                    <span>{t("v2.common.seeMore")}</span>
+                  {!item.isNeutral && (
+                    <div className="v2-news-overlay">
+                      <span>{t("v2.common.seeMore")}</span>
+                    </div>
+                  )}
+                </div>
+                {!item.isNeutral && (
+                  <div className="v2-news-info">
+                    <h4>{item.title}</h4>
                   </div>
-                </div>
-                <div className="v2-news-info">
-                  <h4>{item.title}</h4>
-                </div>
+                )}
               </div>
             ))}
           </div>

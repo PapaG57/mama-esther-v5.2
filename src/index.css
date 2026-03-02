@@ -195,6 +195,43 @@ button {
   box-shadow: 0 20px 40px rgba(0, 122, 94, 0.3);
 }
 
+/* ========= MODALS V2 ========= */
+.v2-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.v2-modal-card {
+  background: var(--color-white);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: var(--radius-xl);
+  position: relative;
+  box-shadow: var(--shadow-hover);
+  padding: 50px;
+  animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* Responsive Shared */
 @media (max-width: 768px) {
   .v2-container {

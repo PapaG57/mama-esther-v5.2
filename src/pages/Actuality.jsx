@@ -1,51 +1,62 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import "../styles/ActualityPageV2.css";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarAlt, faTag } from "@fortawesome/free-solid-svg-icons";
 
 const ActualityPageV2 = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [filter, setFilter] = useState("all");
+  const location = useLocation();
 
   const news = [
     {
       id: 1,
-      title: t("actuality.articles.article1.title"),
-      date: "25 Février 2025",
-      category: "institutionnel",
-      img: "/assets/actualities/actuality1.png",
-      excerpt: t("actuality.articles.article1.content").substring(0, 150) + "...",
-      featured: true
-    },
-    {
-      id: 2,
+      slug: "visite-terrain",
       title: t("actuality.articles.article2.title"),
       date: "12 Janvier 2025",
       category: "terrain",
+      img: "/assets/actualities/actuality1.png",
+      content: t("actuality.articles.article2.content")
+    },
+    {
+      id: 2,
+      slug: "signature-agrement",
+      title: t("actuality.articles.article1.title"),
+      date: "25 Février 2025",
+      category: "institutionnel",
       img: "/assets/actualities/actuality2.png",
-      excerpt: t("actuality.articles.article2.content").substring(0, 150) + "..."
+      content: t("actuality.articles.article1.content")
     },
     {
       id: 3,
+      slug: "premier-coup-de-pelle",
       title: t("actuality.articles.article3.title"),
       date: "05 Décembre 2024",
       category: "travaux",
-      img: "/assets/actualities/news.png",
-      excerpt: "Le forage est terminé. C'est une nouvelle vie qui commence pour les pensionnaires et le voisinage."
+      img: "/assets/actualities/actuality3.png",
+      content: "Le forage est terminé. C'est une nouvelle vie qui commence pour les pensionnaires et le voisinage. L'accès à l'eau potable est désormais une réalité pour l'orphelinat et les communautés environnantes. Ce projet, pilier de notre engagement pour la santé et l'hygiène, marque une étape cruciale dans le développement de nos infrastructures."
     }
   ];
 
-  const filteredNews = filter === "all" ? news : news.filter(n => n.category === filter);
-  const featuredArticle = news.find(n => n.featured);
-  const otherArticles = filteredNews.filter(n => !n.featured || filter !== "all");
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 500);
+    }
+  }, [location]);
 
   return (
     <div className="v2-layout">
       <Navbar hideDonate={true} />
       
-      {/* HERO ACTU */}
+      {/* HERO SECTION */}
       <section className="actu-v2-hero">
         <div className="v2-container">
           <div className="actu-v2-hero-content">
@@ -55,56 +66,32 @@ const ActualityPageV2 = () => {
         </div>
       </section>
 
-      {/* FEATURED ARTICLE */}
-      {filter === "all" && featuredArticle && (
-        <section className="actu-v2-featured">
-          <div className="v2-container">
-            <div className="featured-card" onClick={() => navigate('/actualities')}>
-              <div className="featured-img">
-                <img src={featuredArticle.img} alt={featuredArticle.title} />
-              </div>
-              <div className="featured-text">
-                <span className="actu-tag featured-tag">{t("v2.actuality.featuredTag")}</span>
-                <span className="actu-date">{featuredArticle.date}</span>
-                <h2>{featuredArticle.title}</h2>
-                <p>{featuredArticle.excerpt}</p>
-                <button className="v2-link-btn">{t("v2.actuality.readFullArticle")} →</button>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* FILTER & GRID */}
-      <section className="actu-v2-grid-section">
+      {/* ARTICLES LIST - FULL CONTENT */}
+      <section className="actu-v2-full-list">
         <div className="v2-container">
-          <div className="actu-filters">
-            <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>{t("v2.actuality.filterAll")}</button>
-            <button className={filter === 'terrain' ? 'active' : ''} onClick={() => setFilter('terrain')}>{t("v2.actuality.filterTerrain")}</button>
-            <button className={filter === 'travaux' ? 'active' : ''} onClick={() => setFilter('travaux')}>{t("v2.actuality.filterInfra")}</button>
-            <button className={filter === 'institutionnel' ? 'active' : ''} onClick={() => setFilter('institutionnel')}>{t("v2.actuality.filterNGO")}</button>
-          </div>
-
-          <div className="actu-grid">
-            {otherArticles.map((item) => (
-              <div className="actu-card" key={item.id} onClick={() => navigate('/actualities')}>
-                <div className="actu-card-img">
-                  <img src={item.img} alt={item.title} />
-                  <span className="actu-tag-overlay">{item.category}</span>
-                </div>
-                <div className="actu-card-body">
-                  <span className="actu-date">{item.date}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.excerpt}</p>
-                  <span className="read-more">{t("v2.common.continueReading")} →</span>
-                </div>
+          {news.map((item) => (
+            <article className="actu-full-card" key={item.id} id={item.slug}>
+              <div className="actu-full-img">
+                <img src={item.img} alt={item.title} />
               </div>
-            ))}
-          </div>
+              <div className="actu-full-body">
+                <div className="actu-full-meta">
+                  <span><FontAwesomeIcon icon={faCalendarAlt} /> {item.date}</span>
+                  <span className="actu-full-tag"><FontAwesomeIcon icon={faTag} /> {item.category}</span>
+                </div>
+                <h2>{item.title}</h2>
+                <div className="actu-full-content">
+                  {item.content?.split('\n').map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </div>
+                <div className="actu-full-divider"></div>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
-      {/* NEWSLETTER CTA */}
       <section className="actu-v2-subscribe">
         <div className="v2-container">
           <div className="subscribe-box">
