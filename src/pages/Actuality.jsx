@@ -1,24 +1,81 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/ActualityPageV2.css";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt, faTag } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt, faTag, faChevronLeft, faChevronRight, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 
 const ActualityPageV2 = () => {
   const { t } = useTranslation();
   const location = useLocation();
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const newsPerPage = 3;
 
   const news = [
     {
-      id: 1,
-      slug: "visite-terrain",
-      title: t("actuality.articles.article2.title"),
-      date: "20 Octobre 2024",
-      category: "terrain",
-      img: "/assets/actualities/actuality1.png",
-      content: t("actuality.articles.article2.content")
+      id: 8,
+      slug: "derniers-moellons",
+      title: t("actuality.articles.article8.title"),
+      date: "17 Août 2025",
+      category: "travaux",
+      img: "/assets/actualities/actuality8.png",
+      content: t("actuality.articles.article8.content"),
+      videos: [
+        { label: "vidéos murs 1", url: "/assets/videos/construction-finitions.mp4" },
+        { label: "vidéos murs 2", url: "/assets/videos/construction-finitions2.mp4" }
+      ]
+    },
+    {
+      id: 7,
+      slug: "elevation-murs",
+      title: t("actuality.articles.article7.title"),
+      date: "19 Juin 2025",
+      category: "travaux",
+      img: "/assets/actualities/actuality7.png",
+      content: t("actuality.articles.article7.content")
+    },
+    {
+      id: 6,
+      slug: "pose-premiere-pierre",
+      title: t("actuality.articles.article6.title"),
+      date: "21 Mai 2025",
+      category: "travaux",
+      img: "/assets/actualities/actuality6.png",
+      content: t("actuality.articles.article6.content")
+    },
+    {
+      id: 5,
+      slug: "delimitation-terrain",
+      title: t("actuality.articles.article5.title"),
+      date: "16 Mai 2025",
+      category: "travaux",
+      img: "/assets/actualities/actuality5.png",
+      content: t("actuality.articles.article5.content")
+    },
+    {
+      id: 4,
+      slug: "abattage-arbres",
+      title: t("actuality.articles.article4.title"),
+      date: "22 Avril 2025",
+      category: "travaux",
+      img: "/assets/actualities/actuality4.png",
+      content: t("actuality.articles.article4.content"),
+      videos: [
+        { label: "Vidéo d'un abattage d'arbre", url: "/assets/videos/Abattage.mp4" },
+        { label: "Voir le façonnage des planches", url: "/assets/videos/façonnage-planches.mp4" }
+      ]
+    },
+    {
+      id: 3,
+      slug: "preparation-parpaings",
+      title: t("actuality.articles.article3.title"),
+      date: "17 Février 2025",
+      category: "travaux",
+      img: "/assets/actualities/actuality3.png",
+      content: t("actuality.articles.article3.content")
     },
     {
       id: 2,
@@ -30,15 +87,27 @@ const ActualityPageV2 = () => {
       content: t("actuality.articles.article1.content")
     },
     {
-      id: 3,
-      slug: "premier-coup-de-pelle",
-      title: t("actuality.articles.article3.title"),
-      date: "21 Mai 2025",
-      category: "travaux",
-      img: "/assets/actualities/actuality3.png",
-      content: t("actuality.articles.article3.content")
+      id: 1,
+      slug: "visite-terrain",
+      title: t("actuality.articles.article2.title"),
+      date: "20 Octobre 2024",
+      category: "terrain",
+      img: "/assets/actualities/actuality1.png",
+      content: t("actuality.articles.article2.content")
     }
   ];
+
+  const totalNews = news.length;
+  const totalPages = Math.ceil(totalNews / newsPerPage);
+  const itemsOnFirstPage = totalNews % newsPerPage || newsPerPage;
+
+  let currentNews = [];
+  if (currentPage === 1) {
+    currentNews = news.slice(0, itemsOnFirstPage);
+  } else {
+    const startIndex = itemsOnFirstPage + (currentPage - 2) * newsPerPage;
+    currentNews = news.slice(startIndex, startIndex + newsPerPage);
+  }
 
   useEffect(() => {
     if (location.hash) {
@@ -52,11 +121,41 @@ const ActualityPageV2 = () => {
     }
   }, [location]);
 
+  useEffect(() => {
+    document.body.style.overflow = selectedVideo ? "hidden" : "unset";
+    return () => { document.body.style.overflow = "unset"; };
+  }, [selectedVideo]);
+
+  const PaginationControls = () => (
+    totalPages > 1 && (
+      <div className="v2-pagination">
+        <button 
+          className="pag-btn" 
+          onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo(0, 400); }}
+          disabled={currentPage === 1}
+        >
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </button>
+        
+        <span className="pag-info">
+          {t("actuality.pagination", { current: currentPage, total: totalPages })}
+        </span>
+
+        <button 
+          className="pag-btn" 
+          onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo(0, 400); }}
+          disabled={currentPage === totalPages}
+        >
+          <FontAwesomeIcon icon={faChevronRight} />
+        </button>
+      </div>
+    )
+  );
+
   return (
     <div className="v2-layout">
       <Navbar hideDonate={true} />
       
-      {/* HERO SECTION */}
       <section className="actu-v2-hero">
         <div className="v2-container">
           <div className="actu-v2-hero-content">
@@ -66,10 +165,14 @@ const ActualityPageV2 = () => {
         </div>
       </section>
 
-      {/* ARTICLES LIST - FULL CONTENT */}
       <section className="actu-v2-full-list">
         <div className="v2-container">
-          {news.map((item) => (
+          
+          <div style={{marginBottom: '40px'}}>
+            <PaginationControls />
+          </div>
+
+          {currentNews.map((item) => (
             <article className="actu-full-card" key={item.id} id={item.slug}>
               <div className="actu-full-img">
                 <img src={item.img} alt={item.title} />
@@ -85,12 +188,45 @@ const ActualityPageV2 = () => {
                     <p key={index}>{paragraph}</p>
                   ))}
                 </div>
-                <div className="actu-full-divider"></div>
+                
+                {item.videos && (
+                  <div className="actu-video-links" style={{marginTop: '30px', display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
+                    {item.videos.map((vid, idx) => (
+                      <button key={idx} className="v2-btn v2-btn-outline" style={{borderColor: 'var(--color-green)', color: 'var(--color-green)', padding: '12px 24px', fontSize: '0.9rem'}} onClick={() => setSelectedVideo(vid.url)}>
+                        <FontAwesomeIcon icon={faPlayCircle} style={{marginRight: '10px'}} />
+                        {vid.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </article>
           ))}
+
+          <PaginationControls />
         </div>
       </section>
+
+      {/* VIDEO MODAL */}
+      {selectedVideo && (
+        <div className="v2-modal-overlay" onClick={() => setSelectedVideo(null)}>
+          <div className="v2-modal-card video-modal" onClick={(e) => e.stopPropagation()} style={{maxWidth: '700px', padding: '0', background: '#000', maxHeight: '85vh'}}>
+            <div className="video-player-container" style={{background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <video 
+                src={selectedVideo} 
+                controls 
+                autoPlay 
+                style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain' }}
+              />
+            </div>
+            <div style={{padding: '15px', textAlign: 'center', background: '#fff'}}>
+               <button className="v2-btn v2-btn-red" style={{padding: '12px 24px', fontSize: '0.9rem'}} onClick={() => setSelectedVideo(null)}>
+                 Fermer la vidéo
+               </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <section className="actu-v2-subscribe">
         <div className="v2-container">

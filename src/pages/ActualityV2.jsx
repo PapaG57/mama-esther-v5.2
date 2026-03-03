@@ -19,20 +19,44 @@ const ActualityV2 = () => {
       title: t("actuality.articles.article1.title") 
     },
     { 
-      slug: "premier-coup-de-pelle",
+      slug: "preparation-parpaings",
       img: "/assets/actualities/actuality3.png", 
       title: t("actuality.articles.article3.title") 
     },
     { 
+      slug: "abattage-arbres",
+      img: "/assets/actualities/actuality4.png", 
+      title: t("actuality.articles.article4.title") 
+    },
+    { 
+      slug: "delimitation-terrain",
+      img: "/assets/actualities/actuality5.png", 
+      title: t("actuality.articles.article5.title") 
+    },
+    { 
+      slug: "pose-premiere-pierre",
+      img: "/assets/actualities/actuality6.png", 
+      title: t("actuality.articles.article6.title") 
+    },
+    { 
+      slug: "elevation-murs",
+      img: "/assets/actualities/actuality7.png", 
+      title: t("actuality.articles.article7.title") 
+    },
+    { 
+      slug: "derniers-moellons",
+      img: "/assets/actualities/actuality8.png", 
+      title: t("actuality.articles.article8.title") 
+    },
+    { 
       slug: "cameroun",
       img: "/assets/actualities/cameroun-village.jpg", 
-      title: t("actuality.articles.article4.title"), 
+      title: t("actuality.articles.article9.title"), 
       isNeutral: true 
     },
   ];
 
   const handleNavigate = (slug) => {
-    // Naviguer vers la page avec le hash qui déclenchera l'ouverture de la modale
     navigate(`/actualities#${slug}`);
   };
 
