@@ -15,7 +15,7 @@ const ActualityPageV2 = () => {
       id: 1,
       slug: "visite-terrain",
       title: t("actuality.articles.article2.title"),
-      date: "12 Janvier 2025",
+      date: "20 octobre 2024",
       category: "terrain",
       img: "/assets/actualities/actuality1.png",
       content: t("actuality.articles.article2.content")
@@ -24,19 +24,19 @@ const ActualityPageV2 = () => {
       id: 2,
       slug: "signature-agrement",
       title: t("actuality.articles.article1.title"),
-      date: "25 Février 2025",
+      date: "1er septembre 2024",
       category: "institutionnel",
       img: "/assets/actualities/actuality2.png",
       content: t("actuality.articles.article1.content")
     },
     {
       id: 3,
-      slug: "premier-coup-de-pelle",
+      slug: "pose-de-la-première-pierre",
       title: t("actuality.articles.article3.title"),
-      date: "05 Décembre 2024",
+      date: "21 mai 2025",
       category: "travaux",
       img: "/assets/actualities/actuality3.png",
-      content: "Le forage est terminé. C'est une nouvelle vie qui commence pour les pensionnaires et le voisinage. L'accès à l'eau potable est désormais une réalité pour l'orphelinat et les communautés environnantes. Ce projet, pilier de notre engagement pour la santé et l'hygiène, marque une étape cruciale dans le développement de nos infrastructures."
+      content: "Les fondations sont terminées. La pose de la première pierre a été effectuée par , marquant le début officiel des travaux de construction de ce bâtiment qui se veut être d'abord un orphelinat, et aussi un refuge sûr et chaleureux pour les personnes en grande difficulté. C'est une étape symbolique qui nous rapproche de notre objectif de fournir un foyer aimant et des opportunités d'éducation pour les enfants vulnérables de la région. Nous sommes impatients de voir ce projet prendre vie et de continuer à travailler pour améliorer la vie de ces enfants et des personnes qui en auront besoin."
     }
   ];
 

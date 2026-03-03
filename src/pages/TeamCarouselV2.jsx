@@ -12,9 +12,12 @@ const TeamCarouselV2 = () => {
     { name: "Florent Gérard", role: t("team.roles.vicePresident"), img: "/assets/team/florent.png", desc: t("team.descriptions.florent") },
     { name: "Maryam", role: t("team.roles.treasurer"), img: "/assets/team/maeva.png", desc: t("team.descriptions.maeva") },
     { name: "Aziz", role: t("team.roles.logistics"), img: "/assets/team/aziz.png", desc: t("team.descriptions.aziz") },
+    { name: "Jules BILLONG", role: t("team.roles.admin"), img: "/assets/team/jules.png", desc: t("team.descriptions.jules") },
+    { name: "Odette NGO BIHAÏ", role: t("team.roles.projectManager"), img: "/assets/team/odette.png", desc: t("team.descriptions.odette") },
     { name: "Margault", role: t("team.roles.nurse"), img: "/assets/team/margault.png", desc: t("team.descriptions.margault") },
     { name: "Marie", role: t("team.roles.nurse"), img: "/assets/team/marie.png", desc: t("team.descriptions.marie") },
     { name: "Mélanie", role: t("team.roles.nurse"), img: "/assets/team/melanie.png", desc: t("team.descriptions.melanie") },
+    { name: "Jane DOE", role: t("team.roles.socialMedia"), img: "/assets/team/jane-doe.png", desc: t("team.descriptions.jane") },
   ];
 
   const goTo = (dir) => {
@@ -93,7 +96,7 @@ const TeamCarouselV2 = () => {
                 <span className="v2-modal-tag">{t("v2.team.memberTag")}</span>
                 <h3>{team[active].name}</h3>
                 <span className="v2-modal-role">{team[active].role}</span>
-                <p>{team[active].desc}</p>
+                <p>{team[active].desc || t("team.hint")}</p>
               </div>
             </div>
           </div>
