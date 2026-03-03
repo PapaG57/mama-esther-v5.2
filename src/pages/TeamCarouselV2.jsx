@@ -26,7 +26,6 @@ const TeamCarouselV2 = () => {
 
   const getPosClass = (index) => {
     const diff = (index - active + team.length) % team.length;
-    
     if (diff === 0) return "v2-center";
     if (diff === 1) return "v2-right-1";
     if (diff === 2) return "v2-right-2";
@@ -45,7 +44,6 @@ const TeamCarouselV2 = () => {
 
         <div className="v2-carousel-wrapper">
           <button className="v2-nav-btn v2-prev" onClick={() => goTo(-1)}>‹</button>
-          
           <div className="v2-carousel-track">
             {team.map((m, i) => {
               const posClass = getPosClass(i);
@@ -68,7 +66,6 @@ const TeamCarouselV2 = () => {
               );
             })}
           </div>
-
           <button className="v2-nav-btn v2-next" onClick={() => goTo(1)}>›</button>
         </div>
 
@@ -83,7 +80,6 @@ const TeamCarouselV2 = () => {
         </div>
       </div>
 
-      {/* MODALE TEAM */}
       {showModal && (
         <div className="v2-modal-overlay" onClick={() => setShowModal(false)}>
           <div className="v2-modal-card" onClick={(e) => e.stopPropagation()}>

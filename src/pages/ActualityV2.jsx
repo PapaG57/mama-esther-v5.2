@@ -60,6 +60,9 @@ const ActualityV2 = () => {
     navigate(`/actualities#${slug}`);
   };
 
+  // Doubler la liste pour créer l'effet de boucle infinie sans saut
+  const infiniteItems = [...newsItems, ...newsItems];
+
   return (
     <section className="v2-news">
       <div className="v2-container">
@@ -70,7 +73,7 @@ const ActualityV2 = () => {
 
         <div className="v2-news-slider">
           <div className="v2-news-track">
-            {[...newsItems, ...newsItems].map((item, index) => (
+            {infiniteItems.map((item, index) => (
               <div 
                 className={`v2-news-card ${item.isNeutral ? "is-neutral" : ""}`} 
                 key={index} 

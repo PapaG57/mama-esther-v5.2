@@ -1,6 +1,6 @@
 .v2-news {
   padding: 100px 0;
-  background: var(--color-white);
+  background: var(--color-light);
   overflow: hidden;
 }
 
@@ -13,26 +13,33 @@
 .v2-news-track {
   display: flex;
   gap: 30px;
-  animation: scrollNews 40s linear infinite;
   width: max-content;
+  animation: scrollInfinite 25s linear infinite; /* Accéléré à 25s */
 }
 
 .v2-news-track:hover {
-  animation-play-state: paused;
+  animation-play-state: paused; /* S'arrête au survol pour pouvoir cliquer */
 }
 
 .v2-news-card {
-  width: 350px;
+  flex: 0 0 350px;
   background: white;
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: var(--shadow-soft);
   cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.v2-news-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-green);
 }
 
 .v2-news-img-wrapper {
-  height: 250px;
+  height: 220px;
   position: relative;
   overflow: hidden;
 }
@@ -41,7 +48,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  transition: transform 0.5s ease;
+}
+
+.v2-news-card:hover .v2-news-img-wrapper img {
+  transform: scale(1.1);
 }
 
 .v2-news-overlay {
@@ -59,44 +70,34 @@
   color: white;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   border: 2px solid white;
   padding: 10px 20px;
+  border-radius: 50px;
 }
 
 .v2-news-card:hover .v2-news-overlay {
   opacity: 1;
 }
 
-.v2-news-card:hover img {
-  transform: scale(1.1);
-}
-
 .v2-news-info {
   padding: 25px;
-  border-bottom: 5px solid var(--color-yellow);
 }
 
 .v2-news-info h4 {
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-dark);
   line-height: 1.4;
   margin: 0;
 }
 
-@keyframes scrollNews {
+@keyframes scrollInfinite {
   0% { transform: translateX(0); }
-  100% { transform: translateX(calc(-350px * 4 - 30px * 4)); }
+  100% { transform: translateX(calc(-50% - 15px)); } /* Défilement de la moitié de la bande */
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .v2-news {
-    padding: 60px 0;
-  }
-  
-  .v2-news-card {
-    width: 280px;
-  }
+  .v2-news-card { flex: 0 0 280px; }
 }
