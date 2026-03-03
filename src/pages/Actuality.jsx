@@ -4,7 +4,9 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt, faTag, faChevronLeft, faChevronRight, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt, faTag, faChevronLeft, faChevronRight, faPlayCircle, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { newsletterService } from "../api/services";
+import { toast } from "react-toastify";
 
 const ActualityPageV2 = () => {
   const { t } = useTranslation();
@@ -12,6 +14,8 @@ const ActualityPageV2 = () => {
   
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const newsPerPage = 3;
 
   const news = [
@@ -108,6 +112,21 @@ const ActualityPageV2 = () => {
     const startIndex = itemsOnFirstPage + (currentPage - 2) * newsPerPage;
     currentNews = news.slice(startIndex, startIndex + newsPerPage);
   }
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+    setIsSubmitting(true);
+    try {
+      await newsletterService.subscribe(email);
+      toast.success(t("registration.success"));
+      setEmail("");
+    } catch (error) {
+      toast.error(t("registration.error"));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     if (location.hash) {
@@ -228,15 +247,25 @@ const ActualityPageV2 = () => {
         </div>
       )}
 
+      {/* MODERN NEWSLETTER SECTION */}
       <section className="actu-v2-subscribe">
         <div className="v2-container">
           <div className="subscribe-box">
             <h2>{t("v2.actuality.subscribeTitle")}</h2>
             <p>{t("v2.actuality.subscribeText")}</p>
-            <div className="v2-subscribe-mini" style={{maxWidth: '500px', margin: '0 auto'}}>
-              <input type="email" placeholder={t("v2.actuality.emailPlaceholder")} />
-              <button>{t("v2.btns.subscribe")}</button>
-            </div>
+            <form className="v2-subscribe-form" onSubmit={handleSubscribe} style={{maxWidth: '600px', margin: '0 auto'}}>
+              <FontAwesomeIcon icon={faEnvelope} style={{margin: 'auto 0 auto 20px', color: '#ccc', fontSize: '1.2rem'}} />
+              <input 
+                type="email" 
+                placeholder={t("v2.actuality.emailPlaceholder")} 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "..." : t("v2.btns.subscribe")}
+              </button>
+            </form>
           </div>
         </div>
       </section>
