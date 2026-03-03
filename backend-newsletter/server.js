@@ -4,11 +4,9 @@ import cors from "cors";
 import mongoose from "mongoose";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import mongoSanitize from "express-mongo-sanitize";
-import xss from "xss-clean";
 import logger from "./utils/logger.js";
 
-// 🔧 Fix DNS pour MongoDB Atlas (Windows + Node)
+// 🔧 Fix DNS pour MongoDB Atlas
 import dns from "node:dns/promises";
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
@@ -26,26 +24,30 @@ dotenv.config();
 
 const app = express();
 
-// 🛡️ SECURITY MIDDLEWARES
-app.use(helmet()); // Secure headers
-app.use(mongoSanitize()); // Prevent NoSQL injection
-app.use(xss()); // Prevent XSS
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: "Trop de requêtes effectuées, réessayez plus tard.",
-});
-app.use("/api/", limiter); // Apply rate limiting to all API routes
-
-// 🔧 Middlewares
+// 1. 🛡️ SECURITY & CORS
+app.use(helmet()); 
 app.use(
   cors({
-    origin: process.env.FRONT_URL || "http://localhost:5173", // configurable via .env
+    origin: process.env.FRONT_URL || "http://localhost:5173",
     credentials: true,
   }),
 );
-app.use(express.json({ limit: '10kb' })); // Limit body size to prevent DOS
+
+// 2. 📦 PARSERS
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// 3. 🧹 SANITIZATION (Désactivé temporairement car cause un crash système)
+// app.use(mongoSanitize()); 
+// app.use(xss()); 
+
+// 4. 🚦 RATE LIMITING
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Trop de requêtes effectuées, réessayez plus tard.",
+});
+app.use("/api/", limiter);
 
 // Montage des routeurs
 app.use("/api/subscribe", subscriptionRouter);
@@ -56,24 +58,18 @@ app.use("/api/donations", donationRoutes);
 app.use("/api/helloasso", helloassoRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Route racine
 app.get("/", (req, res) => {
   res.send("🟢 Serveur opérationnel !");
 });
 
-// Middleware global de gestion des erreurs
 app.use((err, req, res, next) => {
   logger.error("❌ Erreur serveur :", { message: err.message, stack: err.stack });
-
-  // Alerte admin pour les erreurs critiques en production
   if (process.env.NODE_ENV === "production") {
     sendErrorAlertEmail(err).catch(e => logger.error("Échec envoi alerte mail", e));
   }
-
   res.status(500).json({ error: "Erreur interne du serveur" });
 });
 
-// Connexion MongoDB + démarrage serveur
 logger.info("🧪 Tentative de connexion à MongoDB...");
 mongoose
   .connect(process.env.MONGO_URI, { dbName: "newsletter_db" })
