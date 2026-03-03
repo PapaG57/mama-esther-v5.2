@@ -103,15 +103,48 @@ const ActualityPageV2 = () => {
 
   const totalNews = news.length;
   const totalPages = Math.ceil(totalNews / newsPerPage);
+  
+  // Correction de la logique de calcul
   const itemsOnFirstPage = totalNews % newsPerPage || newsPerPage;
 
   let currentNews = [];
-  if (currentPage === 1) {
-    currentNews = news.slice(0, itemsOnFirstPage);
-  } else {
-    const startIndex = itemsOnFirstPage + (currentPage - 2) * newsPerPage;
-    currentNews = news.slice(startIndex, startIndex + newsPerPage);
+  try {
+    if (currentPage === 1) {
+      currentNews = news.slice(0, itemsOnFirstPage);
+    } else {
+      const startIndex = itemsOnFirstPage + (currentPage - 2) * newsPerPage;
+      currentNews = news.slice(startIndex, startIndex + newsPerPage);
+    }
+  } catch (err) {
+    console.error("Pagination error:", err);
+    currentNews = news.slice(0, newsPerPage);
   }
+
+  // DETECTION AUTOMATIQUE DE LA PAGE VIA LE SLUG
+  useEffect(() => {
+    if (location.hash) {
+      const slug = location.hash.replace("#", "");
+      const articleIndex = news.findIndex(n => n.slug === slug);
+      
+      if (articleIndex !== -1) {
+        let targetPage = 1;
+        if (articleIndex >= itemsOnFirstPage) {
+          targetPage = Math.floor((articleIndex - itemsOnFirstPage) / newsPerPage) + 2;
+        }
+        
+        // Sécurité : ne pas dépasser le nombre de pages
+        const safePage = Math.min(targetPage, totalPages);
+        setCurrentPage(safePage);
+
+        setTimeout(() => {
+          const element = document.getElementById(slug);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 800);
+      }
+    }
+  }, [location.hash, itemsOnFirstPage, totalPages]);
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -129,18 +162,6 @@ const ActualityPageV2 = () => {
   };
 
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.replace("#", "");
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 500);
-    }
-  }, [location]);
-
-  useEffect(() => {
     document.body.style.overflow = selectedVideo ? "hidden" : "unset";
     return () => { document.body.style.overflow = "unset"; };
   }, [selectedVideo]);
@@ -155,11 +176,9 @@ const ActualityPageV2 = () => {
         >
           <FontAwesomeIcon icon={faChevronLeft} />
         </button>
-        
         <span className="pag-info">
           {t("actuality.pagination", { current: currentPage, total: totalPages })}
         </span>
-
         <button 
           className="pag-btn" 
           onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo(0, 400); }}
@@ -174,7 +193,6 @@ const ActualityPageV2 = () => {
   return (
     <div className="v2-layout">
       <Navbar hideDonate={true} />
-      
       <section className="actu-v2-hero">
         <div className="v2-container">
           <div className="actu-v2-hero-content">
@@ -186,16 +204,10 @@ const ActualityPageV2 = () => {
 
       <section className="actu-v2-full-list">
         <div className="v2-container">
-          
-          <div style={{marginBottom: '40px'}}>
-            <PaginationControls />
-          </div>
-
+          <div style={{marginBottom: '40px'}}><PaginationControls /></div>
           {currentNews.map((item) => (
             <article className="actu-full-card" key={item.id} id={item.slug}>
-              <div className="actu-full-img">
-                <img src={item.img} alt={item.title} />
-              </div>
+              <div className="actu-full-img"><img src={item.img} alt={item.title} /></div>
               <div className="actu-full-body">
                 <div className="actu-full-meta">
                   <span><FontAwesomeIcon icon={faCalendarAlt} /> {item.date}</span>
@@ -207,7 +219,6 @@ const ActualityPageV2 = () => {
                     <p key={index}>{paragraph}</p>
                   ))}
                 </div>
-                
                 {item.videos && (
                   <div className="actu-video-links" style={{marginTop: '30px', display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
                     {item.videos.map((vid, idx) => (
@@ -221,33 +232,23 @@ const ActualityPageV2 = () => {
               </div>
             </article>
           ))}
-
           <PaginationControls />
         </div>
       </section>
 
-      {/* VIDEO MODAL */}
       {selectedVideo && (
         <div className="v2-modal-overlay" onClick={() => setSelectedVideo(null)}>
           <div className="v2-modal-card video-modal" onClick={(e) => e.stopPropagation()} style={{maxWidth: '700px', padding: '0', background: '#000', maxHeight: '85vh'}}>
             <div className="video-player-container" style={{background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-              <video 
-                src={selectedVideo} 
-                controls 
-                autoPlay 
-                style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain' }}
-              />
+              <video src={selectedVideo} controls autoPlay style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain' }} />
             </div>
             <div style={{padding: '15px', textAlign: 'center', background: '#fff'}}>
-               <button className="v2-btn v2-btn-red" style={{padding: '12px 24px', fontSize: '0.9rem'}} onClick={() => setSelectedVideo(null)}>
-                 Fermer la vidéo
-               </button>
+               <button className="v2-btn v2-btn-red" style={{padding: '12px 24px', fontSize: '0.9rem'}} onClick={() => setSelectedVideo(null)}>Fermer la vidéo</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* MODERN NEWSLETTER SECTION */}
       <section className="actu-v2-subscribe">
         <div className="v2-container">
           <div className="subscribe-box">
@@ -255,16 +256,8 @@ const ActualityPageV2 = () => {
             <p>{t("v2.actuality.subscribeText")}</p>
             <form className="v2-subscribe-form" onSubmit={handleSubscribe} style={{maxWidth: '600px', margin: '0 auto'}}>
               <FontAwesomeIcon icon={faEnvelope} style={{margin: 'auto 0 auto 20px', color: '#ccc', fontSize: '1.2rem'}} />
-              <input 
-                type="email" 
-                placeholder={t("v2.actuality.emailPlaceholder")} 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "..." : t("v2.btns.subscribe")}
-              </button>
+              <input type="email" placeholder={t("v2.actuality.emailPlaceholder")} value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <button type="submit" disabled={isSubmitting}>{isSubmitting ? "..." : t("v2.btns.subscribe")}</button>
             </form>
           </div>
         </div>
