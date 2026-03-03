@@ -15,7 +15,7 @@ const ActualityPageV2 = () => {
       id: 1,
       slug: "visite-terrain",
       title: t("actuality.articles.article2.title"),
-      date: "20 octobre 2024",
+      date: "20 Octobre 2024",
       category: "terrain",
       img: "/assets/actualities/actuality1.png",
       content: t("actuality.articles.article2.content")
@@ -24,19 +24,19 @@ const ActualityPageV2 = () => {
       id: 2,
       slug: "signature-agrement",
       title: t("actuality.articles.article1.title"),
-      date: "1er septembre 2024",
+      date: "1er Septembre 2024",
       category: "institutionnel",
       img: "/assets/actualities/actuality2.png",
       content: t("actuality.articles.article1.content")
     },
     {
       id: 3,
-      slug: "pose-de-la-première-pierre",
+      slug: "premier-coup-de-pelle",
       title: t("actuality.articles.article3.title"),
-      date: "21 mai 2025",
+      date: "21 Mai 2025",
       category: "travaux",
       img: "/assets/actualities/actuality3.png",
-      content: "Les fondations sont terminées. La pose de la première pierre a été effectuée par notre grande sœur qui est aussi notre maîtresse d'œuvre, aidée de notre grand frère qui est aussi notre administrateur chantier, marquant le début officiel des travaux de construction de ce bâtiment qui se veut être d'abord un orphelinat, et aussi un refuge sûr et chaleureux pour les personnes en grande difficulté. C'est une étape symbolique qui nous rapproche de notre objectif de fournir un foyer aimant et des opportunités d'éducation pour les enfants vulnérables de la région. Nous sommes impatients de voir ce projet prendre vie et de continuer à travailler pour améliorer la vie de ces enfants et des personnes qui en auront besoin."
+      content: t("actuality.articles.article3.content")
     }
   ];
 
