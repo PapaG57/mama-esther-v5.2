@@ -64,6 +64,8 @@
   line-height: 1.8;
   color: var(--color-text-main);
   margin-bottom: 25px;
+  text-align: justify;
+  hyphens: auto;
 }
 
 .manifesto-lead {

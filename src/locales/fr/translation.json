@@ -475,6 +475,20 @@
       "presidentTitle": "Fondatrice & Présidente",
       "valuesSubtitle": "Nos Piliers",
       "valuesTitle": "Ce qui guide nos actions",
+      "values": {
+        "integrity": {
+          "title": "Intégrité",
+          "desc": "Chaque centime est utilisé pour la cause."
+        },
+        "commitment": {
+          "title": "Engagement",
+          "desc": "Une présence constante sur le terrain."
+        },
+        "love": {
+          "title": "Amour",
+          "desc": "Placer l'humain au cœur de chaque projet."
+        }
+      },
       "teamCtaTitle": "Rejoignez l'aventure humaine",
       "teamCtaText": "Que vous soyez bénévole, donateur ou simple sympathisant, votre place est parmi nous."
     },
@@ -553,6 +567,7 @@
       "heroTitle": "Bâtissons ensemble l'avenir des orphelins",
       "heroText": "Devenir partenaire de l'Association Mama Esther, c'est s'engager concrètement pour la dignité et l'éducation au Cameroun.",
       "heroBtn": "Devenir Partenaire",
+      "heroBtnSub": "ou Sponsor",
       "manifesto": {
         "lead": "Chaque jour, Mama Esther rencontre des regards qui espèrent.",
         "p1": "Des enfants qui rêvent d’aller à l’école. Des mères qui se battent pour nourrir leur famille. Des communautés entières qui avancent avec courage, malgré le manque de moyens.",

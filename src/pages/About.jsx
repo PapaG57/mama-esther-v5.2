@@ -10,9 +10,9 @@ const AboutV2 = () => {
   const navigate = useNavigate();
 
   const values = [
-    { title: "Intégrité", desc: "Chaque centime est utilisé pour la cause.", icon: "💎" },
-    { title: "Engagement", desc: "Une présence constante sur le terrain.", icon: "🤝" },
-    { title: "Amour", desc: "Placer l'humain au cœur de chaque projet.", icon: "❤️" },
+    { title: t("v2.about.values.integrity.title"), desc: t("v2.about.values.integrity.desc"), icon: "💎" },
+    { title: t("v2.about.values.commitment.title"), desc: t("v2.about.values.commitment.desc"), icon: "🤝" },
+    { title: t("v2.about.values.love.title"), desc: t("v2.about.values.love.desc"), icon: "❤️" },
   ];
 
   return (

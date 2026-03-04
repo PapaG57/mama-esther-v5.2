@@ -475,6 +475,20 @@
       "presidentTitle": "Founder & President",
       "valuesSubtitle": "Our Pillars",
       "valuesTitle": "What guides our actions",
+      "values": {
+        "integrity": {
+          "title": "Integrity",
+          "desc": "Every cent is used for the cause."
+        },
+        "commitment": {
+          "title": "Commitment",
+          "desc": "A constant presence on the ground."
+        },
+        "love": {
+          "title": "Love",
+          "desc": "Placing humans at the heart of every project."
+        }
+      },
       "teamCtaTitle": "Join the human adventure",
       "teamCtaText": "Whether you are a volunteer, donor or simple sympathizer, your place is among us."
     },
@@ -553,6 +567,7 @@
       "heroTitle": "Building the future of orphans together",
       "heroText": "Becoming a partner of the Mama Esther Association means committing concretely to dignity and education in Cameroon.",
       "heroBtn": "Become a Partner",
+      "heroBtnSub": "or Sponsor",
       "manifesto": {
         "lead": "Every day, Mama Esther meets eyes filled with hope.",
         "p1": "Children who dream of going to school. Mothers who struggle to feed their families. Entire communities moving forward with courage, despite the lack of means.",
