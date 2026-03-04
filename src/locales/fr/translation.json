@@ -355,7 +355,7 @@
   "admin": {
     "accessGate": {
       "denied": "Accès refusé",
-      "deniedText": "L’entrée par la barre d’adresse est interdite. Utilisez le bouton réservé aux administrateurs.",
+      "deniedText": "Accès non autorisé. Cette zone est strictement réservée. Veuillez utiliser le bouton de connexion sécurisé en bas de page.",
       "back": "Retour",
       "secureAccess": "🔒 Accès sécurisé",
       "secureText": "Cette page est réservée aux administrateurs."
@@ -365,7 +365,8 @@
       "addAdminTitle": "Ajouter un administrateur",
       "addDonationTitle": "💰 Ajouter un don manuel",
       "donationListTitle": "📋 Liste des dons",
-      "noDonations": "Aucun don enregistré pour le moment."
+      "noDonations": "Aucun don enregistré pour le moment.",
+      "logout": "Se déconnecter"
     },
     "forms": {
       "idPlaceholder": "Prénom - nom",

@@ -38,8 +38,8 @@ function Footer() {
       const res = await adminService.login({ identifiant, motDePasse });
 
       if (res.data && res.data.token) {
-        localStorage.setItem("adminToken", res.data.token);
-        navigate("/admin", { state: { viaAdminButton: true } });
+        sessionStorage.setItem("adminToken", res.data.token);
+        navigate("/admin");
         setShowAdminModal(false);
       } else {
         alert("Identifiants incorrects");

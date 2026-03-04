@@ -355,7 +355,7 @@
   "admin": {
     "accessGate": {
       "denied": "Access Denied",
-      "deniedText": "Entry via the address bar is prohibited. Use the button reserved for administrators.",
+      "deniedText": "Unauthorized Access. This area is strictly reserved. Please use the secure login button at the bottom of the page.",
       "back": "Back",
       "secureAccess": "🔒 Secure Access",
       "secureText": "This page is reserved for administrators."

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import "../styles/AdminV2.css";
 import PasswordField from "../components/PasswordField";
 import confetti from "canvas-confetti";
@@ -26,7 +26,6 @@ export default function Admin() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [showSecureModal, setShowSecureModal] = useState(false);
   const [identifiant, setIdentifiant] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [confirmationMotDePasse, setConfirmationMotDePasse] = useState("");
@@ -42,10 +41,11 @@ export default function Admin() {
   const [donASupprimer, setDonASupprimer] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) setShowSecureModal(true);
-  }, []);
+  const handleLogout = () => {
+    sessionStorage.removeItem("adminToken");
+    // .replace() écrase l'entrée actuelle dans l'historique : impossible de revenir en arrière
+    window.location.replace("/");
+  };
 
   useEffect(() => {
     if (motDePasse.length >= 1) {
@@ -66,8 +66,15 @@ export default function Admin() {
   };
 
   useEffect(() => {
-    if (!showSecureModal) fetchDons();
-  }, [showSecureModal]);
+    fetchDons();
+    // SÉCURITÉ MAXIMALE : On vide le token uniquement si on quitte la page admin
+    // On vérifie le pathname pour ne pas déconnecter lors d'un changement de langue
+    return () => {
+      if (!window.location.pathname.includes("/admin")) {
+        sessionStorage.removeItem("adminToken");
+      }
+    };
+  }, []);
 
   const handleAdminSubmit = async (e) => {
     e.preventDefault();
@@ -156,22 +163,6 @@ export default function Admin() {
     document.body.removeChild(link);
     toast.success("Fichier CSV généré !");
   };
-
-  if (showSecureModal) {
-    return (
-      <div className="v2-modal-overlay">
-        <div className="v2-modal">
-          <h2 style={{color: "var(--color-red)"}}>{t("admin.accessGate.secureAccess")}</h2>
-          <p>{t("admin.accessGate.secureText")}</p>
-          <div className="v2-modal-buttons" style={{marginTop: "30px"}}>
-            <button className="v2-btn v2-btn-primary" onClick={() => navigate("/")}>
-              {t("admin.accessGate.back")}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="v2-layout">
@@ -274,9 +265,9 @@ export default function Admin() {
           </div>
 
           <div style={{marginTop: "60px", textAlign: "center"}}>
-            <button onClick={() => navigate("/")} className="v2-btn v2-btn-outline-green">
-              <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: "10px" }} />
-              {t("admin.accessGate.back")}
+            <button onClick={handleLogout} className="v2-btn v2-btn-red">
+              <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: "10px" }} />
+              {t("admin.dashboard.logout")}
             </button>
           </div>
         </div>
