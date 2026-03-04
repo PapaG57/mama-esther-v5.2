@@ -6,7 +6,6 @@
     "followUs": "Suivez-nous",
     "backToTop": "Haut"
   },
-
   "navbar": {
     "home": "Accueil",
     "about": "À propos",
@@ -15,33 +14,25 @@
     "contact": "Contact",
     "donate": "Faire un Don"
   },
-
   "header": {
     "welcome": "Soyez les bienvenus dans notre association",
     "title": "Aidez-nous à donner une chance aux orphelins",
     "subtitle": "Nous avons beaucoup de projets pour l’avenir des enfants et des personnes en difficulté."
   },
-
   "actuality": {
     "title": "Nos actualités en images",
-
     "subscribeTitle": "Inscrivez-vous",
     "subscribeText": "Inscrivez-vous à notre newsletter pour rester informé des dernières nouvelles et événements de l'association.",
     "subscribeButton": "Je m'inscris",
-
     "newsletterTitle": "Newsletter",
     "newsletterText": "Les liens pour lire les newsletters sont à la fin de cette page. Cliquez sur les logos au format PDF 😉 !",
-
     "pdfTitle": "Les temps forts de l’association",
     "pdfText": "Retrouvez ici nos newsletters passées. Vous pouvez les consulter en version web ou télécharger le PDF directement.",
-
     "back": "Retour",
-
     "pagination": "Page {{current}} sur {{total}}",
     "noNews": "Aucune newsletter disponible pour le moment.",
     "openPdf": "Ouvrir le PDF de {{title}}",
     "downloadPdf": "Télécharger le PDF",
-
     "articles": {
       "article1": {
         "title": "Signature des documents pour l'agrément",
@@ -80,7 +71,6 @@
       }
     }
   },
-
   "registration": {
     "title": "Inscription à la newsletter",
     "subtitle": "Recevez nos actus par email :",
@@ -95,7 +85,6 @@
     "error": "❌ Une erreur est survenue.",
     "close": "Fermer"
   },
-
   "footer": {
     "slogan": "\"L'amour d'une mère au service des enfants et de tous ceux qui ont besoin d'aide et d'assistance.\"",
     "servicesTitle": "Services",
@@ -120,14 +109,12 @@
     "adminPlaceholderId": "Identifiant",
     "adminPlaceholderPassword": "Mot de passe"
   },
-
   "aboutSection": {
     "title": "Qui sommes-nous ?",
     "description1": "L’Association Mama Esther œuvre pour le bien-être des orphelins et des personnes en difficulté. Notre mission est de venir en aide aux plus vulnérables : enfants sans soutien, personnes âgées isolées, individus en situation de handicap, familles démunies.",
     "description2": "Grâce à l’engagement de nos membres et bénévoles, nous mettons en place des actions solidaires, des accompagnements personnalisés et des projets de soutien humain et matériel. Ensemble, nous travaillons pour un monde plus juste et bienveillant.",
     "button": "mieux nous connaître"
   },
-
   "engagement": {
     "title": "Engagements de l'association",
     "questions": "Vous avez des questions ? Cliquez ici",
@@ -144,7 +131,6 @@
       "text": "L'association Mama Esther repose sur l'engagement indéfectible de ses bénévoles, dont le volontariat désintéressé est la clé de notre succès. Chaque jour, ils offrent de leur temps et de leur énergie sans attendre de contrepartie, animés par le désir de faire une différence dans la vie des plus vulnérables. Leur dévouement va bien au-delà des simples tâches, car ils apportent soutien, espoir et réconfort à ceux qui en ont le plus besoin. Ce volontariat, guidé par des valeurs de solidarité et de compassion, est essentiel pour mener à bien nos missions. Grâce à ces héros du quotidien, nous sommes en mesure de réaliser des projets ambitieux et d'apporter une aide précieuse à notre communauté. Leur altruisme et leur générosité témoignent de leur esprit véritable."
     }
   },
-
   "actualitySection": {
     "title": "📰 Nos dernières actualités",
     "subtitle": "🌍 Découvrez les événements et projets qui font avancer notre mission !",
@@ -153,7 +139,6 @@
     "news2": "L'association est née !",
     "news6": "La pose de la première pierre !"
   },
-
   "newsletters": {
     "filterAll": "Tous",
     "viewOnline": "🌐 Voir en ligne",
@@ -183,7 +168,6 @@
       }
     }
   },
-
   "team": {
     "title": "NOTRE ÉQUIPE",
     "hint": "Cliquez sur une image pour en savoir plus",
@@ -211,7 +195,6 @@
       "jane": ""
     }
   },
-
   "contact": {
     "title": "CONTACTEZ-NOUS",
     "back": "Retour",
@@ -239,7 +222,6 @@
       "submitError": "❌ Une erreur est survenue. Veuillez réessayer."
     }
   },
-
   "mentions": {
     "title": "Mentions Légales",
     "date": "En vigueur au 10/07/24",
@@ -290,14 +272,12 @@
     "back": "Retour",
     "writeUs": "Nous écrire"
   },
-
   "construction": {
     "title": "Page en construction",
     "subtitle": "La Présidente veille sur chaque pierre qu’on pose — même les pages pas encore finies 💚",
     "back": "Retour",
     "writeUs": "Nous écrire"
   },
-
   "unsubscribe": {
     "title": "Oh non… On est triste de vous voir partir...",
     "subtitle": "Vous ne recevrez plus notre newsletter. Mais sachez que vous serez toujours le ou la bienvenue pour nous retrouver à tout moment 💚",
@@ -311,14 +291,12 @@
     "successModal": "Votre désinscription a bien été enregistrée !",
     "backHome": "Retour à l’accueil"
   },
-
   "error404": {
     "title": "Oups... cette page s’est égarée",
     "subtitle": "Comme un enfant qui cherche son chemin, il arrive qu'on se perde. Mais chez Mama Esther, nous savons que chaque retour est une fête.",
     "back": "Retourner à l'accueil",
     "contact": "Signaler un problème"
   },
-
   "donationCounter": {
     "cumulatedSupport": "Soutien reçu depuis notre création :",
     "annualDons": "Dons reçus en {{year}} :",
@@ -336,7 +314,6 @@
     "lastNewsletter": "Dernière Newsletter",
     "supportBtn": "Soutenir notre mission"
   },
-
   "bibleVerses": {
     "corinthians13_13": {
       "text": "Maintenant donc ces trois choses demeurent : la foi, l'espérance, la charité ; mais la plus grande de ces choses, c'est la charité.",
@@ -351,7 +328,6 @@
       "ref": "Matthieu 25 v. 40 (Bible Segond 1910)"
     }
   },
-
   "admin": {
     "accessGate": {
       "denied": "Accès refusé",
@@ -570,6 +546,52 @@
           "title": "Santé",
           "desc": "100€ permet de couvrir les soins médicaux d'urgence pour l'orphelinat."
         }
+      }
+    },
+    "sponsor": {
+      "heroSubtitle": "Partenariat Institutionnel",
+      "heroTitle": "Bâtissons ensemble l'avenir des orphelins",
+      "heroText": "Devenir partenaire de l'Association Mama Esther, c'est s'engager concrètement pour la dignité et l'éducation au Cameroun.",
+      "heroBtn": "Devenir Partenaire",
+      "manifesto": {
+        "lead": "Chaque jour, Mama Esther rencontre des regards qui espèrent.",
+        "p1": "Des enfants qui rêvent d’aller à l’école. Des mères qui se battent pour nourrir leur famille. Des communautés entières qui avancent avec courage, malgré le manque de moyens.",
+        "p2": "Face à ces réalités, nous avons choisi d’agir. Pas avec de grands discours, mais avec des gestes concrets : un repas chaud, un cartable, un accès aux soins, un toit réparé, une formation qui change une vie. Et aujourd’hui, nous avons besoin de nouvelles forces pour continuer.",
+        "highlight": "C’est ici que votre engagement peut tout changer.",
+        "intro": "En devenant partenaire ou sponsor de Mama Esther, vous ne financez pas simplement un projet :",
+        "list1": "Vous offrez une chance réelle à un enfant",
+        "list2": "Vous redonnez de la dignité à une famille",
+        "list3": "Vous participez à bâtir un avenir plus juste",
+        "p3": "Chaque collaboration devient une histoire partagée. Une main tendue qui en rejoint une autre. Une preuve que la solidarité n’est pas un concept, mais une énergie vivante, capable de transformer des vies.",
+        "p4": "Nous construisons des partenariats sincères, transparents et humains. Nous avançons ensemble, pas à pas, avec un suivi clair, des résultats visibles et une confiance réciproque. Parce que derrière chaque action, il y a des visages, des sourires, des parcours qui renaissent.",
+        "call1": "Rejoindre Mama Esther, c’est choisir d’être du côté de la lumière.",
+        "call2": "C’est décider que votre entreprise, votre organisation ou votre engagement personnel peut devenir un moteur d’espoir.",
+        "footer": "Et si nous écrivions la suite ensemble ?"
+      },
+      "benefits": {
+        "subtitle": "Pourquoi nous rejoindre ?",
+        "title": "Donnez du sens à votre engagement",
+        "impactTitle": "Impact Social Mesurable",
+        "impactDesc": "Chaque euro investi est tracé. Nous fournissons des rapports d'impact précis pour votre communication RSE.",
+        "taxTitle": "Avantages Fiscaux",
+        "taxDesc": "En tant qu'association reconnue, vos dons ouvrent droit à une réduction d'impôt (60% pour les entreprises en France).",
+        "imageTitle": "Visibilité & Image",
+        "imageDesc": "Nous mettons en avant nos partenaires sur nos supports (site web, newsletters, réseaux sociaux)."
+      },
+      "types": {
+        "title": "Différentes façons d'agir",
+        "text": "Il existe plusieurs manières de soutenir nos missions en fonction de vos moyens et de votre expertise.",
+        "financial": "Mécénat Financier",
+        "financialDesc": "Soutien direct aux projets de construction (Orphelinat, Puits).",
+        "material": "Don de Matériel",
+        "materialDesc": "Fournitures scolaires, équipements médicaux ou matériaux de construction.",
+        "skills": "Mécénat de Compétences",
+        "skillsDesc": "Mise à disposition de votre expertise (ingénierie, santé, gestion)."
+      },
+      "cta": {
+        "title": "Prêt à faire la différence ?",
+        "text": "Contactez notre équipe pour discuter des modalités de partenariat et recevoir notre dossier de présentation.",
+        "btn": "Demander notre dossier"
       }
     },
     "travaux": {

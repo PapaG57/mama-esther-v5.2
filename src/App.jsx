@@ -19,6 +19,7 @@ const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const MentionsLegales = lazy(() => import("./pages/MentionsLegales"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Missions = lazy(() => import("./pages/Missions"));
+const Sponsor = lazy(() => import("./pages/Sponsor"));
 const Page404 = lazy(() => import("./pages/404"));
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="/travaux" element={<Travaux />} />
           <Route path="/missions" element={<Missions />} />
           <Route path="/don" element={<Don />} />
+          <Route path="/sponsors" element={<Sponsor />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/mentions-legales" element={<MentionsLegales />} />
