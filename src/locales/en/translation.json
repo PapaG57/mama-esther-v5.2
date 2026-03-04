@@ -458,6 +458,20 @@
       "infrastructure": "Works",
       "transparency": "Trust"
     },
+    "months": {
+      "janvier": "January",
+      "fevrier": "February",
+      "mars": "March",
+      "avril": "April",
+      "mai": "May",
+      "juin": "June",
+      "juillet": "July",
+      "aout": "August",
+      "septembre": "September",
+      "octobre": "October",
+      "novembre": "November",
+      "decembre": "December"
+    },
     "btns": {
       "donate": "Donate",
       "discover": "Discover our actions",

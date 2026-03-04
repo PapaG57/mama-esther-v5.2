@@ -63,6 +63,9 @@ const NewsletterV2 = () => {
     }
   };
 
+  const itemWidth = window.innerWidth <= 768 ? 200 : 240;
+  const gap = 30;
+
   return (
     <section className="v2-newsletter">
       <div className="v2-container">
@@ -70,11 +73,11 @@ const NewsletterV2 = () => {
           
           <div className="v2-newsletter-text">
             <span className="v2-subtitle">{t("actuality.pdfTitle")}</span>
-            <h2 className="v2-title">Restez connecté à notre impact</h2>
-            <p>{t("actuality.pdfText")}</p>
+            <h2 className="v2-title">{t("v2.actuality.subscribeTitle")}</h2>
+            <p>{t("v2.actuality.subscribeText")}</p>
             
             <form className="v2-subscribe-form" onSubmit={handleSubscribe}>
-              <FontAwesomeIcon icon={faEnvelope} style={{margin: 'auto 0 auto 20px', color: '#ccc'}} />
+              <FontAwesomeIcon icon={faEnvelope} className="v2-form-icon" style={{margin: 'auto 0 auto 20px', color: '#ccc'}} />
               <input 
                 type="email" 
                 placeholder={t("v2.actuality.emailPlaceholder")} 
@@ -92,7 +95,7 @@ const NewsletterV2 = () => {
             <div className="v2-newsletter-grid-wrapper">
               <div 
                 className="v2-newsletter-track"
-                style={{ transform: `translateX(-${scrollIndex * (240 + 30)}px)` }}
+                style={{ transform: `translateX(-${scrollIndex * (itemWidth + gap)}px)` }}
               >
                 {displayItems.map((item, i) => (
                   item.isSeparator ? (
@@ -103,16 +106,18 @@ const NewsletterV2 = () => {
                     <a href={item.pdf} target="_blank" rel="noreferrer" className="v2-magazine-item" key={i}>
                       <div className="v2-magazine-cover">
                         <div className="v2-mag-header">
-                          <span>Association</span>
+                          <span>{t("v2.hero.associationName").split(' ')[0]}</span>
                           <div className="v2-mag-title">Mama Esther</div>
                         </div>
                         <div className="v2-mag-body">
                           <p style={{fontSize: '0.8rem', opacity: 0.9, lineHeight: 1.4}}>
-                            Retrouvez l'essentiel de nos actions sur le terrain au Cameroun.
+                            {t("newsletters.list.news1.summary")}
                           </p>
                         </div>
                         <div className="v2-mag-footer">
-                          <div className="v2-mag-date">{item.date}</div>
+                          <div className="v2-mag-date">
+                            {t(`v2.months.${item.date.split(' ')[0].toLowerCase().replace('é', 'e')}`)} {item.date.split(' ')[1]}
+                          </div>
                         </div>
                         <div className="v2-mag-number">#{item.id}</div>
                       </div>
