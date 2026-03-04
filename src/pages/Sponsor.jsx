@@ -61,7 +61,10 @@ const SponsorV2 = () => {
             <p className="sponsor-hero-text">
               {t("v2.sponsor.heroText")}
             </p>
-            <button className="v2-btn v2-btn-yellow" onClick={() => navigate('/contact')}>{t("v2.sponsor.heroBtn")}</button>
+            <button className="v2-btn v2-btn-yellow v2-btn-multi" onClick={() => navigate('/contact')}>
+              <span className="btn-main-text">{t("v2.sponsor.heroBtn")}</span>
+              <span className="btn-sub-text">{t("v2.sponsor.heroBtnSub")}</span>
+            </button>
           </div>
         </div>
       </section>
