@@ -36,12 +36,23 @@ export default function Navbar({ hideDonate = false }) {
     <nav className="custom-navbar" ref={navbarRef}>
       <div className="custom-navbar-container">
 
-        <Link to="/" onClick={() => setMenuOpen(false)}>
-          <img
-            className="custom-navbar-logo"
-            src="/assets/logos/logo-long.png"
-            alt="Logo Association"
-          />
+        <Link to="/" className="navbar-brand-v2" onClick={() => setMenuOpen(false)}>
+          <div className="logo-capsule-white">
+            <img
+              className="custom-navbar-logo-v2"
+              src="/assets/logos/logo-long.png"
+              alt="Logo Association"
+            />
+            <div className="logo-heart-signature">
+              <svg viewBox="0 0 40 40" className="heart-svg-small">
+                <path d="M20 35 L17.5 32.7 C8.7 24.7 3 19.5 3 13 C3 7.8 7.1 3.7 12.3 3.7 C15.2 3.7 18 5.1 20 7.2 C22 5.1 24.8 3.7 27.7 3.7 C32.9 3.7 37 7.8 37 13 C37 19.5 31.3 24.7 22.5 32.7 L20 35 Z" 
+                      className="heart-shape-green" />
+                {/* Étincelle stylisée à 4 branches */}
+                <path d="M20 9 Q20 15 26 15 Q20 15 20 21 Q20 15 14 15 Q20 15 20 9" 
+                      fill="var(--color-yellow)" className="heart-sparkle" />
+              </svg>
+            </div>
+          </div>
         </Link>
 
         <button

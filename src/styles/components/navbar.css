@@ -34,16 +34,97 @@
   padding: 0 30px;
 }
 
-/* LOGO */
-.custom-navbar-logo {
-  width: 180px;
-  border-radius: var(--radius-sm);
-  transition: transform 0.3s ease;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+/* LOGO CAPSULE WHITE - MODERN & CLEAN */
+.logo-capsule-white {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 6px 15px;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  height: 54px;
+  gap: 12px;
 }
 
-.custom-navbar-logo:hover {
-  transform: scale(1.02);
+.navbar-brand-v2:hover .logo-capsule-white {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.custom-navbar-logo-v2 {
+  height: 40px; /* Taille optimisée pour la capsule */
+  width: auto;
+  border-radius: 4px;
+}
+
+.logo-heart-signature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid #eee;
+  padding-left: 10px;
+}
+
+.heart-svg-small {
+  width: 28px;
+  height: 28px;
+  overflow: visible;
+  animation: heartbeat 2s infinite ease-in-out;
+}
+
+.heart-shape-green {
+  fill: var(--color-green);
+  transition: all 0.3s ease;
+}
+
+.navbar-brand-v2:hover .heart-shape-green {
+  fill: var(--color-red);
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.15); }
+  70% { transform: scale(1); }
+}
+
+.heart-sparkle {
+  transform-origin: 20px 15px; /* On centre le pivot sur l'étincelle */
+  animation: pulse-sparkle 2s infinite ease-in-out;
+}
+
+@keyframes pulse-sparkle {
+  0% { transform: scale(0.6); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 3px var(--color-yellow)); }
+  100% { transform: scale(0.6); opacity: 0.5; }
+}
+
+@media (max-width: 768px) {
+  .logo-capsule-white {
+    height: 42px;
+    padding: 4px 10px;
+    gap: 8px;
+  }
+  .custom-navbar-logo-v2 {
+    height: 30px;
+  }
+  .heart-svg-small {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-capsule {
+    padding: 6px 12px;
+    height: 42px;
+    max-width: 180px;
+  }
+  .logo-svg-v2 {
+    height: 24px;
+  }
 }
 
 /* LISTE DES LIENS */
@@ -226,10 +307,6 @@
 
   .custom-nav-list.open {
     display: flex;
-  }
-
-  .custom-navbar-logo {
-    width: 140px;
   }
 
   .mobile-don, .mobile-lang {
