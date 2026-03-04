@@ -74,33 +74,7 @@ const HomeV2 = () => {
           </div>
           
           <div className="v2-missions-grid">
-            {/* Mission 1 */}
-            <div className="v2-mission-card">
-              <div className="v2-mission-img">
-                <img src="/assets/education.jpg" alt="Education" />
-                <span className="v2-mission-tag">{t("v2.tags.education")}</span>
-              </div>
-              <div className="v2-mission-body">
-                <h4>{t("v2.missions.eduTitle")}</h4>
-                <p>{t("v2.missions.eduDesc")}</p>
-                <button className="v2-link-btn" onClick={() => navigate('/missions')}>{t("v2.btns.learnMore")} →</button>
-              </div>
-            </div>
-
-            {/* Mission 2 */}
-            <div className="v2-mission-card">
-              <div className="v2-mission-img">
-                <img src="/assets/infrastructure.jpg" alt="Infrastructure" />
-                <span className="v2-mission-tag">{t("v2.tags.infrastructure")}</span>
-              </div>
-              <div className="v2-mission-body">
-                <h4>{t("v2.missions.infraTitle")}</h4>
-                <p>{t("v2.missions.infraDesc")}</p>
-                <button className="v2-link-btn" onClick={() => navigate('/missions')}>{t("v2.btns.learnMore")} →</button>
-              </div>
-            </div>
-
-            {/* Mission 3 */}
+            {/* Mission 1: Trust */}
             <div className="v2-mission-card">
               <div className="v2-mission-img">
                 <img src="/assets/trust.jpg" alt="Transparence" />
@@ -109,7 +83,33 @@ const HomeV2 = () => {
               <div className="v2-mission-body">
                 <h4>{t("v2.missions.transTitle")}</h4>
                 <p>{t("v2.missions.transDesc")}</p>
-                <button className="v2-link-btn" onClick={() => navigate('/missions')}>{t("v2.btns.learnMore")} →</button>
+                <button className="v2-link-btn" onClick={() => navigate('/missions#trust')}>{t("v2.btns.learnMore")} →</button>
+              </div>
+            </div>
+
+            {/* Mission 2: Education */}
+            <div className="v2-mission-card">
+              <div className="v2-mission-img">
+                <img src="/assets/education.jpg" alt="Education" />
+                <span className="v2-mission-tag">{t("v2.tags.education")}</span>
+              </div>
+              <div className="v2-mission-body">
+                <h4>{t("v2.missions.eduTitle")}</h4>
+                <p>{t("v2.missions.eduDesc")}</p>
+                <button className="v2-link-btn" onClick={() => navigate('/missions#edu')}>{t("v2.btns.learnMore")} →</button>
+              </div>
+            </div>
+
+            {/* Mission 3: Infrastructure */}
+            <div className="v2-mission-card">
+              <div className="v2-mission-img">
+                <img src="/assets/infrastructure.jpg" alt="Infrastructure" />
+                <span className="v2-mission-tag">{t("v2.tags.infrastructure")}</span>
+              </div>
+              <div className="v2-mission-body">
+                <h4>{t("v2.missions.infraTitle")}</h4>
+                <p>{t("v2.missions.infraDesc")}</p>
+                <button className="v2-link-btn" onClick={() => navigate('/missions#infra')}>{t("v2.btns.learnMore")} →</button>
               </div>
             </div>
           </div>

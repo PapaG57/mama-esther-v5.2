@@ -50,7 +50,7 @@ const Missions = () => {
       <section className="missions-v2-content">
         <div className="v2-container">
           {missionList.map((m, index) => (
-            <div className={`mission-row ${index % 2 !== 0 ? "reverse" : ""}`} key={m.id}>
+            <div id={m.id} className={`mission-row ${index % 2 !== 0 ? "reverse" : ""}`} key={m.id}>
               <div className="mission-image">
                 <img src={m.img} alt={t(m.titleKey)} />
                 <span className="mission-tag-label">{t(m.tagKey)}</span>
