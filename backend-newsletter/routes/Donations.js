@@ -61,6 +61,20 @@ router.get("/count", async (req, res) => {
   }
 });
 
+// Route pour compter les donateurs uniques
+router.get("/donors/count", async (req, res) => {
+  try {
+    const donors = await Donation.distinct("nomDonateur");
+    res.json({ count: donors.length });
+  } catch (error) {
+    console.error("Erreur calcul donateurs :", error);
+    res.status(500).json({
+      message: "Erreur serveur lors du calcul des donateurs",
+      erreur: error.message,
+    });
+  }
+});
+
 // Route pour total d’une campagne
 router.get("/campagne/:nom", async (req, res) => {
   const nomCampagne = req.params.nom;

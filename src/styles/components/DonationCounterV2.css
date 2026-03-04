@@ -1,24 +1,24 @@
 /* DONATION COUNTER V2 - MODERN NGO STYLE */
 .v2-impact-section {
-  padding: 80px 0;
-  background: var(--color-light);
+  padding: 100px 0;
+  background: var(--color-light); /* Fond aéré pour la section */
   position: relative;
   overflow: hidden;
 }
 
 .v2-impact-card {
-  background: var(--color-white);
+  background: var(--color-green); /* Carte Vert Cameroun */
   border-radius: var(--radius-xl);
   padding: 60px;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 30px 60px rgba(0, 122, 94, 0.2);
   position: relative;
   z-index: 1;
-  border: 1px solid rgba(0,0,0,0.02);
   display: flex;
   flex-direction: column;
   gap: 40px;
   max-width: 900px;
   margin: 0 auto;
+  color: white; /* Tous les textes de la carte en blanc */
 }
 
 /* HEADER */
@@ -29,8 +29,8 @@
 }
 
 .v2-impact-badge {
-  background: rgba(0, 122, 94, 0.08);
-  color: var(--color-green);
+  background: rgba(255, 255, 255, 0.15); /* Badge clair sur fond vert */
+  color: white;
   padding: 8px 20px;
   border-radius: var(--radius-full);
   font-weight: 800;
@@ -40,9 +40,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* MAIN STAT - Réduite de moitié */
+/* MAIN STAT */
 .v2-impact-main {
   text-align: center;
 }
@@ -51,16 +52,16 @@
   display: block;
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.8); /* Blanc opale */
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 15px;
 }
 
 .v2-impact-number.small {
-  font-size: 3rem; /* Réduit de moitié */
+  font-size: 3.5rem;
   font-weight: 900;
-  color: var(--color-green);
+  color: var(--color-yellow); /* Chiffre en JAUNE pour l'impact maximum */
   line-height: 1.1;
   margin-bottom: 10px;
   display: block;
@@ -68,19 +69,19 @@
 
 .v2-impact-subtext {
   font-size: 1.1rem;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.9);
   font-style: italic;
-  opacity: 0.8;
 }
 
-/* GRID STATS - Épurée */
+/* GRID STATS */
 .v2-impact-grid {
   display: flex;
   justify-content: center;
   gap: 80px;
-  border-top: 1px solid rgba(0,0,0,0.05);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  padding: 30px 0;
+  background: rgba(255, 255, 255, 0.08); /* Fond subtil pour détacher la grille */
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .v2-stat-item {
@@ -89,16 +90,16 @@
 
 .v2-stat-value {
   display: block;
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 800;
-  color: var(--color-dark);
+  color: white; /* Blanc pur forcé */
   margin-bottom: 5px;
 }
 
 .v2-stat-label {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.9); /* Blanc presque pur */
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -109,9 +110,9 @@
 }
 
 .v2-btn-details {
-  background: transparent;
-  border: 1px dashed var(--color-green);
-  color: var(--color-green);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px dashed white;
+  color: white;
   padding: 12px 24px;
   border-radius: var(--radius-lg);
   font-weight: 700;
@@ -121,9 +122,9 @@
 }
 
 .v2-btn-details:hover {
-  background: rgba(0, 122, 94, 0.05);
+  background: white;
+  color: var(--color-green);
   border-style: solid;
-  transform: translateY(-2px);
 }
 
 /* REVEAL AREA */
@@ -131,46 +132,25 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
-  animation: slideDown 0.4s ease-out;
 }
 
 .v2-impact-chart {
-  background: var(--color-light);
+  background: rgba(255, 255, 255, 0.95); /* Le graphique reste sur fond blanc pour la lisibilité */
   padding: 30px;
   border-radius: var(--radius-lg);
   height: 300px;
-}
-
-.v2-impact-actions {
-  display: flex;
-  justify-content: center;
-}
-
-.v2-btn-pdf {
-  background: var(--color-white);
-  border: 1px solid #ddd;
-  padding: 12px 24px;
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--color-dark);
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-}
-
-.v2-btn-pdf:hover {
-  background: var(--color-light);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
 }
 
 /* FOOTER SIMPLE */
 .v2-impact-footer-simple {
   text-align: center;
   margin-top: 10px;
+}
+
+/* Adaptation du bouton de don pour qu'il claque sur le vert */
+.v2-impact-card .v2-btn-primary {
+  background: var(--color-red);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
 @keyframes slideDown {
@@ -180,8 +160,9 @@
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  .v2-impact-section { padding: 60px 0; }
   .v2-impact-card { padding: 40px 20px; }
   .v2-impact-grid { gap: 30px; flex-direction: column; }
-  .v2-impact-number.small { font-size: 2.2rem; }
-  .v2-stat-value { font-size: 1.6rem; }
+  .v2-impact-number.small { font-size: 2.5rem; }
+  .v2-stat-value { font-size: 1.8rem; }
 }

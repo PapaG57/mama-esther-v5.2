@@ -68,7 +68,7 @@ const Unsubscribe = () => {
                 <button onClick={handleUnsubscribe} className="v2-btn v2-btn-red">
                   {t("unsubscribe.buttonYes")}
                 </button>
-                <button onClick={() => navigate("/")} className="v2-btn v2-btn-outline">
+                <button onClick={() => navigate("/")} className="v2-btn v2-btn-outline-green">
                   {t("unsubscribe.buttonStay")}
                 </button>
               </div>

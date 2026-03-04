@@ -222,7 +222,7 @@ const ActualityPageV2 = () => {
                 {item.videos && (
                   <div className="actu-video-links" style={{marginTop: '30px', display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
                     {item.videos.map((vid, idx) => (
-                      <button key={idx} className="v2-btn v2-btn-outline" style={{borderColor: 'var(--color-green)', color: 'var(--color-green)', padding: '12px 24px', fontSize: '0.9rem'}} onClick={() => setSelectedVideo(vid.url)}>
+                      <button key={idx} className="v2-btn v2-btn-outline-green" style={{padding: '12px 24px', fontSize: '0.9rem'}} onClick={() => setSelectedVideo(vid.url)}>
                         <FontAwesomeIcon icon={faPlayCircle} style={{marginRight: '10px'}} />
                         {vid.label}
                       </button>

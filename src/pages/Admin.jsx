@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import "../styles/AdminV2.css";
 import PasswordField from "../components/PasswordField";
 import confetti from "canvas-confetti";
@@ -26,24 +26,13 @@ export default function Admin() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // 🔒 Protection de la page
   const [showSecureModal, setShowSecureModal] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      setShowSecureModal(true);
-    }
-  }, []);
-
-  // États Admin
   const [identifiant, setIdentifiant] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [confirmationMotDePasse, setConfirmationMotDePasse] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // États Dons
   const [nomDonateur, setNomDonateur] = useState("");
   const [montant, setMontant] = useState("");
   const [commentaires, setCommentaires] = useState("");
@@ -52,6 +41,11 @@ export default function Admin() {
   const [dons, setDons] = useState([]);
   const [donASupprimer, setDonASupprimer] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) setShowSecureModal(true);
+  }, []);
 
   useEffect(() => {
     if (motDePasse.length >= 1) {
@@ -72,30 +66,15 @@ export default function Admin() {
   };
 
   useEffect(() => {
-    if (!showSecureModal) {
-      fetchDons();
-    }
+    if (!showSecureModal) fetchDons();
   }, [showSecureModal]);
 
   const handleAdminSubmit = async (e) => {
     e.preventDefault();
-
     if (motDePasse !== confirmationMotDePasse) {
       toast.error(t("admin.messages.passwordsNoMatch"));
       return;
     }
-
-    if (motDePasse.length < 8 || motDePasse.length > 30) {
-      toast.error(t("admin.messages.passwordLength"));
-      return;
-    }
-
-    const strength = evaluatePasswordStrength(motDePasse);
-    if (strength === "faible") {
-      toast.warning(t("admin.messages.passwordWeak"));
-      return;
-    }
-
     try {
       await adminService.register({ identifiant, motDePasse });
       setShowSuccessModal(true);
@@ -110,14 +89,12 @@ export default function Admin() {
 
   const handleManualDonation = async (e) => {
     e.preventDefault();
-
     const data = {
       nomDonateur,
       montant: parseFloat(montant),
       commentaires,
       source: source === "Autres (préciser)" ? sourcePrecise : source,
     };
-
     try {
       await adminService.addManualDonation(data);
       toast.success(t("admin.messages.donAdded"));
@@ -135,7 +112,6 @@ export default function Admin() {
   const handleSupprimerDon = async () => {
     if (!donASupprimer) return;
     const id = donASupprimer._id || donASupprimer.id;
-
     try {
       await adminService.deleteDon(id);
       toast.success(t("admin.messages.donDeleted"));
@@ -146,6 +122,39 @@ export default function Admin() {
       setDonASupprimer(null);
       setShowConfirmModal(false);
     }
+  };
+
+  // FONCTION EXPORT CSV
+  const exportToCSV = () => {
+    if (dons.length === 0) {
+      toast.info("Aucun don à exporter.");
+      return;
+    }
+
+    const headers = ["Donateur", "Montant (€)", "Source", "Date", "Commentaires"];
+    const rows = dons.map(don => [
+      don.nomDonateur,
+      don.montant,
+      don.source,
+      new Date(don.date).toLocaleDateString(),
+      don.commentaires || ""
+    ]);
+
+    const csvContent = [
+      headers.join(";"), // Séparateur point-virgule pour Excel FR
+      ...rows.map(row => row.map(val => `"${val}"`).join(";"))
+    ].join("\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `dons_mama_esther_${new Date().getFullYear()}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Fichier CSV généré !");
   };
 
   if (showSecureModal) {
@@ -176,37 +185,17 @@ export default function Admin() {
           </h1>
 
           <div className="admin-v2-grid">
-            {/* Section Administrateurs */}
             <div className="admin-v2-card">
               <h2>{t("admin.dashboard.addAdminTitle")}</h2>
               <form onSubmit={handleAdminSubmit} className="admin-v2-form">
-                <input
-                  type="text"
-                  className="admin-v2-input"
-                  placeholder={t("admin.forms.idPlaceholder")}
-                  value={identifiant}
-                  onChange={(e) => setIdentifiant(e.target.value)}
-                  required
-                />
-                <PasswordField
-                  value={motDePasse}
-                  onChange={(e) => setMotDePasse(e.target.value)}
-                  label={t("admin.forms.password")}
-                  placeholder={t("admin.forms.passwordPlaceholder")}
-                  required
-                />
+                <input type="text" className="admin-v2-input" placeholder={t("admin.forms.idPlaceholder")} value={identifiant} onChange={(e) => setIdentifiant(e.target.value)} required />
+                <PasswordField value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} label={t("admin.forms.password")} placeholder={t("admin.forms.passwordPlaceholder")} required />
                 {passwordStrength && (
                   <p className={`password-strength-v2 strength-${passwordStrength}`}>
                     {t(`admin.messages.strength${passwordStrength.charAt(0).toUpperCase() + passwordStrength.slice(1)}`)}
                   </p>
                 )}
-                <PasswordField
-                  value={confirmationMotDePasse}
-                  onChange={(e) => setConfirmationMotDePasse(e.target.value)}
-                  label={t("admin.forms.confirmPassword")}
-                  placeholder={t("admin.forms.passwordPlaceholder")}
-                  required
-                />
+                <PasswordField value={confirmationMotDePasse} onChange={(e) => setConfirmationMotDePasse(e.target.value)} label={t("admin.forms.confirmPassword")} placeholder={t("admin.forms.passwordPlaceholder")} required />
                 <button type="submit" className="v2-btn v2-btn-primary">
                   <FontAwesomeIcon icon={faPlusCircle} style={{marginRight: "10px"}} />
                   {t("admin.forms.submitCreate")}
@@ -214,35 +203,15 @@ export default function Admin() {
               </form>
             </div>
 
-            {/* Section Dons Manuels */}
             <div className="admin-v2-card">
               <h2>
                 <FontAwesomeIcon icon={faCoins} style={{marginRight: "15px", color: "var(--color-yellow)"}} />
                 {t("admin.dashboard.addDonationTitle")}
               </h2>
               <form onSubmit={handleManualDonation} className="admin-v2-form">
-                <input
-                  type="text"
-                  className="admin-v2-input"
-                  placeholder={t("admin.forms.donatorName")}
-                  value={nomDonateur}
-                  onChange={(e) => setNomDonateur(e.target.value)}
-                  required
-                />
-                <input
-                  type="number"
-                  className="admin-v2-input"
-                  placeholder={t("admin.forms.amount")}
-                  value={montant}
-                  onChange={(e) => setMontant(e.target.value)}
-                  required
-                />
-                <select
-                  className="admin-v2-input"
-                  value={source}
-                  onChange={(e) => setSource(e.target.value)}
-                  required
-                >
+                <input type="text" className="admin-v2-input" placeholder={t("admin.forms.donatorName")} value={nomDonateur} onChange={(e) => setNomDonateur(e.target.value)} required />
+                <input type="number" className="admin-v2-input" placeholder={t("admin.forms.amount")} value={montant} onChange={(e) => setMontant(e.target.value)} required />
+                <select className="admin-v2-input" value={source} onChange={(e) => setSource(e.target.value)} required>
                   <option value="">{t("admin.forms.source")}</option>
                   <option value="Chèque">{t("admin.forms.sourceCheque")}</option>
                   <option value="Virement">{t("admin.forms.sourceTransfer")}</option>
@@ -250,32 +219,23 @@ export default function Admin() {
                   <option value="Autres (préciser)">{t("admin.forms.sourceOther")}</option>
                 </select>
                 {source === "Autres (préciser)" && (
-                  <input
-                    type="text"
-                    className="admin-v2-input"
-                    placeholder={t("admin.forms.sourceOtherPlaceholder")}
-                    value={sourcePrecise}
-                    onChange={(e) => setSourcePrecise(e.target.value)}
-                    required
-                  />
+                  <input type="text" className="admin-v2-input" placeholder={t("admin.forms.sourceOtherPlaceholder")} value={sourcePrecise} onChange={(e) => setSourcePrecise(e.target.value)} required />
                 )}
-                <textarea
-                  className="admin-v2-input"
-                  style={{minHeight: "100px"}}
-                  placeholder={t("admin.forms.comments")}
-                  value={commentaires}
-                  onChange={(e) => setCommentaires(e.target.value)}
-                />
-                <button type="submit" className="v2-btn v2-btn-primary">
-                  {t("admin.forms.submitAddDon")}
-                </button>
+                <textarea className="admin-v2-input" style={{minHeight: "100px"}} placeholder={t("admin.forms.comments")} value={commentaires} onChange={(e) => setCommentaires(e.target.value)} />
+                <button type="submit" className="v2-btn v2-btn-primary">{t("admin.forms.submitAddDon")}</button>
               </form>
             </div>
           </div>
 
-          {/* Liste des dons */}
           <div className="admin-v2-list-section">
-            <h2>{t("admin.dashboard.donationListTitle")}</h2>
+            <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px", flexWrap: "wrap", gap: "20px"}}>
+              <h2 style={{margin: 0}}>{t("admin.dashboard.donationListTitle")}</h2>
+              <button className="v2-btn v2-btn-outline-green" style={{padding: "10px 20px", fontSize: "0.9rem"}} onClick={exportToCSV}>
+                <FontAwesomeIcon icon={faFileExcel} style={{marginRight: "10px"}} />
+                Exporter en Excel (CSV)
+              </button>
+            </div>
+            
             <div className="admin-v2-table-wrapper">
               <table className="admin-v2-table">
                 <thead>
@@ -305,9 +265,7 @@ export default function Admin() {
                   ))}
                   {dons.length === 0 && (
                     <tr>
-                      <td colSpan="5" style={{textAlign: 'center', padding: '60px', opacity: 0.5}}>
-                        {t("admin.dashboard.noDonations")}
-                      </td>
+                      <td colSpan="5" style={{textAlign: 'center', padding: '60px', opacity: 0.5}}>{t("admin.dashboard.noDonations")}</td>
                     </tr>
                   )}
                 </tbody>
@@ -316,7 +274,7 @@ export default function Admin() {
           </div>
 
           <div style={{marginTop: "60px", textAlign: "center"}}>
-            <button onClick={() => navigate("/")} className="v2-btn v2-btn-outline">
+            <button onClick={() => navigate("/")} className="v2-btn v2-btn-outline-green">
               <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: "10px" }} />
               {t("admin.accessGate.back")}
             </button>
@@ -324,34 +282,27 @@ export default function Admin() {
         </div>
       </main>
 
-      {/* Modale Succès */}
+      {/* MODALES */}
       {showSuccessModal && (
         <div className="v2-modal-overlay">
           <div className="v2-modal">
             <h2 style={{color: "var(--color-green)"}}>{t("admin.modals.successTitle")}</h2>
             <p>{t("admin.modals.successText")}</p>
             <div style={{marginTop: "30px"}}>
-              <button className="v2-btn v2-btn-primary" onClick={() => setShowSuccessModal(false)}>
-                {t("admin.modals.close")}
-              </button>
+              <button className="v2-btn v2-btn-primary" onClick={() => setShowSuccessModal(false)}>{t("admin.modals.close")}</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modale Confirmation Suppression */}
       {showConfirmModal && (
         <div className="v2-modal-overlay">
           <div className="v2-modal">
             <h2 style={{color: "var(--color-red)"}}>{t("admin.modals.confirmDeleteTitle")}</h2>
             <p>{t("admin.modals.confirmDeleteText")}</p>
             <div className="v2-modal-buttons" style={{marginTop: "30px", display: "flex", gap: "20px", justifyContent: "center"}}>
-              <button className="v2-btn v2-btn-outline" onClick={() => setShowConfirmModal(false)}>
-                {t("admin.modals.cancel")}
-              </button>
-              <button className="v2-btn v2-btn-red" onClick={handleSupprimerDon}>
-                {t("admin.modals.confirm")}
-              </button>
+              <button className="v2-btn v2-btn-outline-green" onClick={() => setShowConfirmModal(false)}>{t("admin.modals.cancel")}</button>
+              <button className="v2-btn v2-btn-red" onClick={handleSupprimerDon}>{t("admin.modals.confirm")}</button>
             </div>
           </div>
         </div>

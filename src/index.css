@@ -180,6 +180,17 @@ button {
   color: var(--color-dark);
 }
 
+.v2-btn-outline-green {
+  background: transparent;
+  color: var(--color-green);
+  border: 2px solid var(--color-green);
+}
+
+.v2-btn-outline-green:hover {
+  background: var(--color-green);
+  color: white;
+}
+
 .v2-btn-yellow {
   background: var(--color-yellow);
   color: var(--color-dark);

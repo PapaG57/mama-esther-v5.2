@@ -22,21 +22,28 @@ const DonationCounter = () => {
   const navigate = useNavigate();
   const [cumulTotal, setCumulTotal] = useState(0);
   const [anneeTotal, setAnneeTotal] = useState(0);
-  const [mensuelData, setMensuelData] = useState([]);
+  const [donorsCount, setDonorsCount] = useState(0);
+  const [mensuelData, setMensuelData] = useState(new Array(12).fill(0)); // Initialisé à zéro pour éviter les crashs
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [countRes, anneeRes, moisRes] = await Promise.all([
+        const [countRes, anneeRes, moisRes, donorsRes] = await Promise.all([
           donationService.getCount(),
           donationService.getAnnual(),
-          donationService.getMonthly()
+          donationService.getMonthly(),
+          donationService.getDonorsCount()
         ]);
         
         setCumulTotal(countRes.data.total || 0);
         setAnneeTotal(anneeRes.data.total || 0);
-        setMensuelData(moisRes.data || []);
+        setDonorsCount(donorsRes.data.count || 0);
+        
+        if (moisRes.data && moisRes.data.donsParMois) {
+          const formattedData = moisRes.data.donsParMois.map(d => d.total);
+          setMensuelData(formattedData);
+        }
       } catch (err) {
         console.error("Erreur lors de la récupération des dons :", err);
       }
@@ -46,18 +53,16 @@ const DonationCounter = () => {
   }, []);
 
   const chartData = {
-    labels: [
-      "Jan", "Fév", "Mar", "Avr", "Mai", "Juin",
-      "Juil", "Août", "Sept", "Oct", "Nov", "Déc"
-    ],
+    labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"],
     datasets: [
       {
         label: t("donationCounter.monthlyLabel"),
         data: mensuelData,
-        backgroundColor: "rgba(0, 122, 94, 0.7)",
-        hoverBackgroundColor: "#007a5e",
-        borderRadius: 8,
-        barThickness: 20,
+        backgroundColor: "rgba(0, 122, 94, 0.8)", // Vert Mama Esther
+        hoverBackgroundColor: "#fcd116",
+        borderRadius: 6,
+        barThickness: 'flex',
+        maxBarThickness: 30
       },
     ],
   };
@@ -77,11 +82,11 @@ const DonationCounter = () => {
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { color: "#999", font: { size: 10 } },
-        grid: { color: "rgba(0, 0, 0, 0.03)", drawBorder: false },
+        ticks: { color: "#666", font: { size: 10, weight: 'bold' } },
+        grid: { color: "rgba(0, 0, 0, 0.05)", drawBorder: false },
       },
       x: {
-        ticks: { color: "#666", font: { size: 10 } },
+        ticks: { color: "#333", font: { size: 10, weight: 'bold' } },
         grid: { display: false },
       },
     },
@@ -113,7 +118,7 @@ const DonationCounter = () => {
               <span className="v2-stat-label">{t("donationCounter.harvestedIn", { year: new Date().getFullYear() })}</span>
             </div>
             <div className="v2-stat-item">
-              <span className="v2-stat-value" style={{color: "var(--color-red)"}}>200</span>
+              <span className="v2-stat-value" style={{color: "var(--color-yellow)"}}>{donorsCount}</span>
               <span className="v2-stat-label">{t("donationCounter.engagedDonors")}</span>
             </div>
           </div>
@@ -127,15 +132,15 @@ const DonationCounter = () => {
 
           {showDetails && (
             <div className="v2-impact-details-reveal">
-              <div className="v2-impact-chart">
+              <div className="v2-impact-chart" style={{background: '#fff', borderRadius: '20px', padding: '20px'}}>
                 <Bar data={chartData} options={chartOptions} />
               </div>
               <div className="v2-impact-actions">
-                <button className="v2-btn-pdf" onClick={() => window.open("/donations-report.pdf", "_blank")}>
+                <button className="v2-btn-pdf" onClick={() => window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/donations/mois/pdf`, "_blank")}>
                   <FontAwesomeIcon icon={faFilePdf} style={{color: "#ce1126"}} />
                   {t("donationCounter.annualReport")}
                 </button>
-                <button className="v2-btn-pdf" style={{marginLeft: '15px'}}>
+                <button className="v2-btn-pdf" style={{marginLeft: '15px'}} onClick={() => navigate('/actualities')}>
                   <FontAwesomeIcon icon={faFilePdf} style={{color: "#007a5e"}} />
                   {t("donationCounter.lastNewsletter")}
                 </button>

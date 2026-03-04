@@ -12,6 +12,7 @@ export const donationService = {
   getCount: () => apiClient.get("/donations/count"),
   getAnnual: () => apiClient.get("/donations/annee"),
   getMonthly: () => apiClient.get("/donations/mois"),
+  getDonorsCount: () => apiClient.get("/donations/donors/count"),
 };
 
 export const newsletterService = {

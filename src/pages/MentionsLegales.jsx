@@ -101,7 +101,7 @@ const MentionsLegales = () => {
             </div>
 
             <div className="mentions-v2-footer-btns">
-              <button onClick={() => navigate(-1)} className="v2-btn v2-btn-outline">
+              <button onClick={() => navigate(-1)} className="v2-btn v2-btn-outline-green">
                 <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: "10px" }} />
                 {t("mentions.back")}
               </button>

@@ -97,8 +97,7 @@ const DonV2 = () => {
                   </button>
                   
                   <button 
-                    className="v2-btn v2-btn-outline" 
-                    style={{borderColor: "var(--color-green)", color: "var(--color-green)"}} 
+                    className="v2-btn v2-btn-outline-green" 
                     onClick={() => navigate('/contact')}
                   >
                     {t("navbar.contact")}
