@@ -91,9 +91,9 @@
     "serviceDon": "Dons",
     "serviceSponsor": "Sponsor - Partenaires",
     "serviceFundraising": "Collecte de fonds - matériels",
-    "serviceVolunteer": "Volontariat - Emploi",
+    "serviceVolunteer": "Volontariat",
     "serviceLegal": "Mentions Légales",
-    "serviceIssue": "lien mort ou problème sur le site ?",
+    "serviceIssue": "Lien(s) mort(s) - problème(s) sur le site",
     "contactsTitle": "Contacts",
     "contactPresident": "+33 6 86 74 29 11 - mobile de la Présidente",
     "contactVicePresident": "+33 6 45 65 65 17 - mobile du vice-président",
@@ -510,19 +510,22 @@
       "heroTitle": "Nous sommes à votre écoute",
       "infoTitle": "Envie de nous rejoindre ou de poser une question ?",
       "infoText": "Que vous soyez un particulier, une entreprise ou une autre association, chaque message compte pour nous.",
-      "followUs": "Suivez-nous",
-      "formName": "Nom complet",
+      "followUs": "SUIVEZ-NOUS",
+      "formName": "NOM COMPLET",
       "formNamePlaceholder": "Jean Dupont",
-      "formEmail": "Email",
+      "formEmail": "EMAIL",
       "formEmailPlaceholder": "jean@exemple.com",
-      "formSubject": "Sujet",
+      "formSubject": "SUJET",
       "formSubjectOptions": {
-        "volunteer": "Devenir bénévole",
-        "donation": "Faire un don / Parrainage",
-        "partnership": "Partenariat entreprise",
-        "other": "Autre question"
+        "select": "--- CHOISISSEZ UN SUJET ---",
+        "volunteer": "DEVENIR BÉNÉVOLE",
+        "donation": "FAIRE UN DON / PARRAINAGE",
+        "partnership": "PARTENARIAT ENTREPRISE",
+        "deadLink": "LIEN(S) MORT(S)",
+        "techIssue": "PROBLÈME(S) TECHNIQUE(S)",
+        "other": "J'AI UNE QUESTION"
       },
-      "formMessage": "Votre message",
+      "formMessage": "VOTRE MESSAGE",
       "formMessagePlaceholder": "Comment pouvons-nous vous aider ?",
       "impactTitle": "Notre impact est local",
       "impactText": "Nous agissons principalement dans les régions de Yaoundé et Douala au Cameroun."
@@ -607,6 +610,66 @@
         "title": "Prêt à faire la différence ?",
         "text": "Contactez notre équipe pour discuter des modalités de partenariat et recevoir notre dossier de présentation.",
         "btn": "Demander notre dossier"
+      }
+    },
+    "fundraising": {
+      "heroSubtitle": "Solidarité Concrète",
+      "heroTitle": "Collecte de fonds & de matériels",
+      "heroText": "Parce que chaque objet, chaque fourniture et chaque don financier rapproche un orphelin de son rêve.",
+      "materialTitle": "Besoins en matériels",
+      "materialText": "Nous collectons des articles essentiels pour le quotidien des enfants et le bon fonctionnement de l'orphelinat.",
+      "items": {
+        "health": {
+          "title": "Santé & Hygiène",
+          "desc": "Kits de premiers soins, savons, brosses à dents, et produits d'hygiène de base."
+        },
+        "education": {
+          "title": "Matériel Scolaire",
+          "desc": "Cahiers, stylos, cartables, livres et uniformes pour l'école."
+        },
+        "medical": {
+          "title": "Appareillage Médical",
+          "desc": "Appareils auditifs, lunettes de vue, fauteuils roulants et petit matériel médical spécialisé."
+        }
+      },
+      "howToHelp": {
+        "title": "Comment nous faire parvenir vos dons ?",
+        "text": "Vous pouvez nous envoyer vos colis par voie postale ou nous contacter pour organiser une remise en main propre.",
+        "btn": "Nous contacter pour les dons"
+      },
+      "postalAddress": "Adresse d'envoi",
+      "shippingNote": "AVERTISSEMENT IMPORTANT : Afin de garantir que votre générosité réponde aux besoins prioritaires et pour assurer une réception sans faille de vos colis, nous vous remercions de bien vouloir nous informer de votre démarche avant tout envoi.",
+      "contactUs": "Nous contacter pour les dons matériels",
+      "specialDonation": {
+        "title": "VOUS SOUHAITEZ NOUS FAIRE UN DON PARTICULIER ?",
+        "text": "Vous pouvez nous le proposer en cliquant",
+        "btn": "ici"
+      }
+    },
+    "volunteer": {
+      "heroSubtitle": "Engagement Humain",
+      "heroTitle": "Rejoignez l'aventure Mama Esther",
+      "heroText": "Mettez votre talent, votre temps et votre cœur au service d'une cause qui change des vies au quotidien.",
+      "opportunitiesTitle": "Comment s'engager ?",
+      "opportunitiesText": "Que vous soyez en Europe ou sur le terrain au Cameroun, votre aide est précieuse.",
+      "types": {
+        "field": {
+          "title": "Missions de Terrain",
+          "desc": "Santé, éducation et encadrement directement à l'orphelinat au Cameroun."
+        },
+        "remote": {
+          "title": "Bénévole à Distance",
+          "desc": "Communication, recherche de fonds, traduction et gestion administrative."
+        },
+        "pro": {
+          "title": "Expertise & Conseil",
+          "desc": "Apportez vos compétences professionnelles (juridique, technique, médical) ponctuellement."
+        }
+      },
+      "cta": {
+        "title": "Prêt à faire partie de l'équipe ?",
+        "text": "Nous sommes toujours à la recherche de personnes motivées et bienveillantes pour renforcer notre action.",
+        "btn": "Proposer ma candidature"
       }
     },
     "travaux": {

@@ -87,10 +87,6 @@ const Volunteer = () => {
                 </div>
                 <h3>{type.title}</h3>
                 <p>{type.desc}</p>
-                <div className="opp-footer">
-                   <FontAwesomeIcon icon={faCheckCircle} className="check-icon" />
-                   <span>{t("v2.common.learnMore")}</span>
-                </div>
               </div>
             ))}
           </div>

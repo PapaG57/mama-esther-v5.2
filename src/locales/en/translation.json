@@ -91,9 +91,9 @@
     "serviceDon": "Donations",
     "serviceSponsor": "Sponsor - Partners",
     "serviceFundraising": "Fundraising - Materials",
-    "serviceVolunteer": "Volunteering - Employment",
+    "serviceVolunteer": "Volunteering",
     "serviceLegal": "Legal Mentions",
-    "serviceIssue": "Dead link or problem on the site?",
+    "serviceIssue": "Dead link(s) - problem(s) on the site",
     "contactsTitle": "Contacts",
     "contactPresident": "+33 6 86 74 29 11 - President's mobile",
     "contactVicePresident": "+33 6 45 65 65 17 - Vice-president's mobile",
@@ -510,19 +510,22 @@
       "heroTitle": "We are listening to you",
       "infoTitle": "Want to join us or ask a question?",
       "infoText": "Whether you are an individual, a company or another association, every message counts for us.",
-      "followUs": "Follow us",
-      "formName": "Full name",
+      "followUs": "FOLLOW US",
+      "formName": "FULL NAME",
       "formNamePlaceholder": "John Doe",
-      "formEmail": "Email",
+      "formEmail": "EMAIL",
       "formEmailPlaceholder": "john@example.com",
-      "formSubject": "Subject",
+      "formSubject": "SUBJECT",
       "formSubjectOptions": {
-        "volunteer": "Become a volunteer",
-        "donation": "Make a donation / Sponsorship",
-        "partnership": "Company partnership",
-        "other": "Other question"
+        "select": "--- CHOOSE A SUBJECT ---",
+        "volunteer": "BECOME A VOLUNTEER",
+        "donation": "MAKE A DONATION / SPONSORSHIP",
+        "partnership": "COMPANY PARTNERSHIP",
+        "deadLink": "DEAD LINK(S)",
+        "techIssue": "TECHNICAL ISSUE(S)",
+        "other": "I HAVE A QUESTION"
       },
-      "formMessage": "Your message",
+      "formMessage": "YOUR MESSAGE",
       "formMessagePlaceholder": "How can we help you?",
       "impactTitle": "Our impact is local",
       "impactText": "We act mainly in the Yaoundé and Douala regions in Cameroon."
@@ -607,6 +610,66 @@
         "title": "Ready to make a difference?",
         "text": "Contact our team to discuss partnership terms and receive our presentation kit.",
         "btn": "Request our kit"
+      }
+    },
+    "fundraising": {
+      "heroSubtitle": "Concrete Solidarity",
+      "heroTitle": "Fundraising & Materials",
+      "heroText": "Because every object, every supply and every financial donation brings an orphan closer to their dream.",
+      "materialTitle": "Material Needs",
+      "materialText": "We collect essential items for the daily life of children and the smooth running of the orphanage.",
+      "items": {
+        "health": {
+          "title": "Health & Hygiene",
+          "desc": "First aid kits, soaps, toothbrushes, and basic hygiene products."
+        },
+        "education": {
+          "title": "School Supplies",
+          "desc": "Notebooks, pens, schoolbags, books and uniforms for school."
+        },
+        "medical": {
+          "title": "Medical Equipment",
+          "desc": "Hearing aids, eyeglasses, wheelchairs and specialized medical equipment."
+        }
+      },
+      "howToHelp": {
+        "title": "How to send us your donations?",
+        "text": "You can send us your packages by post or contact us to organize a hand delivery.",
+        "btn": "Contact us for donations"
+      },
+      "postalAddress": "Shipping Address",
+      "shippingNote": "IMPORTANT WARNING: To ensure that your generosity meets priority needs and to ensure a seamless receipt of your packages, please inform us of your intention before sending anything.",
+      "contactUs": "Contact us for material donations",
+      "specialDonation": {
+        "title": "WOULD YOU LIKE TO MAKE A SPECIAL DONATION?",
+        "text": "You can suggest it to us by clicking",
+        "btn": "here"
+      }
+    },
+    "volunteer": {
+      "heroSubtitle": "Human Commitment",
+      "heroTitle": "Join the Mama Esther Adventure",
+      "heroText": "Put your talent, your time and your heart at the service of a cause that changes lives daily.",
+      "opportunitiesTitle": "How to get involved?",
+      "opportunitiesText": "Whether you are in Europe or on the ground in Cameroon, your help is precious.",
+      "types": {
+        "field": {
+          "title": "Field Missions",
+          "desc": "Health, education and supervision directly at the orphanage in Cameroon."
+        },
+        "remote": {
+          "title": "Remote Volunteer",
+          "desc": "Communication, fundraising, translation and administrative management."
+        },
+        "pro": {
+          "title": "Expertise & Advice",
+          "desc": "Bring your professional skills (legal, technical, medical) occasionally."
+        }
+      },
+      "cta": {
+        "title": "Ready to be part of the team?",
+        "text": "We are always looking for motivated and caring people to strengthen our action.",
+        "btn": "Apply now"
       }
     },
     "travaux": {
