@@ -84,10 +84,10 @@ function Footer() {
                 <Link to="/sponsors">{t("footer.serviceSponsor")}</Link>
               </li>
               <li>
-                <Link to="/travaux">{t("footer.serviceFundraising")}</Link>
+                <Link to="/collecte-fonds-materiels">{t("footer.serviceFundraising")}</Link>
               </li>
               <li>
-                <Link to="/travaux">{t("footer.serviceVolunteer")}</Link>
+                <Link to="/volontariat-emploi">{t("footer.serviceVolunteer")}</Link>
               </li>
               <li>
                 <Link to="/mentions-legales">{t("footer.serviceLegal")}</Link>
