@@ -28,8 +28,8 @@ const ActualityPageV2 = () => {
       img: "/assets/actualities/actuality8.png",
       content: t("actuality.articles.article8.content"),
       videos: [
-        { label: "vidéos murs 1", url: "/assets/videos/construction-finitions.mp4" },
-        { label: "vidéos murs 2", url: "/assets/videos/construction-finitions2.mp4" }
+        { label: "vidéos murs 1", url: "/videos/construction-finitions.mp4" },
+        { label: "vidéos murs 2", url: "/videos/construction-finitions2.mp4" }
       ]
     },
     {
@@ -68,8 +68,8 @@ const ActualityPageV2 = () => {
       img: "/assets/actualities/actuality4.png",
       content: t("actuality.articles.article4.content"),
       videos: [
-        { label: "Vidéo d'un abattage d'arbre", url: "/assets/videos/Abattage.mp4" },
-        { label: "Voir le façonnage des planches", url: "/assets/videos/façonnage-planches.mp4" }
+        { label: "Vidéo d'un abattage d'arbre", url: "/videos/Abattage.mp4" },
+        { label: "Voir le façonnage des planches", url: "/videos/façonnage-planches.mp4" }
       ]
     },
     {

@@ -13,21 +13,21 @@ const Missions = () => {
       id: "trust",
       titleKey: "v2.missions.transTitle",
       descKey: "v2.missions.transFull",
-      img: "/assets/trust.jpg",
+      img: "/assets/missions/human-dignity.webp",
       tagKey: "v2.tags.transparency"
     },
     {
       id: "edu",
       titleKey: "v2.missions.eduTitle",
       descKey: "v2.missions.eduFull",
-      img: "/assets/education.jpg",
+      img: "/assets/missions/thriving-children.webp",
       tagKey: "v2.tags.education"
     },
     {
       id: "infra",
       titleKey: "v2.missions.infraTitle",
       descKey: "v2.missions.infraFull",
-      img: "/assets/infrastructure.jpg",
+      img: "/assets/missions/infrastructure.webp",
       tagKey: "v2.tags.infrastructure"
     }
   ];
