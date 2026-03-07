@@ -1,0 +1,316 @@
+/* FUNDRAISING & MATERIALS V2 */
+.fundraising-hero {
+  height: 60vh;
+  min-height: 500px;
+  background: linear-gradient(rgba(0, 61, 41, 0.8), rgba(0, 122, 94, 0.6)), url("/assets/Solidarity-and-unity.png") center/cover;
+  display: flex;
+  align-items: center;
+  padding-top: 100px;
+  text-align: center;
+  color: white;
+}
+
+.fundraising-hero-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero-text {
+  font-size: 1.4rem;
+  opacity: 0.9;
+  line-height: 1.6;
+  margin: 30px auto 40px;
+  max-width: 700px;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .fundraising-hero { height: auto; padding: 150px 0 80px; }
+  .hero-btns { flex-direction: column; align-items: center; }
+  .hero-text { font-size: 1.1rem; }
+}
+
+/* NEEDS SECTION */
+.fundraising-needs {
+  padding: 100px 0;
+  background: white;
+}
+
+.needs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.need-card {
+  background: var(--color-light);
+  padding: 60px 40px;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.need-card:hover {
+  transform: translateY(-10px);
+  background: white;
+  box-shadow: var(--shadow-hover);
+}
+
+.need-icon {
+  width: 90px;
+  height: 90px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  margin: 0 auto 30px;
+  box-shadow: var(--shadow-soft);
+}
+
+.need-card h3 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--color-dark);
+}
+
+.need-card p {
+  color: var(--color-text-main);
+  line-height: 1.7;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.special-donation-prompt {
+  margin-top: 60px;
+  text-align: center;
+  padding: 50px 30px;
+  background: var(--color-green);
+  border-radius: var(--radius-xl);
+  color: white;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+}
+
+.special-donation-prompt::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at top right, rgba(255,255,255,0.1), transparent);
+  pointer-events: none;
+}
+
+.special-donation-prompt h3 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.special-donation-prompt p {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.special-contact-btn {
+  background: var(--color-yellow);
+  color: var(--color-dark);
+  border: none;
+  padding: 10px 30px;
+  border-radius: 50px;
+  font-weight: 900;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.special-contact-btn:hover {
+  background: white;
+  color: var(--color-red);
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .special-donation-prompt h3 { font-size: 1.5rem; }
+  .special-donation-prompt p { font-size: 1.1rem; }
+  .special-contact-btn { font-size: 1.1rem; padding: 8px 25px; }
+}
+
+/* LOGISTICS SECTION */
+.fundraising-logistics {
+  padding: 80px 0;
+  background: var(--color-light);
+}
+
+.logistics-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 80px;
+  box-shadow: var(--shadow-soft);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.logistics-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.main-icon {
+  font-size: 3.5rem;
+  color: var(--color-green);
+  margin-bottom: 25px;
+}
+
+.logistics-header h2 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 15px;
+  color: var(--color-dark);
+}
+
+.logistics-header p {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.shipping-note-box {
+  background: rgba(206, 17, 38, 0.05);
+  border-left: 5px solid var(--color-red);
+  padding: 30px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.note-icon {
+  font-size: 2rem;
+  color: var(--color-red);
+  flex-shrink: 0;
+}
+
+.shipping-note-box p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--color-red);
+  font-weight: 700;
+  text-align: justify;
+}
+
+.logistics-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.address-box {
+  display: flex;
+  gap: 25px;
+  background: var(--color-light);
+  padding: 40px;
+  border-radius: var(--radius-lg);
+}
+
+.address-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--color-green);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.address-text h4 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.address-text p {
+  line-height: 1.6;
+  color: var(--color-text-main);
+}
+
+.contact-prompt {
+  text-align: center;
+  background: rgba(206, 17, 38, 0.05);
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-red);
+}
+
+.heart-icon {
+  font-size: 2.5rem;
+  color: var(--color-red);
+  margin-bottom: 20px;
+}
+
+.contact-prompt p {
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: var(--color-dark);
+}
+
+@media (max-width: 992px) {
+  .logistics-details { grid-template-columns: 1fr; gap: 30px; }
+  .logistics-card { padding: 40px 20px; }
+}
+
+/* CTA BOX */
+.fundraising-cta {
+  padding: 100px 0;
+  background: white;
+}
+
+.cta-box {
+  background: var(--color-dark);
+  color: white;
+  padding: 80px 40px;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.03) 0%, transparent 20%),
+                    radial-gradient(circle at 90% 80%, rgba(255,255,255,0.03) 0%, transparent 20%);
+}
+
+.cta-box h2 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+
+.cta-box p {
+  font-size: 1.3rem;
+  max-width: 600px;
+  margin: 0 auto 40px;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .cta-box h2 { font-size: 2.2rem; }
+}
