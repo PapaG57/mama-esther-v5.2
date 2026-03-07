@@ -4,7 +4,7 @@
 /* 1. HERO */
 .v2-hero {
   height: 100vh;
-  background: url("/assets/banner.png") center/cover no-repeat;
+  background: url("/assets/covers/banner.png") center/cover no-repeat;
   position: relative;
   display: flex;
   align-items: center;
@@ -13,7 +13,7 @@
 .v2-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 100%);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 20%, rgba(0, 0, 0, 0.4) 100%);
   display: flex;
   align-items: center;
 }
@@ -42,7 +42,7 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(252, 209, 22, 0.3);
   color: white;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .v2-hero-aside .bible-verse p {
@@ -303,7 +303,7 @@
   .v2-hero-title {
     font-size: 1.8rem;
   }
-  
+
   .v2-missions-grid {
     grid-template-columns: 1fr;
   }

@@ -2,7 +2,9 @@
 .volunteer-hero {
   height: 60vh;
   min-height: 500px;
-  background: linear-gradient(rgba(0, 61, 41, 0.8), rgba(0, 122, 94, 0.6)), url("/assets/volontariat.png") center/cover;
+  background:
+    linear-gradient(rgba(0, 61, 41, 0.8), rgba(0, 122, 94, 0.6)),
+    url("/assets/Volonteer/engagement.png") center/cover;
   display: flex;
   align-items: center;
   padding-top: 100px;
@@ -48,7 +50,7 @@
   border-radius: var(--radius-xl);
   text-align: left;
   transition: all 0.3s ease;
-  border: 1px solid rgba(0,0,0,0.02);
+  border: 1px solid rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
 }
@@ -197,10 +199,20 @@
 }
 
 @media (max-width: 992px) {
-  .manifesto-box { grid-template-columns: 1fr; }
-  .manifesto-image { height: 350px; }
-  .manifesto-content { padding: 40px; }
-  .experience-badge { right: 20px; bottom: -30px; transform: scale(0.8); }
+  .manifesto-box {
+    grid-template-columns: 1fr;
+  }
+  .manifesto-image {
+    height: 350px;
+  }
+  .manifesto-content {
+    padding: 40px;
+  }
+  .experience-badge {
+    right: 20px;
+    bottom: -30px;
+    transform: scale(0.8);
+  }
 }
 
 /* CTA BOX */
@@ -215,7 +227,7 @@
   padding: 80px 40px;
   border-radius: var(--radius-xl);
   text-align: center;
-  background-image: linear-gradient(45deg, rgba(0,0,0,0.2) 0%, transparent 100%);
+  background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 0%, transparent 100%);
 }
 
 .cta-box h2 {
@@ -232,7 +244,15 @@
 }
 
 @media (max-width: 768px) {
-  .volunteer-hero { height: auto; padding: 150px 0 80px; }
-  .hero-btns { flex-direction: column; align-items: center; }
-  .cta-box h2 { font-size: 2.2rem; }
+  .volunteer-hero {
+    height: auto;
+    padding: 150px 0 80px;
+  }
+  .hero-btns {
+    flex-direction: column;
+    align-items: center;
+  }
+  .cta-box h2 {
+    font-size: 2.2rem;
+  }
 }

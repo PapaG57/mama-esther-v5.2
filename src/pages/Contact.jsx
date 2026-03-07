@@ -15,7 +15,7 @@ const ContactV2 = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    subject: t("v2.contact.formSubjectOptions.other"),
+    subject: "",
     message: ""
   });
   const [loading, setLoading] = useState(false);
@@ -128,11 +128,14 @@ const ContactV2 = () => {
                 </div>
                 <div className="form-group">
                   <label>{t("v2.contact.formSubject")}</label>
-                  <select name="subject" value={formData.subject} onChange={handleChange}>
-                    <option>{t("v2.contact.formSubjectOptions.volunteer")}</option>
-                    <option>{t("v2.contact.formSubjectOptions.donation")}</option>
-                    <option>{t("v2.contact.formSubjectOptions.partnership")}</option>
-                    <option>{t("v2.contact.formSubjectOptions.other")}</option>
+                  <select name="subject" value={formData.subject} onChange={handleChange} required>
+                    <option value="" disabled>{t("v2.contact.formSubjectOptions.select")}</option>
+                    <option value="volunteer">{t("v2.contact.formSubjectOptions.volunteer")}</option>
+                    <option value="donation">{t("v2.contact.formSubjectOptions.donation")}</option>
+                    <option value="partnership">{t("v2.contact.formSubjectOptions.partnership")}</option>
+                    <option value="deadLink">{t("v2.contact.formSubjectOptions.deadLink")}</option>
+                    <option value="techIssue">{t("v2.contact.formSubjectOptions.techIssue")}</option>
+                    <option value="other">{t("v2.contact.formSubjectOptions.other")}</option>
                   </select>
                 </div>
                 <div className="form-group">

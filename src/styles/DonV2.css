@@ -1,6 +1,6 @@
 .don-v2-hero {
   height: 50vh;
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/assets/don/banniere.png") center/cover;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("/assets/don/make-a-donation.webp") center/cover;
   display: flex;
   align-items: center;
   padding-top: 80px;

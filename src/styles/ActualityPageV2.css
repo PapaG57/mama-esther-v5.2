@@ -1,7 +1,7 @@
 /* ACTU V2 - MAGAZINE DESIGN */
 .actu-v2-hero {
-  height: 40vh;
-  background: linear-gradient(rgba(0, 90, 70, 0.7), rgba(0, 0, 0, 0.5)), url("/assets/actualities/news.png") center/cover;
+  height: 50vh;
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("/assets/actualities/news.png") center/cover;
   display: flex;
   align-items: center;
   padding-top: 80px;
