@@ -1,0 +1,238 @@
+/* VOLUNTEER & EMPLOYMENT V2 */
+.volunteer-hero {
+  height: 60vh;
+  min-height: 500px;
+  background: linear-gradient(rgba(0, 61, 41, 0.8), rgba(0, 122, 94, 0.6)), url("/assets/volontariat.png") center/cover;
+  display: flex;
+  align-items: center;
+  padding-top: 100px;
+  text-align: center;
+  color: white;
+}
+
+.volunteer-hero-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero-text {
+  font-size: 1.4rem;
+  opacity: 0.9;
+  line-height: 1.6;
+  margin: 30px auto 40px;
+  max-width: 700px;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* OPPORTUNITIES */
+.volunteer-opportunities {
+  padding: 100px 0;
+  background: white;
+}
+
+.opp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.opp-card {
+  background: var(--color-light);
+  padding: 50px 40px;
+  border-radius: var(--radius-xl);
+  text-align: left;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.opp-card:hover {
+  transform: translateY(-10px);
+  background: white;
+  box-shadow: var(--shadow-hover);
+}
+
+.opp-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow-soft);
+}
+
+.opp-card h3 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  color: var(--color-dark);
+}
+
+.opp-card p {
+  color: var(--color-text-main);
+  line-height: 1.7;
+  text-align: justify;
+  hyphens: auto;
+  flex-grow: 1;
+  margin-bottom: 30px;
+}
+
+.opp-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-green);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.check-icon {
+  font-size: 1.2rem;
+}
+
+/* MANIFESTO SECTION */
+.volunteer-manifesto {
+  padding: 100px 0;
+  background: var(--color-light);
+}
+
+.manifesto-box {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  align-items: center;
+  background: white;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.manifesto-image {
+  height: 600px;
+  background: url("/assets/Volonteer/enfants-afrique.jpg") center/cover;
+  position: relative;
+}
+
+.experience-badge {
+  position: absolute;
+  bottom: 40px;
+  right: -40px;
+  background: var(--color-yellow);
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  transform: rotate(15deg);
+  border: 8px solid white;
+}
+
+.experience-badge .number {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--color-dark);
+}
+
+.experience-badge .text {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-dark);
+}
+
+.manifesto-content {
+  padding: 60px 80px 60px 0;
+}
+
+.manifesto-content h2 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin: 15px 0 30px;
+  color: var(--color-dark);
+}
+
+.manifesto-content p {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--color-text-main);
+  margin-bottom: 40px;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.manifesto-list {
+  list-style: none;
+  padding: 0;
+}
+
+.manifesto-list li {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+  font-weight: 700;
+  color: var(--color-dark);
+  font-size: 1.1rem;
+}
+
+.li-icon {
+  color: var(--color-red);
+  font-size: 1.5rem;
+  width: 30px;
+}
+
+@media (max-width: 992px) {
+  .manifesto-box { grid-template-columns: 1fr; }
+  .manifesto-image { height: 350px; }
+  .manifesto-content { padding: 40px; }
+  .experience-badge { right: 20px; bottom: -30px; transform: scale(0.8); }
+}
+
+/* CTA BOX */
+.volunteer-cta {
+  padding: 100px 0;
+  background: white;
+}
+
+.cta-box {
+  background: var(--color-dark);
+  color: white;
+  padding: 80px 40px;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  background-image: linear-gradient(45deg, rgba(0,0,0,0.2) 0%, transparent 100%);
+}
+
+.cta-box h2 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+
+.cta-box p {
+  font-size: 1.3rem;
+  max-width: 600px;
+  margin: 0 auto 40px;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .volunteer-hero { height: auto; padding: 150px 0 80px; }
+  .hero-btns { flex-direction: column; align-items: center; }
+  .cta-box h2 { font-size: 2.2rem; }
+}
