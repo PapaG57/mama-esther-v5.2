@@ -20,6 +20,8 @@ const MentionsLegales = lazy(() => import("./pages/MentionsLegales"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Missions = lazy(() => import("./pages/Missions"));
 const Sponsor = lazy(() => import("./pages/Sponsor"));
+const FundraisingMaterials = lazy(() => import("./pages/FundraisingMaterials"));
+const Volunteer = lazy(() => import("./pages/Volunteer"));
 const Page404 = lazy(() => import("./pages/404"));
 
 function App() {
@@ -46,6 +48,8 @@ function App() {
           <Route path="/actualities" element={<Actuality />} />
           <Route path="/travaux" element={<Travaux />} />
           <Route path="/missions" element={<Missions />} />
+          <Route path="/collecte-fonds-materiels" element={<FundraisingMaterials />} />
+          <Route path="/volontariat-emploi" element={<Volunteer />} />
           <Route path="/don" element={<Don />} />
           <Route path="/sponsors" element={<Sponsor />} />
           <Route path="/contact" element={<Contact />} />
