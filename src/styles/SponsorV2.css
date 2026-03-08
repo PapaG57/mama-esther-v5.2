@@ -1,7 +1,7 @@
 /* SPONSOR V2 - INSTITUTIONAL ALLIANCE LOOK */
 .sponsor-v2-hero {
   height: 50vh;
-  background: linear-gradient(rgba(0, 61, 41, 0.7), rgba(0, 122, 94, 0.6)), url("/assets/contact/sponsors-welcome.png") center/cover;
+  background: linear-gradient(rgba(0, 61, 41, 0.7), rgba(0, 122, 94, 0.6)), url("/assets/contact/sponsors-welcome.webp") center/cover;
   display: flex;
   align-items: center;
   padding-top: 80px;

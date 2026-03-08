@@ -27,12 +27,12 @@ const MentionsLegales = () => {
           <div className="mentions-v2-card">
             <div className="mentions-v2-header-images">
               <img
-                src="/assets/mentions/logo-mama.png"
+                src="/assets/mentions/logo-mama.webp"
                 alt="Logo Mama Esther"
                 className="mentions-v2-logo"
               />
               <img
-                src="/assets/mentions/president-mama.png"
+                src="/assets/mentions/president-mama.webp"
                 alt="Photo de la Présidente"
                 className="mentions-v2-president"
               />

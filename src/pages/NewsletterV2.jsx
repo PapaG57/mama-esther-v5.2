@@ -16,7 +16,7 @@ const NewsletterV2 = () => {
     { id: 1, date: "Février 2025", pdf: "/assets/newsletter-pdf/pdf/newsletter1-fevrier-2025.pdf" },
   ];
 
-  const separator = { isSeparator: true, img: "/assets/actualities/cameroun-village.jpg" };
+  const separator = { isSeparator: true, img: "/assets/actualities/cameroun-village.webp" };
   const fullList = [...realNewsletters, separator];
   const displayItems = [...fullList, ...fullList, ...fullList];
   

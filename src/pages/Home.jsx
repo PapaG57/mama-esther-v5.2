@@ -77,7 +77,7 @@ const HomeV2 = () => {
             {/* Mission 1: Trust */}
             <div className="v2-mission-card">
               <div className="v2-mission-img">
-                <img src="/assets/trust.jpg" alt="Transparence" />
+                <img src="/assets/missions/human-dignity.webp" alt="Transparence" />
                 <span className="v2-mission-tag">{t("v2.tags.transparency")}</span>
               </div>
               <div className="v2-mission-body">
@@ -90,7 +90,7 @@ const HomeV2 = () => {
             {/* Mission 2: Education */}
             <div className="v2-mission-card">
               <div className="v2-mission-img">
-                <img src="/assets/education.jpg" alt="Education" />
+                <img src="/assets/missions/thriving-children.webp" alt="Education" />
                 <span className="v2-mission-tag">{t("v2.tags.education")}</span>
               </div>
               <div className="v2-mission-body">
@@ -103,7 +103,7 @@ const HomeV2 = () => {
             {/* Mission 3: Infrastructure */}
             <div className="v2-mission-card">
               <div className="v2-mission-img">
-                <img src="/assets/infrastructure.jpg" alt="Infrastructure" />
+                <img src="/assets/missions/infrastructure.webp" alt="Infrastructure" />
                 <span className="v2-mission-tag">{t("v2.tags.infrastructure")}</span>
               </div>
               <div className="v2-mission-body">

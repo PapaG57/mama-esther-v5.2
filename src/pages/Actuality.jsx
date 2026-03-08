@@ -25,7 +25,7 @@ const ActualityPageV2 = () => {
       title: t("actuality.articles.article8.title"),
       date: "17 Août 2025",
       category: "travaux",
-      img: "/assets/actualities/actuality8.png",
+      img: "/assets/actualities/actuality8.webp",
       content: t("actuality.articles.article8.content"),
       videos: [
         { label: "vidéos murs 1", url: "/videos/construction-finitions.mp4" },
@@ -38,7 +38,7 @@ const ActualityPageV2 = () => {
       title: t("actuality.articles.article7.title"),
       date: "19 Juin 2025",
       category: "travaux",
-      img: "/assets/actualities/actuality7.png",
+      img: "/assets/actualities/actuality7.webp",
       content: t("actuality.articles.article7.content")
     },
     {
@@ -47,7 +47,7 @@ const ActualityPageV2 = () => {
       title: t("actuality.articles.article6.title"),
       date: "21 Mai 2025",
       category: "travaux",
-      img: "/assets/actualities/actuality6.png",
+      img: "/assets/actualities/actuality6.webp",
       content: t("actuality.articles.article6.content")
     },
     {
@@ -56,7 +56,7 @@ const ActualityPageV2 = () => {
       title: t("actuality.articles.article5.title"),
       date: "16 Mai 2025",
       category: "travaux",
-      img: "/assets/actualities/actuality5.png",
+      img: "/assets/actualities/actuality5.webp",
       content: t("actuality.articles.article5.content")
     },
     {
@@ -65,7 +65,7 @@ const ActualityPageV2 = () => {
       title: t("actuality.articles.article4.title"),
       date: "22 Avril 2025",
       category: "travaux",
-      img: "/assets/actualities/actuality4.png",
+      img: "/assets/actualities/actuality4.webp",
       content: t("actuality.articles.article4.content"),
       videos: [
         { label: "Vidéo d'un abattage d'arbre", url: "/videos/Abattage.mp4" },
@@ -78,7 +78,7 @@ const ActualityPageV2 = () => {
       title: t("actuality.articles.article3.title"),
       date: "17 Février 2025",
       category: "travaux",
-      img: "/assets/actualities/actuality3.png",
+      img: "/assets/actualities/actuality3.webp",
       content: t("actuality.articles.article3.content")
     },
     {
@@ -87,7 +87,7 @@ const ActualityPageV2 = () => {
       title: t("actuality.articles.article1.title"),
       date: "1er Septembre 2024",
       category: "institutionnel",
-      img: "/assets/actualities/actuality2.png",
+      img: "/assets/actualities/actuality2.webp",
       content: t("actuality.articles.article1.content")
     },
     {
@@ -96,7 +96,7 @@ const ActualityPageV2 = () => {
       title: t("actuality.articles.article2.title"),
       date: "20 Octobre 2024",
       category: "terrain",
-      img: "/assets/actualities/actuality1.png",
+      img: "/assets/actualities/actuality1.webp",
       content: t("actuality.articles.article2.content")
     }
   ];

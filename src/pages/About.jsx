@@ -50,7 +50,7 @@ const AboutV2 = () => {
               </div>
             </div>
             <div className="manifesto-image">
-              <img src="/assets/mentions/president-mama.png" alt="Esther Gérard" />
+              <img src="/assets/mentions/president-mama.webp" alt="Esther Gérard" />
               <div className="image-caption">
                 <strong>{t("footer.contactPresident").split(' - ')[0]}</strong>
                 <span>{t("v2.about.presidentTitle")}</span>

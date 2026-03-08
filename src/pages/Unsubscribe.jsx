@@ -41,7 +41,7 @@ const Unsubscribe = () => {
         <div className="v2-container">
           <div className="unsubscribe-v2-card">
             <img
-              src="/assets/unsubscribe.png"
+              src="/assets/unsubscribe.webp"
               alt="Mama Esther"
               className="unsubscribe-v2-image"
             />
@@ -82,7 +82,7 @@ const Unsubscribe = () => {
         <div className="v2-modal-overlay">
           <div className="v2-modal">
             <img
-              src="/assets/icons/check-green.png"
+              src="/assets/icons/check-green.webp"
               alt="Succès"
               style={{ width: '80px', marginBottom: '30px' }}
             />

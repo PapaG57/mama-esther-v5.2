@@ -1,7 +1,9 @@
 /* ABOUT V2 - STORYTELLING DESIGN */
 .about-v2-hero {
   height: 50vh;
-  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("/assets/about/about.png") center/cover;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url("/assets/about/about.webp") center/cover;
   display: flex;
   align-items: center;
   padding-top: 80px;
@@ -74,7 +76,7 @@
 .manifesto-image img {
   width: 100%;
   border-radius: 30px;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
 }
 
 .image-caption {
@@ -86,7 +88,7 @@
   border-radius: 15px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .image-caption strong {
@@ -124,7 +126,7 @@
 
 .v2-value-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 }
 
 .v2-value-icon {
@@ -179,7 +181,7 @@
     grid-template-columns: 1fr;
     gap: 60px;
   }
-  
+
   .values-grid {
     grid-template-columns: 1fr;
   }

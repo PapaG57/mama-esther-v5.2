@@ -10,47 +10,47 @@ const ActualityV2 = () => {
   const newsItems = [
     { 
       slug: "visite-terrain",
-      img: "/assets/actualities/actuality1.png", 
+      img: "/assets/actualities/actuality1.webp", 
       title: t("actuality.articles.article2.title") 
     },
     { 
       slug: "signature-agrement",
-      img: "/assets/actualities/actuality2.png", 
+      img: "/assets/actualities/actuality2.webp", 
       title: t("actuality.articles.article1.title") 
     },
     { 
       slug: "preparation-parpaings",
-      img: "/assets/actualities/actuality3.png", 
+      img: "/assets/actualities/actuality3.webp", 
       title: t("actuality.articles.article3.title") 
     },
     { 
       slug: "abattage-arbres",
-      img: "/assets/actualities/actuality4.png", 
+      img: "/assets/actualities/actuality4.webp", 
       title: t("actuality.articles.article4.title") 
     },
     { 
       slug: "delimitation-terrain",
-      img: "/assets/actualities/actuality5.png", 
+      img: "/assets/actualities/actuality5.webp", 
       title: t("actuality.articles.article5.title") 
     },
     { 
       slug: "pose-premiere-pierre",
-      img: "/assets/actualities/actuality6.png", 
+      img: "/assets/actualities/actuality6.webp", 
       title: t("actuality.articles.article6.title") 
     },
     { 
       slug: "elevation-murs",
-      img: "/assets/actualities/actuality7.png", 
+      img: "/assets/actualities/actuality7.webp", 
       title: t("actuality.articles.article7.title") 
     },
     { 
       slug: "derniers-moellons",
-      img: "/assets/actualities/actuality8.png", 
+      img: "/assets/actualities/actuality8.webp", 
       title: t("actuality.articles.article8.title") 
     },
     { 
       slug: "cameroun",
-      img: "/assets/actualities/cameroun-village.jpg", 
+      img: "/assets/actualities/cameroun-village.webp", 
       title: t("actuality.articles.article9.title"), 
       isNeutral: true 
     },
