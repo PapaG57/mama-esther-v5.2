@@ -56,11 +56,16 @@ function Footer() {
         <div className="footer-container">
           {/* Logo & Slogan */}
           <div className="footer-logo">
-            <img
-              src="/assets/logos/footer_logoME.png"
-              alt="Association Mama-Esther"
-              className="logo"
-            />
+            <div className="logo-3d-container">
+              {[...Array(8)].map((_, i) => (
+                <img
+                  key={i}
+                  src="/assets/logos/footer_logoME.png"
+                  alt="Association Mama-Esther"
+                  className={`logo-layer layer-${i}`}
+                />
+              ))}
+            </div>
             <p className="slogan">
               {t("footer.slogan")}
             </p>
