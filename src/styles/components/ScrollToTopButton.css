@@ -2,33 +2,31 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 50px;
-  height: 50px;
-  background-color: var(--color-green);
-  color: white;
+  width: 55px;
+  height: 55px;
+  background-color: var(--color-yellow);
+  color: var(--color-dark);
+  border: 2px solid #000;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   box-shadow: var(--shadow-hover);
   z-index: 1000;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: opacity 0.3s ease;
   cursor: pointer;
-  border: none;
 }
 
 .v2-scroll-top:hover {
-  background-color: var(--color-yellow);
-  color: var(--color-dark);
-  transform: translateY(-5px) scale(1.1);
+  transform: translateY(-5px);
 }
 
 @media (max-width: 768px) {
   .v2-scroll-top {
     bottom: 20px;
     right: 20px;
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
   }
 }
