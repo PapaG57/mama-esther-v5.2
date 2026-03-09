@@ -8,6 +8,7 @@ import { faEnvelope, faPhone, faMapMarkerAlt } from "@fortawesome/free-solid-svg
 import { faFacebookF, faWhatsapp, faLinkedin, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { contactService } from "../api/services";
 import { toast } from "react-toastify";
+import HandSpinner from "../components/HandSpinner";
 
 const ContactV2 = () => {
   const { t } = useTranslation();
@@ -28,9 +29,12 @@ const ContactV2 = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      // Petit délai pour admirer le spinner
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       await contactService.sendMessage(formData);
       toast.success(t("contact.form.successTitle"));
-      setFormData({ name: "", email: "", subject: t("v2.contact.formSubjectOptions.other"), message: "" });
+      setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
       toast.error(t("contact.form.submitError"));
     } finally {
@@ -40,6 +44,7 @@ const ContactV2 = () => {
 
   return (
     <div className="v2-layout">
+      {loading && <HandSpinner fullPage={true} text={t("v2.contact.form.sending")} />}
       <Navbar hideDonate={true} />
       
       {/* HERO CONTACT */}

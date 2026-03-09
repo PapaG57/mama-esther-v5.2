@@ -5,6 +5,7 @@ import { newsletterService } from "../api/services";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import HandSpinner from "../components/HandSpinner";
 
 const NewsletterV2 = () => {
   const { t } = useTranslation();
@@ -85,8 +86,8 @@ const NewsletterV2 = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "..." : t("v2.btns.subscribe")}
+              <button type="submit" disabled={isSubmitting} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                {isSubmitting ? <HandSpinner /> : t("v2.btns.subscribe")}
               </button>
             </form>
           </div>

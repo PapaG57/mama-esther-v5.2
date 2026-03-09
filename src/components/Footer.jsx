@@ -17,12 +17,14 @@ import "../styles/components/footer.css";
 import PasswordField from "../components/PasswordField";
 import { useTranslation } from "react-i18next";
 import { adminService } from "../api/services";
+import HandSpinner from "../components/HandSpinner";
 
 function Footer() {
   const { t } = useTranslation();
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [identifiant, setIdentifiant] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleCloseAdminModal = () => {
@@ -33,8 +35,12 @@ function Footer() {
 
   const handleAdminLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
+      // Petit délai pour admirer le spinner
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       const res = await adminService.login({ identifiant, motDePasse });
 
       if (res.data && res.data.token) {
@@ -47,11 +53,14 @@ function Footer() {
     } catch (err) {
       console.error("Erreur de connexion admin :", err);
       alert(err.response?.data?.error || "Erreur réseau");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <footer className="footer">
+      {loading && <HandSpinner fullPage={true} />}
       <div className="footer-main">
         <div className="footer-container">
           {/* Logo & Slogan */}

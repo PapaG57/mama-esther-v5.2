@@ -46,12 +46,6 @@
   fill: var(--nail-color);
 }
 
-/* On ajoute un petit éclat sur les ongles aux couleurs du Cameroun de façon aléatoire */
-.hand__finger--middle .hand__nail {
-  fill: var(--color-yellow);
-  opacity: 0.8;
-}
-
 .hand__finger,
 .hand__finger-inner {
   animation-duration: var(--anim-dur);
