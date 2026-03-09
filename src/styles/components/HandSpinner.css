@@ -1,14 +1,57 @@
-/* Spinner main impatiente */
-.hand {
-  --anim-dur: 3s;
-  --anim-timing: cubic-bezier(0.65, 0, 0.35, 1);
-  display: block;
-  margin-left: 10px;
-  width: 48px;
-  height: auto;
+/* HandSpinner.css - Version Moderne & Culturelle */
+:root {
+  --skin-tone: #5d3a2e; /* Teinte mélanique riche (Afrique Centrale) */
+  --nail-color: rgba(255, 255, 255, 0.4);
+  --accent-cameroon: var(--color-yellow);
 }
 
-/* Animation individuelle par doigt */
+.hand-loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.hand-loader-text {
+  margin-top: 25px;
+  color: var(--color-white);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.9rem;
+  animation: pulse-text 1.5s infinite ease-in-out;
+}
+
+.hand {
+  --anim-dur: 1.2s; /* Plus rapide et nerveux, plus naturel */
+  --anim-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  width: 100px;
+  height: auto;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+.hand__skin {
+  fill: var(--skin-tone);
+  transition: fill 0.3s ease;
+}
+
+.hand__nail {
+  fill: var(--nail-color);
+}
+
+/* On ajoute un petit éclat sur les ongles aux couleurs du Cameroun de façon aléatoire */
+.hand__finger--middle .hand__nail {
+  fill: var(--color-yellow);
+  opacity: 0.8;
+}
+
 .hand__finger,
 .hand__finger-inner {
   animation-duration: var(--anim-dur);
@@ -16,107 +59,35 @@
   animation-iteration-count: infinite;
 }
 
-/* Couleur et animation de la peau */
 .hand__finger-inner {
   animation-name: finger-inner;
-  fill: var(--color-red); /* rouge Cameroun */
 }
 
-/* Animation par doigt avec delays progressifs */
-.hand__finger--pinky {
-  animation-name: pinky;
-}
-.hand__finger--pinky,
-.hand__finger--pinky .hand__finger-inner {
-  animation-delay: calc(var(--anim-dur) * 0.16);
-}
+/* Délais pour un mouvement de "vague" fluide des doigts */
+.hand__finger--pinky, .hand__finger--pinky .hand__finger-inner { animation-delay: 0.4s; }
+.hand__finger--ring, .hand__finger--ring .hand__finger-inner { animation-delay: 0.3s; }
+.hand__finger--middle, .hand__finger--middle .hand__finger-inner { animation-delay: 0.2s; }
+.hand__finger--index, .hand__finger--index .hand__finger-inner { animation-delay: 0.1s; }
+.hand__finger--thumb, .hand__finger--thumb .hand__finger-inner { animation-delay: 0s; }
 
-.hand__finger--ring {
-  animation-name: ring;
-}
-.hand__finger--ring,
-.hand__finger--ring .hand__finger-inner {
-  animation-delay: calc(var(--anim-dur) * 0.12);
-}
-
-.hand__finger--middle .hand__finger-inner {
-  animation-delay: calc(var(--anim-dur) * 0.08);
-}
-
-.hand__finger--index {
-  animation-name: index;
-}
-.hand__finger--index,
-.hand__finger--index .hand__finger-inner {
-  animation-delay: calc(var(--anim-dur) * 0.04);
-}
-
-.hand__finger--thumb .hand__finger-inner {
-  animation-name: thumb-inner;
-}
-
-/* Ongles blancs */
-.hand__nail {
-  fill: #ffffff;
-}
-
-/* Animations keyframes */
 @keyframes finger-inner {
-  from,
-  80%,
-  to {
-    transform: translate(0, 0);
-  }
-  40% {
-    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
-    transform: translate(0, -3px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); } /* Mouvement plus ample */
 }
 
-@keyframes thumb-inner {
-  from,
-  80%,
-  to {
-    transform: translate(0, 0) skewY(0);
-  }
-  40% {
-    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
-    transform: translate(-0.5px, -3px) skewY(-15deg);
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes pinky {
-  from,
-  80%,
-  to {
-    transform: translate(0, 3.5px);
-  }
-  40% {
-    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
-    transform: translate(0, 1.2px);
-  }
+@keyframes pulse-text {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
 }
 
-@keyframes ring {
-  from,
-  80%,
-  to {
-    transform: translate(6.5px, 1.8px);
-  }
-  40% {
-    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
-    transform: translate(6.5px, 0.5px);
-  }
-}
-
-@keyframes index {
-  from,
-  80%,
-  to {
-    transform: translate(19.5px, 2.5px);
-  }
-  40% {
-    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
-    transform: translate(19.5px, 1.2px);
-  }
-}
+/* Adaptations spécifiques pour chaque doigt (positionnement SVG) */
+.hand__finger--pinky { transform: translate(0, 3.5px); }
+.hand__finger--ring { transform: translate(6.5px, 1.8px); }
+.hand__finger--middle { transform: translate(13px, 0); }
+.hand__finger--index { transform: translate(19.5px, 2.5px); }
+.hand__finger--thumb { transform: translate(26px, 0); }

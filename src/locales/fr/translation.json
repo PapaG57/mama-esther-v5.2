@@ -402,7 +402,8 @@
       "learnMore": "En savoir plus",
       "readMore": "Continuer la lecture",
       "back": "Retour",
-      "seeMore": "Voir plus"
+      "seeMore": "Voir plus",
+      "loading": "Chargement en cours..."
     },
     "hero": {
       "associationName": "Association Mama Esther",
