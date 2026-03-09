@@ -150,10 +150,16 @@ export default function Navbar({ hideDonate = false }) {
               className="lang-btn" 
               onClick={() => changeLanguage(i18n.language === 'fr' ? 'en' : 'fr')}
             >
-              <img 
-                src={i18n.language === 'fr' ? "/assets/flags/GB.svg" : "/assets/flags/FR.svg"} 
-                alt="Switch Language" 
-              />
+              <div className="flag-3d-container">
+                {[...Array(8)].map((_, i) => (
+                  <img 
+                    key={i}
+                    src={i18n.language === 'fr' ? "/assets/flags/GB.svg" : "/assets/flags/FR.svg"} 
+                    alt="Switch Language" 
+                    className={`flag-layer flag-layer-${i}`}
+                  />
+                ))}
+              </div>
               <span>{i18n.language === 'fr' ? 'English' : 'Français'}</span>
             </button>
           </li>
@@ -174,10 +180,16 @@ export default function Navbar({ hideDonate = false }) {
             onClick={() => changeLanguage(i18n.language === 'fr' ? 'en' : 'fr')}
             title={i18n.language === 'fr' ? 'Switch to English' : 'Passer au Français'}
           >
-            <img 
-              src={i18n.language === 'fr' ? "/assets/flags/GB.svg" : "/assets/flags/FR.svg"} 
-              alt="Switch Language" 
-            />
+            <div className="flag-3d-container">
+              {[...Array(8)].map((_, i) => (
+                <img 
+                  key={i}
+                  src={i18n.language === 'fr' ? "/assets/flags/GB.svg" : "/assets/flags/FR.svg"} 
+                  alt="Switch Language" 
+                  className={`flag-layer flag-layer-${i}`}
+                />
+              ))}
+            </div>
           </button>
         </div>
       </div>
