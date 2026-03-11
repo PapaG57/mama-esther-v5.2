@@ -82,9 +82,18 @@ const Page404 = () => {
             </p>
 
             <div className="v2-404-btns">
-              <button className="v2-btn v2-btn-primary" onClick={() => navigate('/')}>
+              <button 
+                className="v2-btn v2-btn-primary" 
+                onClick={() => {
+                  if (window.history.length > 2) {
+                    navigate(-1);
+                  } else {
+                    navigate("/");
+                  }
+                }}
+              >
                 <FontAwesomeIcon icon={faArrowLeft} style={{marginRight: '10px'}} />
-                {t("error404.back")}
+                {t("v2.common.back")}
               </button>
               <button className="v2-btn v2-btn-outline" onClick={() => navigate('/contact')}>
                 {t("error404.contact")}
