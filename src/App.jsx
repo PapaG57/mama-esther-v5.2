@@ -18,6 +18,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const MentionsLegales = lazy(() => import("./pages/MentionsLegales"));
 const Admin = lazy(() => import("./pages/Admin"));
+const AdminNewsletterEditor = lazy(() => import("./pages/AdminNewsletterEditor"));
 const Missions = lazy(() => import("./pages/Missions"));
 const Sponsor = lazy(() => import("./pages/Sponsor"));
 const FundraisingMaterials = lazy(() => import("./pages/FundraisingMaterials"));
@@ -56,6 +57,7 @@ function App() {
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/mentions-legales" element={<MentionsLegales />} />
           <Route path="/admin" element={<AdminAccessGate><Admin /></AdminAccessGate>} />
+          <Route path="/admin/newsletter/new" element={<AdminAccessGate><AdminNewsletterEditor /></AdminAccessGate>} />
           <Route path="*" element={<Page404 />} />
         </Routes>
       </Suspense>

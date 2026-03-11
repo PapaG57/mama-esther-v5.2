@@ -27,6 +27,9 @@ export const newsletterService = {
   uploadPdf: (id, formData) => apiClient.post(`/newsletters/${id}/upload-pdf`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
+  uploadImage: (formData) => apiClient.post("/upload-image", formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
 };
 
 export const contactService = {

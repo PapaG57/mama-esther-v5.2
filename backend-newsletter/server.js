@@ -20,10 +20,38 @@ import helloassoRoutes from "./routes/helloasso.js";
 import adminRoutes from "./routes/admin.js";
 import newsletterRoutes from "./routes/newsletters.js";
 import { sendErrorAlertEmail } from "./utils/send-email.js";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
 const app = express();
+
+// Configuration Multer pour l'explorateur Windows
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage: storage });
+
+// Servir les images uploadées comme des fichiers statiques
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.post("/api/upload-image", upload.single("image"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "Aucun fichier envoyé" });
+  }
+  const imageUrl = `/uploads/${req.file.filename}`;
+  res.json({ url: imageUrl });
+});
 
 // 1. 🛡️ SECURITY & CORS
 app.use(helmet()); 

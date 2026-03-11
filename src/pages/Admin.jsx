@@ -265,7 +265,19 @@ export default function Admin() {
             </div>
           </div>
 
-          <AdminNewsletters />
+          <div className="admin-v2-grid">
+            <div className="admin-v2-card" style={{ cursor: 'pointer', border: '2px solid var(--color-green)', transition: 'transform 0.3s' }} onClick={() => navigate('/admin/newsletter/new')}>
+              <h2 style={{ textAlign: 'center' }}>
+                <FontAwesomeIcon icon={faNewspaper} style={{ marginRight: '15px' }} />
+                {t("admin.newsletters.title")}
+              </h2>
+              <p style={{ textAlign: 'center', opacity: 0.7 }}>Cliquez ici pour créer, modifier ou supprimer vos newsletters dans un éditeur visuel moderne.</p>
+              <button className="v2-btn v2-btn-green" style={{ width: '100%', marginTop: '20px' }}>
+                <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: '10px' }} />
+                {t("admin.newsletters.createBtn")}
+              </button>
+            </div>
+          </div>
 
           <div style={{marginTop: "60px", textAlign: "center"}}>
             <button onClick={handleLogout} className="v2-btn v2-btn-red">

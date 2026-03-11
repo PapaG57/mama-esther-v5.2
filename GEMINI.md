@@ -30,5 +30,28 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Ménage :** Suppression de tous les anciens fichiers CSS et composants obsolètes pour un projet propre.
 - [x] **Fixes :** Correction des imports relatifs, du parsing package.json et des scories de traduction.
 
+## 5. Mémo pour la prochaine session (Reprise Newsletters)
+**État actuel :**
+- Le "Studio Newsletter" (`AdminNewsletterEditor.jsx`) est prêt et fonctionnel.
+- L'upload d'images via l'explorateur Windows est configuré.
+- Le backend est prêt.
+
+**À FAIRE : Créer la Newsletter n°3**
+Utiliser ces textes extraits du PDF `newsletter3-octobre-2025.pdf` :
+
+**🇫🇷 Version Française**
+- **Titre :** Newsletter n°3 - Les murs s'élèvent !
+- **Résumé :** Une édition spéciale retraçant les étapes majeures du chantier : de la pose symbolique de la première pierre à la fabrication spectaculaire du porche d'entrée et des terrasses. Découvrez comment votre soutien fait sortir de terre la maison de l'association.
+- **Tags :** chantier, fondations, murs, porche, avancées
+
+**🇬🇧 English Version**
+- **Title:** Newsletter #3 - The walls are rising!
+- **Summary:** A special edition retracing the major stages of the construction: from the symbolic laying of the first stone to the spectacular creation of the entrance porch and terraces. Discover how your support is bringing the association's house to life.
+- **Tags:** construction, foundations, walls, porch, progress
+
+**Paramètres :**
+- **Date :** Octobre 2025
+- **PDF :** `/assets/newsletter-pdf/pdf/newsletter3-octobre-2025.pdf`
+
 ---
 *Note : Cette version v5.2 est la version officielle de référence. Le projet est désormais totalement harmonisé sur le nouveau design system.*

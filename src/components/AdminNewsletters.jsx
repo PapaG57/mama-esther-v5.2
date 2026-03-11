@@ -22,6 +22,7 @@ const AdminNewsletters = () => {
     date: new Date().toISOString().split('T')[0],
     tags: { fr: '', en: '' },
     coverImage: '',
+    pdfPath: '',
     isPublished: false,
     content: { fr: [], en: [] } // Pour une évolution future vers des blocs
   });
@@ -257,6 +258,17 @@ const AdminNewsletters = () => {
                   className="admin-v2-input" 
                   placeholder="URL de l'image (ex: /assets/covers/...)" 
                   value={formData.coverImage} 
+                  onChange={handleInputChange} 
+                  required 
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>Chemin du PDF</label>
+                <input 
+                  name="pdfPath"
+                  className="admin-v2-input" 
+                  placeholder="Ex: /assets/newsletter-pdf/pdf/newsletter3-octobre-2025.pdf" 
+                  value={formData.pdfPath} 
                   onChange={handleInputChange} 
                   required 
                 />
