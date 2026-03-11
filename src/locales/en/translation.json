@@ -165,6 +165,15 @@
           "chantier": "construction",
           "solidarite": "solidarity"
         }
+      },
+      "news3": {
+        "title": "Newsletter #3",
+        "summary": "Discover the key stages of construction: from laying the first stone to raising the walls and the porch.",
+        "tags": {
+          "fondations": "foundations",
+          "murs": "walls",
+          "chantier": "construction"
+        }
       }
     }
   },

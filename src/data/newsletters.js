@@ -4,7 +4,7 @@ export const newsletters = [
     titleKey: "newsletters.list.news1.title",
     date: "2025-02-15",
     summaryKey: "newsletters.list.news1.summary",
-    coverImage: "/assets/covers/news1.jpg",
+    coverImage: "/assets/covers/news1.webp",
     tags: [
       "newsletters.list.news1.tags.terrain",
       "newsletters.list.news1.tags.travaux",
@@ -18,7 +18,7 @@ export const newsletters = [
     titleKey: "newsletters.list.news2.title",
     date: "2025-05-20",
     summaryKey: "newsletters.list.news2.summary",
-    coverImage: "/assets/covers/news2.jpg",
+    coverImage: "/assets/covers/news2.webp",
     tags: [
       "newsletters.list.news2.tags.envois",
       "newsletters.list.news2.tags.chantier",
@@ -26,5 +26,19 @@ export const newsletters = [
     ],
     htmlPath: "https://www.mamaesther.org/newsletters/news2/news2.html",
     pdfPath: "/assets/newsletter-pdf/pdf/newsletter2-mai-2025.pdf",
+  },
+  {
+    id: 3,
+    titleKey: "newsletters.list.news3.title",
+    date: "2025-11-15",
+    summaryKey: "newsletters.list.news3.summary",
+    coverImage: "/assets/covers/news3.webp",
+    tags: [
+      "newsletters.list.news3.tags.fondations",
+      "newsletters.list.news3.tags.murs",
+      "newsletters.list.news3.tags.chantier",
+    ],
+    htmlPath: "https://www.mamaesther.org/newsletters/news3/news3.html",
+    pdfPath: "/assets/newsletter-pdf/pdf/news3.pdf",
   },
 ];

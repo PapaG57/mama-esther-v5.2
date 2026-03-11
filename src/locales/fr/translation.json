@@ -165,6 +165,15 @@
           "chantier": "chantier",
           "solidarite": "solidarité"
         }
+      },
+      "news3": {
+        "title": "Newsletter n°3",
+        "summary": "Découvrez les étapes clés de la construction : de la pose de la première pierre à l'élévation des murs et du porche.",
+        "tags": {
+          "fondations": "fondations",
+          "murs": "murs",
+          "chantier": "chantier"
+        }
       }
     }
   },

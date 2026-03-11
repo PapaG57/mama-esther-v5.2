@@ -13,6 +13,7 @@ const NewsletterV2 = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const realNewsletters = [
+    { id: 3, date: "Novembre 2025", pdf: "/assets/newsletter-pdf/pdf/news3.pdf" },
     { id: 2, date: "Mai 2025", pdf: "/assets/newsletter-pdf/pdf/newsletter2-mai-2025.pdf" },
     { id: 1, date: "Février 2025", pdf: "/assets/newsletter-pdf/pdf/newsletter1-fevrier-2025.pdf" },
   ];
@@ -112,7 +113,7 @@ const NewsletterV2 = () => {
                         </div>
                         <div className="v2-mag-body">
                           <p style={{fontSize: '0.8rem', opacity: 0.9, lineHeight: 1.4}}>
-                            {t("newsletters.list.news1.summary")}
+                            {t(`newsletters.list.news${item.id}.summary`)}
                           </p>
                         </div>
                         <div className="v2-mag-footer">
