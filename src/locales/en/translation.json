@@ -404,6 +404,42 @@
       "confirm": "Confirm",
       "cancel": "Cancel",
       "close": "Close"
+    },
+    "newsletters": {
+      "title": "📰 Newsletter Management",
+      "createBtn": "Create a newsletter",
+      "listTitle": "Existing Newsletters",
+      "noNewsletters": "No newsletters in the database.",
+      "editBtn": "Edit",
+      "deleteBtn": "Delete",
+      "form": {
+        "title": "Title",
+        "summary": "Summary",
+        "date": "Publication Date",
+        "tags": "Tags (comma separated)",
+        "coverImage": "Cover Image (URL)",
+        "isPublished": "Publish immediately",
+        "submitCreate": "Create newsletter",
+        "submitUpdate": "Update",
+        "cancel": "Cancel"
+      },
+      "ai": {
+        "title": "🤖 Mama Esther AI Assistant",
+        "promptPlaceholder": "Describe the content or provide keywords...",
+        "generateBtn": "Generate with AI",
+        "actionDraft": "Write a draft",
+        "actionTranslate": "Translate to French",
+        "actionSummarize": "Summarize content",
+        "helpText": "The AI can help you write or translate your content to save time."
+      },
+      "messages": {
+        "loading": "Loading newsletters...",
+        "createSuccess": "Newsletter successfully created!",
+        "updateSuccess": "Newsletter updated!",
+        "deleteSuccess": "Newsletter deleted.",
+        "error": "An error occurred.",
+        "aiError": "The AI assistant could not respond."
+      }
     }
   },
   "v2": {
@@ -412,6 +448,9 @@
       "readMore": "Continue reading",
       "back": "Back",
       "seeMore": "See more"
+    },
+    "loader": {
+      "loading": "Loading..."
     },
     "hero": {
       "associationName": "Mama Esther Association",

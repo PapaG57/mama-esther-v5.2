@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt, faNewspaper } from "@fortawesome/free-solid-svg-icons";
+import AdminNewsletters from "../components/AdminNewsletters";
 import "../styles/AdminV2.css";
 import PasswordField from "../components/PasswordField";
 import confetti from "canvas-confetti";
@@ -263,6 +264,8 @@ export default function Admin() {
               </table>
             </div>
           </div>
+
+          <AdminNewsletters />
 
           <div style={{marginTop: "60px", textAlign: "center"}}>
             <button onClick={handleLogout} className="v2-btn v2-btn-red">

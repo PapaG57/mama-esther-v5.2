@@ -18,6 +18,7 @@ import donRouter from "./routes/Don.js";
 import donationRoutes from "./routes/Donations.js";
 import helloassoRoutes from "./routes/helloasso.js";
 import adminRoutes from "./routes/admin.js";
+import newsletterRoutes from "./routes/newsletters.js";
 import { sendErrorAlertEmail } from "./utils/send-email.js";
 
 dotenv.config();
@@ -57,6 +58,7 @@ app.use("/api/don", donRouter);
 app.use("/api/donations", donationRoutes);
 app.use("/api/helloasso", helloassoRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/newsletters", newsletterRoutes);
 
 app.get("/", (req, res) => {
   res.send("🟢 Serveur opérationnel !");

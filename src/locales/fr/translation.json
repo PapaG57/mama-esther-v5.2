@@ -404,6 +404,42 @@
       "confirm": "Confirmer",
       "cancel": "Annuler",
       "close": "Fermer"
+    },
+    "newsletters": {
+      "title": "📰 Gestion des Newsletters",
+      "createBtn": "Créer une newsletter",
+      "listTitle": "Newsletters existantes",
+      "noNewsletters": "Aucune newsletter en base de données.",
+      "editBtn": "Modifier",
+      "deleteBtn": "Supprimer",
+      "form": {
+        "title": "Titre",
+        "summary": "Résumé",
+        "date": "Date de publication",
+        "tags": "Tags (séparés par des virgules)",
+        "coverImage": "Image de couverture (URL)",
+        "isPublished": "Publier immédiatement",
+        "submitCreate": "Créer la newsletter",
+        "submitUpdate": "Mettre à jour",
+        "cancel": "Annuler"
+      },
+      "ai": {
+        "title": "🤖 Assistant IA Mama Esther",
+        "promptPlaceholder": "Décrivez le contenu ou donnez des mots-clés...",
+        "generateBtn": "Générer avec l'IA",
+        "actionDraft": "Rédiger un brouillon",
+        "actionTranslate": "Traduire vers l'Anglais",
+        "actionSummarize": "Résumer le contenu",
+        "helpText": "L'IA peut vous aider à rédiger ou traduire vos contenus pour gagner du temps."
+      },
+      "messages": {
+        "loading": "Chargement des newsletters...",
+        "createSuccess": "Newsletter créée avec succès !",
+        "updateSuccess": "Newsletter mise à jour !",
+        "deleteSuccess": "Newsletter supprimée.",
+        "error": "Une erreur est survenue.",
+        "aiError": "L'assistant IA n'a pas pu répondre."
+      }
     }
   },
   "v2": {
@@ -411,7 +447,9 @@
       "learnMore": "En savoir plus",
       "readMore": "Continuer la lecture",
       "back": "Retour",
-      "seeMore": "Voir plus",
+      "seeMore": "Voir plus"
+    },
+    "loader": {
       "loading": "Chargement en cours..."
     },
     "hero": {

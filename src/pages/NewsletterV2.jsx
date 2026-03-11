@@ -8,26 +8,45 @@ import { faEnvelope, faChevronLeft, faChevronRight } from "@fortawesome/free-sol
 import HandSpinner from "../components/HandSpinner";
 
 const NewsletterV2 = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newsletters, setNewsletters] = useState([]);
+  const [loading, setLoading] = useState(true);
   
-  const realNewsletters = [
-    { id: 3, date: "Novembre 2025", pdf: "/assets/newsletter-pdf/pdf/news3.pdf" },
-    { id: 2, date: "Mai 2025", pdf: "/assets/newsletter-pdf/pdf/newsletter2-mai-2025.pdf" },
-    { id: 1, date: "Février 2025", pdf: "/assets/newsletter-pdf/pdf/newsletter1-fevrier-2025.pdf" },
-  ];
-
   const separator = { isSeparator: true, img: "/assets/actualities/cameroun-village.webp" };
-  const fullList = [...realNewsletters, separator];
+  const [fullList, setFullList] = useState([separator]);
+  const [scrollIndex, setScrollIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const res = await newsletterService.getAll();
+        const newsData = res.data;
+        
+        if (newsData && newsData.length > 0) {
+          // Fusionner avec le séparateur pour le carrousel
+          const listWithSeparator = [...newsData, separator];
+          setFullList(listWithSeparator);
+          setScrollIndex(listWithSeparator.length); // Position de départ pour le scroll infini
+        }
+      } catch (err) {
+        console.error("Erreur chargement newsletters:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNews();
+  }, []);
+
   const displayItems = [...fullList, ...fullList, ...fullList];
-  
-  const [scrollIndex, setScrollIndex] = useState(fullList.length);
 
   const nextSlide = () => setScrollIndex((prev) => prev + 1);
   const prevSlide = () => setScrollIndex((prev) => prev - 1);
 
   useEffect(() => {
+    if (fullList.length <= 1) return; // Ne pas faire de scroll infini si vide
+
     if (scrollIndex === fullList.length * 2) {
       setTimeout(() => {
         const track = document.querySelector('.v2-newsletter-track');
@@ -99,29 +118,31 @@ const NewsletterV2 = () => {
                 className="v2-newsletter-track"
                 style={{ transform: `translateX(-${scrollIndex * (itemWidth + gap)}px)` }}
               >
-                {displayItems.map((item, i) => (
+                {loading ? (
+                  <div style={{width: '240px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><HandSpinner /></div>
+                ) : displayItems.map((item, i) => (
                   item.isSeparator ? (
                     <div className="v2-magazine-separator" key={i}>
                       <img src={item.img} alt="Separator" />
                     </div>
                   ) : (
-                    <a href={item.pdf} target="_blank" rel="noreferrer" className="v2-magazine-item" key={i}>
-                      <div className="v2-magazine-cover">
+                    <a href={item.pdfPath} target="_blank" rel="noreferrer" className="v2-magazine-item" key={i}>
+                      <div className="v2-magazine-cover" style={{backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url(${item.coverImage})`, backgroundSize: 'cover'}}>
                         <div className="v2-mag-header">
                           <span>{t("v2.hero.associationName").split(' ')[0]}</span>
                           <div className="v2-mag-title">Mama Esther</div>
                         </div>
                         <div className="v2-mag-body">
-                          <p style={{fontSize: '0.8rem', opacity: 0.9, lineHeight: 1.4}}>
-                            {t(`newsletters.list.news${item.id}.summary`)}
+                          <p style={{fontSize: '0.8rem', opacity: 0.9, lineHeight: 1.4, fontWeight: '600', textShadow: '0 2px 4px rgba(0,0,0,0.5)'}}>
+                            {item.summary[i18n.language] || item.summary.fr}
                           </p>
                         </div>
                         <div className="v2-mag-footer">
-                          <div className="v2-mag-date">
-                            {t(`v2.months.${item.date.split(' ')[0].toLowerCase().replace('é', 'e')}`)} {item.date.split(' ')[1]}
+                          <div className="v2-mag-date" style={{textTransform: 'capitalize'}}>
+                            {new Date(item.date).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
                           </div>
                         </div>
-                        <div className="v2-mag-number">#{item.id}</div>
+                        <div className="v2-mag-number">#{item.newsletterNumber}</div>
                       </div>
                     </a>
                   )
@@ -129,10 +150,10 @@ const NewsletterV2 = () => {
               </div>
             </div>
 
-            {/* Contrôles de navigation en bas et centrés */}
+            {/* Contrôles de navigation */}
             <div className="v2-mag-nav-controls">
-              <button className="v2-mag-nav-btn" onClick={prevSlide}><FontAwesomeIcon icon={faChevronLeft} /></button>
-              <button className="v2-mag-nav-btn" onClick={nextSlide}><FontAwesomeIcon icon={faChevronRight} /></button>
+              <button className="v2-mag-nav-btn" onClick={prevSlide} disabled={fullList.length <= 1}><FontAwesomeIcon icon={faChevronLeft} /></button>
+              <button className="v2-mag-nav-btn" onClick={nextSlide} disabled={fullList.length <= 1}><FontAwesomeIcon icon={faChevronRight} /></button>
             </div>
           </div>
 

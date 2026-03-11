@@ -39,6 +39,6 @@ export const newsletters = [
       "newsletters.list.news3.tags.chantier",
     ],
     htmlPath: "https://www.mamaesther.org/newsletters/news3/news3.html",
-    pdfPath: "/assets/newsletter-pdf/pdf/news3.pdf",
+    pdfPath: "/assets/newsletter-pdf/pdf/newsletter3-octobre-2025.pdf",
   },
 ];

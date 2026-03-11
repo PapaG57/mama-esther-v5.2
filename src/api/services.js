@@ -18,6 +18,15 @@ export const donationService = {
 export const newsletterService = {
   subscribe: (email) => apiClient.post("/subscribe", { email }),
   unsubscribe: (email) => apiClient.post("/unsubscribe", { email }),
+  
+  // Nouveaux services dynamiques
+  getAll: () => apiClient.get("/newsletters"),
+  getById: (id) => apiClient.get(`/newsletters/${id}`),
+  create: (data) => apiClient.post("/newsletters", data),
+  aiGenerate: (prompt, action) => apiClient.post("/newsletters/ai-generate", { prompt, action }),
+  uploadPdf: (id, formData) => apiClient.post(`/newsletters/${id}/upload-pdf`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
 };
 
 export const contactService = {
