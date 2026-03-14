@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/NewsletterV2.css";
 import { useTranslation } from "react-i18next";
 import { newsletterService } from "../api/services";
+import { newsletters as staticNewsletters } from "../data/newsletters";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -11,7 +12,6 @@ const NewsletterV2 = () => {
   const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [newsletters, setNewsletters] = useState([]);
   const [loading, setLoading] = useState(true);
   
   const separator = { isSeparator: true, img: "/assets/actualities/cameroun-village.webp" };
@@ -22,22 +22,50 @@ const NewsletterV2 = () => {
     const fetchNews = async () => {
       try {
         const res = await newsletterService.getAll();
-        const newsData = res.data;
+        let newsData = res.data;
         
+        // Si le backend est vide, on utilise les données statiques transformées pour être compatibles
+        if (!newsData || newsData.length === 0) {
+          newsData = staticNewsletters.map(nl => ({
+            ...nl,
+            newsletterNumber: nl.id,
+            // Pour le résumé, on utilise la clé de traduction si c'est un objet complexe attendu
+            summary: {
+              fr: t(nl.summaryKey, { lng: 'fr' }),
+              en: t(nl.summaryKey, { lng: 'en' })
+            }
+          }));
+        }
+
         if (newsData && newsData.length > 0) {
-          // Fusionner avec le séparateur pour le carrousel
+          // Tri par date décroissante
+          newsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+          
           const listWithSeparator = [...newsData, separator];
           setFullList(listWithSeparator);
-          setScrollIndex(listWithSeparator.length); // Position de départ pour le scroll infini
+          setScrollIndex(listWithSeparator.length); 
         }
       } catch (err) {
         console.error("Erreur chargement newsletters:", err);
+        // Fallback en cas d'erreur serveur
+        const fallbackData = staticNewsletters.map(nl => ({
+          ...nl,
+          newsletterNumber: nl.id,
+          summary: {
+            fr: t(nl.summaryKey, { lng: 'fr' }),
+            en: t(nl.summaryKey, { lng: 'en' })
+          }
+        })).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        const listWithSeparator = [...fallbackData, separator];
+        setFullList(listWithSeparator);
+        setScrollIndex(listWithSeparator.length);
       } finally {
         setLoading(false);
       }
     };
     fetchNews();
-  }, []);
+  }, [t]);
 
   const displayItems = [...fullList, ...fullList, ...fullList];
 
@@ -127,16 +155,17 @@ const NewsletterV2 = () => {
                     </div>
                   ) : (
                     <a href={item.pdfPath} target="_blank" rel="noreferrer" className="v2-magazine-item" key={i}>
-                      <div className="v2-magazine-cover" style={{backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url(${item.coverImage})`, backgroundSize: 'cover'}}>
+                      <div className="v2-magazine-cover">
                         <div className="v2-mag-header">
+                          <img 
+                            src="/assets/logos/logoMama.png" 
+                            alt="Logo Mama Esther" 
+                            style={{ width: '50px', marginBottom: '15px', filter: 'brightness(0) invert(1)' }} 
+                          />
                           <span>{t("v2.hero.associationName").split(' ')[0]}</span>
                           <div className="v2-mag-title">Mama Esther</div>
                         </div>
-                        <div className="v2-mag-body">
-                          <p style={{fontSize: '0.8rem', opacity: 0.9, lineHeight: 1.4, fontWeight: '600', textShadow: '0 2px 4px rgba(0,0,0,0.5)'}}>
-                            {item.summary[i18n.language] || item.summary.fr}
-                          </p>
-                        </div>
+                        
                         <div className="v2-mag-footer">
                           <div className="v2-mag-date" style={{textTransform: 'capitalize'}}>
                             {new Date(item.date).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}

@@ -167,12 +167,14 @@
         }
       },
       "news3": {
-        "title": "Newsletter #3",
-        "summary": "Discover the key stages of construction: from laying the first stone to raising the walls and the porch.",
+        "title": "Newsletter #3 - The walls are rising!",
+        "summary": "A special edition retracing the major stages of the construction: from the symbolic laying of the first stone to the spectacular creation of the entrance porch and terraces. Discover how your support is bringing the association's house to life.",
         "tags": {
+          "chantier": "construction",
           "fondations": "foundations",
           "murs": "walls",
-          "chantier": "construction"
+          "porche": "porch",
+          "avancees": "progress"
         }
       }
     }

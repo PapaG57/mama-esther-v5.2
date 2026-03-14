@@ -9,6 +9,11 @@ const ActualityV2 = () => {
 
   const newsItems = [
     { 
+      slug: "newsletter-3",
+      img: "/assets/actualities/actuality7.webp", 
+      title: t("newsletters.list.news3.title") 
+    },
+    { 
       slug: "visite-terrain",
       img: "/assets/actualities/actuality1.webp", 
       title: t("actuality.articles.article2.title") 

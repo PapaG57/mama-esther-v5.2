@@ -167,12 +167,14 @@
         }
       },
       "news3": {
-        "title": "Newsletter n°3",
-        "summary": "Découvrez les étapes clés de la construction : de la pose de la première pierre à l'élévation des murs et du porche.",
+        "title": "Newsletter n°3 - Les murs s'élèvent !",
+        "summary": "Une édition spéciale retraçant les étapes majeures du chantier : de la pose symbolique de la première pierre à la fabrication spectaculaire du porche d'entrée et des terrasses. Découvrez comment votre soutien fait sortir de terre la maison de l'association.",
         "tags": {
+          "chantier": "chantier",
           "fondations": "fondations",
           "murs": "murs",
-          "chantier": "chantier"
+          "porche": "porche",
+          "avancees": "avancées"
         }
       }
     }

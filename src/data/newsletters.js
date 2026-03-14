@@ -30,13 +30,15 @@ export const newsletters = [
   {
     id: 3,
     titleKey: "newsletters.list.news3.title",
-    date: "2025-11-15",
+    date: "2025-10-15",
     summaryKey: "newsletters.list.news3.summary",
-    coverImage: "/assets/covers/news3.webp",
+    coverImage: "/assets/actualities/actuality7.webp",
     tags: [
+      "newsletters.list.news3.tags.chantier",
       "newsletters.list.news3.tags.fondations",
       "newsletters.list.news3.tags.murs",
-      "newsletters.list.news3.tags.chantier",
+      "newsletters.list.news3.tags.porche",
+      "newsletters.list.news3.tags.avancees",
     ],
     htmlPath: "https://www.mamaesther.org/newsletters/news3/news3.html",
     pdfPath: "/assets/newsletter-pdf/pdf/newsletter3-octobre-2025.pdf",

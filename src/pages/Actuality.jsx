@@ -20,6 +20,16 @@ const ActualityPageV2 = () => {
 
   const news = [
     {
+      id: 9,
+      slug: "newsletter-3",
+      title: t("newsletters.list.news3.title"),
+      date: "15 Octobre 2025",
+      category: "institutionnel",
+      img: "/assets/actualities/actuality7.webp",
+      content: t("newsletters.list.news3.summary"),
+      pdfPath: "/assets/newsletter-pdf/pdf/newsletter3-octobre-2025.pdf"
+    },
+    {
       id: 8,
       slug: "derniers-moellons",
       title: t("actuality.articles.article8.title"),
