@@ -13,23 +13,33 @@ import Navbar from '../components/Navbar';
 import '../styles/AdminNewsletterEditor.css';
 
 const AdminNewsletterEditor = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [isPreview, setIsPreview] = useState(false);
-  const [currentLang, setCurrentLang] = useState('fr');
+  // On utilise la langue de i18next pour déterminer quelle version on édite
+  const currentLang = i18n.language.split('-')[0] === 'en' ? 'en' : 'fr';
+  
   const [activeBlockId, setActiveBlockId] = useState(null);
   const fileInputRef = useRef(null);
-  const [uploadTarget, setUploadTarget] = useState(null); // 'banner', 'president', or {blockId}
+  const [uploadTarget, setUploadTarget] = useState(null);
 
-  // État initial basé sur la trame News3
+  // SVG Gemini Logo
+  const GeminiLogo = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px' }}>
+      <path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" fill="currentColor"/>
+      <path d="M19 3L19.71 4.71L21.42 5.42L19.71 6.13L19 7.84L18.29 6.13L16.58 5.42L18.29 4.71L19 3Z" fill="currentColor"/>
+    </svg>
+  );
+
+  // État initial mis à jour selon tes demandes
   const [data, setData] = useState({
-    title: { fr: 'Newsletter #... - MOIS ANNÉE', en: 'Newsletter #... - MONTH YEAR' },
+    title: { fr: 'Newsletter #3 - ', en: 'Newsletter #3 - ' },
     date: new Date().toISOString().split('T')[0],
-    bannerImage: '/assets/covers/banner.webp',
+    bannerImage: '/assets/covers/banner-news.webp',
     presidentImage: '/assets/mentions/president-mama.webp',
     edito: { 
-      fr: "Bonjour et bienvenue à tous les lecteurs de cette newsletter !...", 
-      en: "Hello and welcome to all readers of this newsletter!..." 
+      fr: "Votre texte d'édito ici...", 
+      en: "Your editorial text here..." 
     },
     blocks: [
       { 
@@ -51,7 +61,7 @@ const AdminNewsletterEditor = () => {
     if (blockId) {
       setData(prev => ({
         ...prev,
-        blocks: prev.blocks.map(b => b.id === blockId ? { ...b, [field]: { ...b[field], [currentLang]: value } } : b)
+        blocks: prev.blocks.map(b => b.id === blockId ? { ...b, text: { ...b.text, [currentLang]: value } } : b)
       }));
     } else {
       setData(prev => ({
@@ -73,7 +83,7 @@ const AdminNewsletterEditor = () => {
       id: Date.now(),
       type: 'article',
       image: '',
-      text: { fr: 'Nouveau texte d\'article...', en: 'New article text...' },
+      text: { fr: 'Votre texte d\'article ici...', en: 'Your article text here...' },
       styles: { fontSize: '1.2rem', color: 'white' }
     };
     setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
@@ -150,18 +160,14 @@ const AdminNewsletterEditor = () => {
       {/* TOOLBAR */}
       <div className="editor-toolbar">
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-          <button className="v2-btn-icon" onClick={() => navigate('/admin')}><FontAwesomeIcon icon={faArrowLeft} /></button>
-          <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Studio Newsletter v2.1 (Style News3)</h2>
+          <button className="v2-btn-icon" onClick={() => navigate('/admin')} title="Retour à l'administration"><FontAwesomeIcon icon={faArrowLeft} /></button>
+          <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Studio Newsletter v2.5 (Style ONG Moderne)</h2>
         </div>
         <div style={{ display: 'flex', gap: '15px' }}>
-          <div style={{ display: 'flex', background: '#eee', borderRadius: '30px', padding: '5px' }}>
-            <button className={`lang-toggle-btn ${currentLang === 'fr' ? 'active' : ''}`} onClick={() => setCurrentLang('fr')}>🇫🇷 FR</button>
-            <button className={`lang-toggle-btn ${currentLang === 'en' ? 'active' : ''}`} onClick={() => setCurrentLang('en')}>🇬🇧 EN</button>
-          </div>
-          <button className="v2-btn v2-btn-outline-green" onClick={() => setIsPreview(!isPreview)}>
+          <button className="v2-btn v2-btn-outline-green" onClick={() => setIsPreview(!isPreview)} title="Basculer entre édition et aperçu">
             <FontAwesomeIcon icon={isPreview ? faEyeSlash : faEye} /> {isPreview ? 'Éditer' : 'Aperçu'}
           </button>
-          <button className="v2-btn v2-btn-green" onClick={handleSave}><FontAwesomeIcon icon={faSave} /> Publier</button>
+          <button className="v2-btn v2-btn-green" onClick={handleSave} title="Enregistrer et publier la newsletter"><FontAwesomeIcon icon={faSave} /> Publier</button>
         </div>
       </div>
 
@@ -169,8 +175,9 @@ const AdminNewsletterEditor = () => {
       <div className="editor-container">
         
         {/* BANNIÈRE HEADER */}
-        <div className="mag-header-banner" onClick={() => { setUploadTarget('banner'); fileInputRef.current.click(); }}>
+        <div className="mag-header-banner" onClick={() => { setUploadTarget('banner'); fileInputRef.current.click(); }} title="Cliquer pour changer l'image de couverture">
           <img src={data.bannerImage} alt="Bannière" />
+          {!isPreview && <div className="img-overlay-btn"><FontAwesomeIcon icon={faImage} /> Changer la bannière</div>}
         </div>
 
         <div className="mag-content-padding">
@@ -179,6 +186,7 @@ const AdminNewsletterEditor = () => {
             contentEditable={!isPreview}
             suppressContentEditableWarning={true}
             onBlur={(e) => handleTextChange('title', e.target.innerText)}
+            title="Titre de la newsletter"
           >
             {data.title[currentLang]}
           </h1>
@@ -187,20 +195,22 @@ const AdminNewsletterEditor = () => {
           <section className="mag-edito-box">
             <div className="mag-edito-left">
               <h3 style={{ color: 'white', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.9rem' }}>Le mot de la présidente</h3>
-              <img 
-                src={data.presidentImage} 
-                alt="Présidente" 
-                className="mag-edito-img" 
-                onClick={() => { setUploadTarget('president'); fileInputRef.current.click(); }}
-                style={{ cursor: 'pointer' }}
-              />
+              <div className="president-img-wrapper" onClick={() => { setUploadTarget('president'); fileInputRef.current.click(); }} title="Changer la photo de la présidente">
+                <img 
+                  src={data.presidentImage} 
+                  alt="Présidente" 
+                  className="mag-edito-img" 
+                />
+                {!isPreview && <div className="img-mini-btn"><FontAwesomeIcon icon={faPlusCircle} /></div>}
+              </div>
             </div>
             <div className="mag-edito-right">
               <div 
-                className="editable-area" 
+                className="editable-area edito-text" 
                 contentEditable={!isPreview}
                 suppressContentEditableWarning={true}
                 onBlur={(e) => handleTextChange('edito', e.target.innerText)}
+                title="Texte de l'édito"
               >
                 {data.edito[currentLang]}
               </div>
@@ -208,35 +218,48 @@ const AdminNewsletterEditor = () => {
           </section>
 
           {/* BLOCS ARTICLES */}
-          {data.blocks.map((block) => (
-            <div key={block.id} className="mag-article-row" onClick={() => setActiveBlockId(block.id)}>
-              <div 
-                className="mag-article-img-box" 
-                onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }}
-              >
-                {block.image ? <img src={block.image} alt="Article" /> : <FontAwesomeIcon icon={faImage} size="3x" color="rgba(255,255,255,0.3)" />}
-              </div>
-              <div className="mag-article-right" style={block.styles}>
+          <div className="mag-articles-list">
+            {data.blocks.map((block) => (
+              <div key={block.id} className="mag-article-row" onClick={() => setActiveBlockId(block.id)}>
                 <div 
-                  className="mag-article-text editable-area"
-                  contentEditable={!isPreview}
-                  suppressContentEditableWarning={true}
-                  onBlur={(e) => handleTextChange('text', e.target.innerText, block.id)}
+                  className="mag-article-img-box" 
+                  onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }}
+                  title="Cliquer pour ajouter ou modifier l'image"
                 >
-                  {block.text[currentLang]}
+                  {block.image ? (
+                    <img src={block.image} alt="Article" />
+                  ) : (
+                    <div className="add-img-placeholder">
+                      <FontAwesomeIcon icon={faImage} size="3x" color="rgba(255,255,255,0.3)" />
+                      <span>Ajouter une image</span>
+                    </div>
+                  )}
                 </div>
-                {!isPreview && (
-                  <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
-                    <button className="ai-helper-btn" onClick={() => askAI(block.id)}><FontAwesomeIcon icon={faRobot} /> IA</button>
-                    <button className="v2-btn-icon" style={{ color: '#ff4d4d' }} onClick={() => deleteBlock(block.id)}><FontAwesomeIcon icon={faTrash} /></button>
+                <div className="mag-article-right" style={block.styles}>
+                  <div 
+                    className="mag-article-text editable-area"
+                    contentEditable={!isPreview}
+                    suppressContentEditableWarning={true}
+                    onBlur={(e) => handleTextChange('text', e.target.innerText, block.id)}
+                    title="Texte de l'article"
+                  >
+                    {block.text[currentLang]}
                   </div>
-                )}
+                  {!isPreview && (
+                    <div className="block-actions">
+                      <button className="ai-helper-btn" onClick={() => askAI(block.id)} title="Demander à Gemini de rédiger ou améliorer ce texte">
+                        <GeminiLogo /> Aide Gemini
+                      </button>
+                      <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer cet article"><FontAwesomeIcon icon={faTrash} /></button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
           {!isPreview && (
-            <div className="add-block-zone" onClick={addBlock}>
+            <div className="add-block-zone" onClick={addBlock} title="Ajouter un nouvel article">
               <FontAwesomeIcon icon={faPlusCircle} size="2x" />
               <div style={{ marginTop: '10px' }}>Ajouter un article (Image + Texte)</div>
             </div>
@@ -248,26 +271,37 @@ const AdminNewsletterEditor = () => {
           <img src="/assets/logos/logoMama.png" alt="Logo" className="mag-footer-logo" />
           <p>© {new Date().getFullYear()} - Association Mama Esther - Tous droits réservés</p>
           <div className="mag-footer-btns">
-            <button className="mag-btn-news">Des questions ? Contactez-nous !</button>
-            <button className="mag-btn-news">Mentions légales</button>
-            <button className="mag-btn-news" style={{ opacity: 0.7 }}>Désinscription</button>
+            <button className="mag-btn-news" title="Lien vers contact">Des questions ? Contactez-nous !</button>
+            <button className="mag-btn-news" title="Lien vers mentions légales">Mentions légales</button>
+            <button className="mag-btn-news" style={{ opacity: 0.7 }} title="Lien de désinscription">Désinscription</button>
           </div>
         </footer>
 
       </div>
 
-      {/* STYLE BAR */}
+      {/* BOITE A OUTILS (DROITE) */}
       {activeBlockId && !isPreview && (
-        <div className="floating-style-bar">
-          <FontAwesomeIcon icon={faTextHeight} />
-          <select className="tool-select" onChange={(e) => handleStyleChange(activeBlockId, 'fontSize', e.target.value)}>
-            <option value="1.2rem">Normal</option>
-            <option value="1.4rem">Grand</option>
-            <option value="1.6rem">Titre</option>
-          </select>
-          <FontAwesomeIcon icon={faPalette} />
-          <input type="color" onChange={(e) => handleStyleChange(activeBlockId, 'color', e.target.value)} />
-          <button className="tool-btn" onClick={() => setActiveBlockId(null)} style={{ color: '#fcd116' }}>OK</button>
+        <div className="sidebar-toolbox">
+          <div className="toolbox-header">
+            <FontAwesomeIcon icon={faPalette} /> Outils de style
+          </div>
+          
+          <div className="tool-group">
+            <label><FontAwesomeIcon icon={faTextHeight} /> Taille du texte</label>
+            <select className="tool-select-v2" onChange={(e) => handleStyleChange(activeBlockId, 'fontSize', e.target.value)}>
+              <option value="1.1rem">Petit</option>
+              <option value="1.25rem" selected>Normal</option>
+              <option value="1.5rem">Grand</option>
+              <option value="1.8rem">Titre</option>
+            </select>
+          </div>
+
+          <div className="tool-group">
+            <label><FontAwesomeIcon icon={faFillDrip} /> Couleur du texte</label>
+            <input type="color" className="tool-color-picker" onChange={(e) => handleStyleChange(activeBlockId, 'color', e.target.value)} defaultValue="#ffffff" />
+          </div>
+
+          <button className="tool-btn-close" onClick={() => setActiveBlockId(null)}>Appliquer les changements</button>
         </div>
       )}
     </div>

@@ -1,110 +1,197 @@
-/* STUDIO NEWSLETTER V2 - CLONE NEWS3 */
+/* STUDIO NEWSLETTER V2.5 - STYLE ONG MODERNE */
 .newsletter-editor-layout {
   min-height: 100vh;
-  background: #f0f2f5;
-  padding-top: 80px;
+  background: #f4f7f6;
+  padding-top: 180px; /* Plus de place pour la Navbar */
 }
 
 .editor-toolbar {
-  position: fixed; top: 0; left: 0; right: 0; height: 80px;
+  position: fixed; 
+  top: 90px; /* Juste en dessous de la Navbar principale */
+  left: 0; right: 0; height: 75px;
   background: white; display: flex; align-items: center;
   justify-content: space-between; padding: 0 40px;
-  box-shadow: 0 2px 15px rgba(0,0,0,0.1); z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 900;
 }
 
-/* LE CONTENEUR DU MAGAZINE (FOND VERT) */
+.lang-selector-v2 {
+  display: flex; background: #f0f0f0; border-radius: 40px; padding: 4px;
+}
+
+/* LE CONTENEUR DU MAGAZINE */
 .editor-container {
-  max-width: 1000px; margin: 40px auto;
-  background: #4caf50; /* Vert News3 */
+  max-width: 950px; margin: 40px auto;
+  background: #007a5e; /* Vert Institutionnel */
   min-height: 1200px;
-  box-shadow: 0 10px 50px rgba(0,0,0,0.2);
-  padding: 0; /* Pas de padding pour que la bannière soit pleine largeur */
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  padding: 0;
   position: relative;
   font-family: 'Alegreya Sans', sans-serif;
   color: white;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 /* HEADER - BANNIERE */
 .mag-header-banner {
   width: 100%;
-  height: auto;
-  min-height: 200px;
-  background: #eee;
+  max-height: 400px;
+  background: #222;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
   overflow: hidden;
 }
-.mag-header-banner img { width: 100%; height: auto; display: block; }
+.mag-header-banner img { width: 100%; height: auto; display: block; transition: transform 0.3s; }
+.mag-header-banner:hover img { transform: scale(1.02); }
+
+.img-overlay-btn {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.6); color: white; padding: 12px 24px;
+  border-radius: 30px; opacity: 0; transition: 0.3s; pointer-events: none;
+}
+.mag-header-banner:hover .img-overlay-btn { opacity: 1; }
 
 .mag-content-padding { padding: 40px 60px; }
 
 .mag-main-title {
-  font-size: 2.5rem; font-weight: 900; color: white;
+  font-size: 2.8rem; font-weight: 900; color: white;
   text-align: center; text-transform: uppercase;
-  letter-spacing: 4px; margin: 40px 0;
+  letter-spacing: 3px; margin: 40px 0;
+  border-bottom: 2px solid rgba(255,255,255,0.2);
+  padding-bottom: 20px;
 }
 
-/* EDITO (FOND BLEU) */
+/* EDITO (FOND BLEU) - PHOTO OVALE */
 .mag-edito-box {
-  background: #1e9bf4; /* Bleu Edito */
-  display: grid; grid-template-columns: 1fr 2fr;
-  gap: 30px; padding: 30px; margin-bottom: 60px;
+  background: #1e9bf4;
+  display: grid; grid-template-columns: 220px 1fr;
+  gap: 40px; padding: 40px; margin-bottom: 60px;
   align-items: center;
+  border-radius: 24px;
 }
 .mag-edito-left { text-align: center; }
-.mag-edito-img {
-  width: 180px; height: 180px; border-radius: 50%;
-  border: 4px solid white; object-fit: cover;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px;
-}
-.mag-edito-right article { font-size: 1.1rem; line-height: 1.6; text-align: justify; }
 
-/* ARTICLES */
-.mag-article-row {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 40px; margin-bottom: 80px; align-items: start;
+.president-img-wrapper {
+  position: relative; display: inline-block; cursor: pointer;
 }
+.mag-edito-img {
+  width: 180px; height: 240px; /* Hauteur > Largeur pour l'ovale */
+  border-radius: 90px; /* Forme ovale */
+  border: 6px solid white; object-fit: cover;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.img-mini-btn {
+  position: absolute; bottom: 10px; right: 10px;
+  background: #fcd116; color: #333; width: 40px; height: 40px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.edito-text { font-size: 1.2rem; line-height: 1.7; text-align: justify; hyphens: auto; }
+
+/* ARTICLES - ALTERNANCE AUTO */
+.mag-articles-list { display: flex; flex-direction: column; gap: 80px; }
+
+.mag-article-row {
+  display: grid; grid-template-columns: 1fr 1.2fr;
+  gap: 50px; align-items: center;
+}
+
+/* Inversion pour les blocs pairs */
+.mag-article-row:nth-child(even) {
+  direction: rtl;
+}
+.mag-article-row:nth-child(even) > * {
+  direction: ltr; /* Remettre le texte dans le bon sens */
+}
+
 .mag-article-img-box {
-  width: 100%; border-radius: 4px; overflow: hidden;
+  width: 100%; border-radius: 20px; overflow: hidden;
   cursor: pointer; background: rgba(255,255,255,0.1);
   display: flex; align-items: center; justify-content: center;
-  min-height: 250px;
+  min-height: 300px; border: 2px dashed rgba(255,255,255,0.2);
+  transition: 0.3s;
 }
-.mag-article-img-box img { width: 100%; height: auto; }
-.mag-article-text { font-size: 1.2rem; line-height: 1.6; text-align: justify; }
+.mag-article-img-box:hover { border-color: white; background: rgba(255,255,255,0.15); }
+.mag-article-img-box img { width: 100%; height: 100%; object-fit: cover; }
 
-/* FOOTER (FOND BLEU) */
+.add-img-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 15px;
+  color: rgba(255,255,255,0.6); font-weight: bold;
+}
+
+.mag-article-text { font-size: 1.25rem; line-height: 1.7; text-align: justify; hyphens: auto; }
+
+.block-actions { display: flex; gap: 15px; margin-top: 25px; }
+
+/* BOUTON GEMINI */
+.ai-helper-btn {
+  background: linear-gradient(135deg, #1e9bf4, #7a5cf2);
+  color: white; border: none; padding: 10px 20px;
+  border-radius: 12px; cursor: pointer; font-weight: 600;
+  display: flex; align-items: center; transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(30, 155, 244, 0.3);
+}
+.ai-helper-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 155, 244, 0.4); }
+
+.btn-delete { color: #ff4d4d !important; background: rgba(255,77,77,0.1) !important; }
+
+/* BOITE A OUTILS SIDEBAR */
+.sidebar-toolbox {
+  position: fixed; right: 30px; top: 200px;
+  width: 280px; background: #fcd116; /* Jaune */
+  padding: 30px; border-radius: 24px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+  z-index: 1000; color: #333;
+  display: flex; flex-direction: column; gap: 25px;
+}
+
+.toolbox-header {
+  font-size: 1.2rem; font-weight: 800; text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px; border-bottom: 2px solid rgba(0,0,0,0.1);
+  padding-bottom: 15px;
+}
+
+.tool-group { display: flex; flex-direction: column; gap: 10px; }
+.tool-group label { font-weight: 700; font-size: 0.9rem; color: #555; }
+
+.tool-select-v2 {
+  padding: 12px; border-radius: 12px; border: 2px solid rgba(0,0,0,0.05);
+  background: white; font-weight: 600; cursor: pointer;
+}
+
+.tool-color-picker {
+  width: 100%; height: 50px; border: none; border-radius: 12px; cursor: pointer;
+  background: white; padding: 5px;
+}
+
+.tool-btn-close {
+  background: #333; color: white; border: none; padding: 15px;
+  border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px;
+  transition: 0.3s;
+}
+.tool-btn-close:hover { background: #000; }
+
+/* FOOTER */
 .mag-footer-v2 {
-  background: #1e9bf4; padding: 40px; text-align: center;
+  background: #1e9bf4; padding: 60px 40px; text-align: center;
   margin-top: 100px;
 }
-.mag-footer-logo { width: 50px; margin-bottom: 15px; filter: brightness(0) invert(1); }
-.mag-footer-btns { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 30px; }
+.mag-footer-logo { width: 70px; margin-bottom: 20px; filter: brightness(0) invert(1); }
+.mag-footer-btns { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 40px; }
 .mag-btn-news {
-  background: #4caf50; color: white; padding: 10px 20px;
-  border-radius: 5px; text-decoration: none; font-weight: bold;
-  font-size: 0.9rem; border: none; cursor: pointer;
-  transition: background 0.3s;
+  background: #007a5e; color: white; padding: 12px 24px;
+  border-radius: 12px; border: none; cursor: pointer;
+  font-weight: 700; transition: 0.3s;
 }
-.mag-btn-news:hover { background: #0056b3; }
-
-/* BARRE D'OUTILS FLOTTANTE */
-.floating-style-bar {
-  position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-  background: #1a1a1a; color: white; padding: 10px 25px;
-  border-radius: 50px; display: flex; gap: 20px; align-items: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000;
-}
-
-.tool-select { background: #333; color: white; border: none; border-radius: 4px; padding: 4px 8px; }
-.tool-btn { background: none; border: none; color: white; cursor: pointer; padding: 5px; }
+.mag-btn-news:hover { transform: translateY(-3px); background: #fcd116; color: #333; }
 
 /* EDITABLE AREA */
-.editable-area:focus { outline: 2px dashed #fcd116; padding: 5px; }
-.add-block-zone {
-  text-align: center; padding: 30px; border: 2px dashed rgba(255,255,255,0.3);
-  border-radius: 10px; margin: 40px 0; cursor: pointer; color: white;
+.editable-area:focus { 
+  outline: 3px solid #fcd116; border-radius: 8px; background: rgba(255,255,255,0.05); padding: 5px;
 }
-.add-block-zone:hover { background: rgba(255,255,255,0.1); border-color: white; }
+
+/* PREVIEW MODE */
+.preview-mode .editor-toolbar { display: none; }
+.preview-mode .newsletter-editor-layout { padding-top: 0; }
+.preview-mode .sidebar-toolbox { display: none; }
