@@ -1,20 +1,23 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faArrowLeft, faSave, faEye, faEyeSlash, 
   faImage, faPlusCircle, faRobot, faTrash,
-  faTextHeight, faPalette, faFillDrip
+  faTextHeight, faPalette, faFillDrip, faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { newsletterService } from '../api/services';
 import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
+import HandSpinner from '../components/HandSpinner';
 import '../styles/AdminNewsletterEditor.css';
 
 const AdminNewsletterEditor = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
   // On utilise la langue de i18next pour déterminer quelle version on édite
   const currentLang = i18n.language.split('-')[0] === 'en' ? 'en' : 'fr';
@@ -31,31 +34,90 @@ const AdminNewsletterEditor = () => {
     </svg>
   );
 
-  // État initial mis à jour selon tes demandes
+  // État initial (Outil réutilisable)
   const [data, setData] = useState({
-    title: { fr: 'Newsletter #3 - ', en: 'Newsletter #3 - ' },
+    title: { 
+      fr: "NEWSLETTER #", 
+      en: "NEWSLETTER #" 
+    },
     date: new Date().toISOString().split('T')[0],
     bannerImage: '/assets/covers/banner-news.webp',
     presidentImage: '/assets/mentions/president-mama.webp',
     edito: { 
-      fr: "Votre texte d'édito ici...", 
-      en: "Your editorial text here..." 
+      fr: "Votre édito ici...", 
+      en: "Your editorial here..." 
     },
     blocks: [
-      { 
-        id: Date.now(), 
-        type: 'article', 
-        image: '', 
-        text: { 
-          fr: 'Votre texte d\'article ici...', 
-          en: 'Your article text here...' 
-        },
-        styles: { fontSize: '1.2rem', color: 'white' }
+      {
+        id: Date.now(),
+        type: 'article',
+        image: '',
+        text: { fr: 'Votre texte d\'article ici...', en: 'Your article text here...' },
+        styles: { fontSize: '1.25rem', color: 'white' }
       }
-    ],
+    ], 
+    tags: {
+      fr: [],
+      en: []
+    },
     pdfPath: '',
     isPublished: false
   });
+
+  // Outils Word
+  const execCommand = (command, value = null) => {
+    document.execCommand(command, false, value);
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchNewsletter();
+    }
+  }, [id]);
+
+  const fetchNewsletter = async () => {
+    try {
+      setLoading(true);
+      const res = await newsletterService.getById(id);
+      const nl = res.data;
+      
+      // Reconstruction de l'état blocks à partir de content
+      const editoBlockFr = nl.content.fr.find(b => b.type === 'edito');
+      const articleBlocksFr = nl.content.fr.filter(b => b.type !== 'edito');
+      const articleBlocksEn = nl.content.en.filter(b => b.type !== 'edito');
+
+      const reconstructedBlocks = articleBlocksFr.map((b, idx) => ({
+        id: b.id || idx,
+        type: b.type,
+        image: b.image,
+        text: {
+          fr: b.text,
+          en: articleBlocksEn[idx]?.text || ""
+        },
+        styles: b.styles || { fontSize: '1.25rem', color: 'white' }
+      }));
+
+      setData({
+        title: nl.title,
+        date: new Date(nl.date).toISOString().split('T')[0],
+        bannerImage: nl.coverImage,
+        presidentImage: editoBlockFr?.image || nl.presidentImage || '/assets/mentions/president-mama.webp',
+        edito: {
+          fr: editoBlockFr?.content || nl.edito?.fr || "",
+          en: nl.content.en.find(b => b.type === 'edito')?.content || nl.edito?.en || ""
+        },
+        blocks: reconstructedBlocks,
+        tags: nl.tags || { fr: [], en: [] },
+        pdfPath: nl.pdfPath || "",
+        isPublished: nl.isPublished
+      });
+    } catch (err) {
+      toast.error("Erreur lors du chargement de la newsletter");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleTextChange = (field, value, blockId = null) => {
     if (blockId) {
@@ -71,6 +133,14 @@ const AdminNewsletterEditor = () => {
     }
   };
 
+  const handleTagChange = (newTagsString) => {
+    const tagList = newTagsString.split(',').map(s => s.trim()).filter(s => s !== "");
+    setData(prev => ({
+      ...prev,
+      tags: { ...prev.tags, [currentLang]: tagList }
+    }));
+  };
+
   const handleStyleChange = (blockId, styleKey, value) => {
     setData(prev => ({
       ...prev,
@@ -84,7 +154,7 @@ const AdminNewsletterEditor = () => {
       type: 'article',
       image: '',
       text: { fr: 'Votre texte d\'article ici...', en: 'Your article text here...' },
-      styles: { fontSize: '1.2rem', color: 'white' }
+      styles: { fontSize: '1.25rem', color: 'white' }
     };
     setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
   };
@@ -102,7 +172,8 @@ const AdminNewsletterEditor = () => {
     try {
       toast.info("Upload de l'image...");
       const res = await newsletterService.uploadImage(formData);
-      const imageUrl = `http://localhost:5000${res.data.url}`;
+      // On utilise l'URL relative retournée par le backend
+      const imageUrl = res.data.url;
       
       if (uploadTarget === 'banner') {
         setData(prev => ({ ...prev, bannerImage: imageUrl }));
@@ -126,7 +197,9 @@ const AdminNewsletterEditor = () => {
     try {
       toast.info("L'IA rédige...");
       const res = await newsletterService.aiGenerate(prompt, 'draft');
-      handleTextChange('text', res.data.content, blockId);
+      // Le simulateur backend renvoie un texte avec un préfixe, on pourrait le nettoyer
+      const content = res.data.content.replace(/\[Génération IA pour draft\] : .* \.\.\. /, '');
+      handleTextChange('text', content || res.data.content, blockId);
     } catch (err) {
       toast.error("Erreur IA.");
     }
@@ -136,20 +209,37 @@ const AdminNewsletterEditor = () => {
     try {
       const formatted = {
         ...data,
-        summary: { fr: data.edito.fr.substring(0, 150) + '...', en: data.edito.en.substring(0, 150) + '...' },
+        summary: { 
+          fr: data.edito.fr.substring(0, 150) + '...', 
+          en: data.edito.en.substring(0, 150) + '...' 
+        },
         coverImage: data.bannerImage,
         content: {
-          fr: [{ type: 'edito', content: data.edito.fr, image: data.presidentImage }, ...data.blocks.map(b => ({ ...b, text: b.text.fr }))],
-          en: [{ type: 'edito', content: data.edito.en, image: data.presidentImage }, ...data.blocks.map(b => ({ ...b, text: b.text.en }))],
+          fr: [
+            { type: 'edito', content: data.edito.fr, image: data.presidentImage }, 
+            ...data.blocks.map(b => ({ ...b, text: b.text.fr }))
+          ],
+          en: [
+            { type: 'edito', content: data.edito.en, image: data.presidentImage }, 
+            ...data.blocks.map(b => ({ ...b, text: b.text.en }))
+          ],
         }
       };
-      await newsletterService.create(formatted);
-      toast.success("Newsletter publiée !");
+      
+      if (id) {
+        await newsletterService.update(id, formatted);
+        toast.success("Newsletter mise à jour avec succès !");
+      } else {
+        await newsletterService.create(formatted);
+        toast.success("Newsletter n°3 publiée avec succès !");
+      }
       navigate('/admin');
     } catch (err) {
-      toast.error("Erreur publication.");
+      toast.error("Erreur lors de l'enregistrement : " + (err.message || "Serveur injoignable"));
     }
   };
+
+  if (loading) return <HandSpinner />;
 
   return (
     <div className={`newsletter-editor-layout ${isPreview ? 'preview-mode' : ''}`}>
@@ -157,27 +247,52 @@ const AdminNewsletterEditor = () => {
       
       <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImageUpload} />
 
-      {/* TOOLBAR */}
-      <div className="editor-toolbar">
-        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-          <button className="v2-btn-icon" onClick={() => navigate('/admin')} title="Retour à l'administration"><FontAwesomeIcon icon={faArrowLeft} /></button>
-          <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Studio Newsletter v2.5 (Style ONG Moderne)</h2>
-        </div>
-        <div style={{ display: 'flex', gap: '15px' }}>
-          <button className="v2-btn v2-btn-outline-green" onClick={() => setIsPreview(!isPreview)} title="Basculer entre édition et aperçu">
-            <FontAwesomeIcon icon={isPreview ? faEyeSlash : faEye} /> {isPreview ? 'Éditer' : 'Aperçu'}
+      {/* BARRE LATÉRALE GAUCHE (ACTIONS PRINCIPALES) */}
+      {!isPreview && (
+        <div className="editor-toolbar">
+          <button className="v2-btn-icon" onClick={() => navigate('/admin')} title="Retour à l'administration">
+            <FontAwesomeIcon icon={faArrowLeft} />
           </button>
-          <button className="v2-btn v2-btn-green" onClick={handleSave} title="Enregistrer et publier la newsletter"><FontAwesomeIcon icon={faSave} /> Publier</button>
-        </div>
-      </div>
+          
+          <div style={{ height: '2px', width: '30px', background: '#eee' }}></div>
+          
+          <button className="v2-btn-icon" onClick={() => setIsPreview(!isPreview)} title="Aperçu">
+            <FontAwesomeIcon icon={faEye} />
+          </button>
+          
+          <button className="v2-btn-icon" style={{ color: 'var(--color-green)' }} onClick={handleSave} title="Enregistrer">
+            <FontAwesomeIcon icon={faSave} />
+          </button>
 
-      {/* MAQUETTE CLONE NEWS3 */}
+          <div style={{ height: '2px', width: '30px', background: '#eee' }}></div>
+
+          <button className="v2-btn-icon" onClick={addBlock} title="Ajouter un article">
+            <FontAwesomeIcon icon={faPlusCircle} />
+          </button>
+        </div>
+      )}
+
+      {/* BOUTON ÉDITION (SI PREVIEW) */}
+      {isPreview && (
+        <button 
+          className="v2-btn v2-btn-green" 
+          style={{ position: 'fixed', top: '110px', left: '20px', zIndex: 3000 }}
+          onClick={() => setIsPreview(false)}
+        >
+          <FontAwesomeIcon icon={faEyeSlash} /> Retour à l'édition
+        </button>
+      )}
+
       <div className="editor-container">
         
         {/* BANNIÈRE HEADER */}
-        <div className="mag-header-banner" onClick={() => { setUploadTarget('banner'); fileInputRef.current.click(); }} title="Cliquer pour changer l'image de couverture">
+        <div className="mag-header-banner" title="Image de couverture">
           <img src={data.bannerImage} alt="Bannière" />
-          {!isPreview && <div className="img-overlay-btn"><FontAwesomeIcon icon={faImage} /> Changer la bannière</div>}
+          {!isPreview && (
+            <button className="mag-action-btn" onClick={() => { setUploadTarget('banner'); fileInputRef.current.click(); }}>
+              <FontAwesomeIcon icon={faImage} /> Changer la bannière
+            </button>
+          )}
         </div>
 
         <div className="mag-content-padding">
@@ -186,7 +301,6 @@ const AdminNewsletterEditor = () => {
             contentEditable={!isPreview}
             suppressContentEditableWarning={true}
             onBlur={(e) => handleTextChange('title', e.target.innerText)}
-            title="Titre de la newsletter"
           >
             {data.title[currentLang]}
           </h1>
@@ -194,11 +308,13 @@ const AdminNewsletterEditor = () => {
           {/* EDITO BLEU */}
           <section className="mag-edito-box">
             <div className="mag-edito-left">
-              <h3 style={{ color: 'white', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.9rem' }}>Le mot de la présidente</h3>
-              <div className="president-img-wrapper" onClick={() => { setUploadTarget('president'); fileInputRef.current.click(); }} title="Changer la photo de la présidente">
+              <h3 style={{ color: 'white', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.9rem' }}>
+                {currentLang === 'fr' ? "Le mot de la Présidente" : "A word from the President"}
+              </h3>
+              <div className="president-img-wrapper" onClick={() => { setUploadTarget('president'); fileInputRef.current.click(); }} title="Changer l'image">
                 <img 
                   src={data.presidentImage} 
-                  alt="Présidente" 
+                  alt="Avatar" 
                   className="mag-edito-img" 
                 />
                 {!isPreview && <div className="img-mini-btn"><FontAwesomeIcon icon={faPlusCircle} /></div>}
@@ -210,29 +326,37 @@ const AdminNewsletterEditor = () => {
                 contentEditable={!isPreview}
                 suppressContentEditableWarning={true}
                 onBlur={(e) => handleTextChange('edito', e.target.innerText)}
-                title="Texte de l'édito"
               >
                 {data.edito[currentLang]}
               </div>
+              {!isPreview && (
+                 <button className="mag-action-btn" style={{ marginTop: '20px', background: 'rgba(255,255,255,0.2)' }} onClick={() => execCommand('insertText', ' ')}>
+                   <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
+                 </button>
+              )}
             </div>
           </section>
 
           {/* BLOCS ARTICLES */}
           <div className="mag-articles-list">
-            {data.blocks.map((block) => (
-              <div key={block.id} className="mag-article-row" onClick={() => setActiveBlockId(block.id)}>
+            {data.blocks.map((block, index) => (
+              <div key={block.id} className="mag-article-row">
                 <div 
                   className="mag-article-img-box" 
-                  onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }}
-                  title="Cliquer pour ajouter ou modifier l'image"
+                  title="Image de l'article"
                 >
                   {block.image ? (
                     <img src={block.image} alt="Article" />
                   ) : (
                     <div className="add-img-placeholder">
                       <FontAwesomeIcon icon={faImage} size="3x" color="rgba(255,255,255,0.3)" />
-                      <span>Ajouter une image</span>
+                      <span>Aucune image</span>
                     </div>
+                  )}
+                  {!isPreview && (
+                    <button className="mag-action-btn" onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }}>
+                      <FontAwesomeIcon icon={faImage} /> Ajouter une image
+                    </button>
                   )}
                 </div>
                 <div className="mag-article-right" style={block.styles}>
@@ -241,16 +365,19 @@ const AdminNewsletterEditor = () => {
                     contentEditable={!isPreview}
                     suppressContentEditableWarning={true}
                     onBlur={(e) => handleTextChange('text', e.target.innerText, block.id)}
-                    title="Texte de l'article"
+                    onClick={() => setActiveBlockId(block.id)}
                   >
                     {block.text[currentLang]}
                   </div>
                   {!isPreview && (
                     <div className="block-actions">
-                      <button className="ai-helper-btn" onClick={() => askAI(block.id)} title="Demander à Gemini de rédiger ou améliorer ce texte">
+                      <button className="mag-action-btn" style={{ background: 'rgba(255,255,255,0.1)', margin: 0 }} onClick={() => execCommand('insertText', ' ')}>
+                        <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
+                      </button>
+                      <button className="ai-helper-btn" onClick={() => askAI(block.id)}>
                         <GeminiLogo /> Aide Gemini
                       </button>
-                      <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer cet article"><FontAwesomeIcon icon={faTrash} /></button>
+                      <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)}><FontAwesomeIcon icon={faTrash} /></button>
                     </div>
                   )}
                 </div>
@@ -259,49 +386,79 @@ const AdminNewsletterEditor = () => {
           </div>
 
           {!isPreview && (
-            <div className="add-block-zone" onClick={addBlock} title="Ajouter un nouvel article">
-              <FontAwesomeIcon icon={faPlusCircle} size="2x" />
-              <div style={{ marginTop: '10px' }}>Ajouter un article (Image + Texte)</div>
+            <div className="add-block-zone" onClick={addBlock} style={{ cursor: 'pointer', padding: '40px', border: '2px dashed rgba(255,255,255,0.3)', borderRadius: '20px', marginTop: '60px', textAlign: 'center' }}>
+              <FontAwesomeIcon icon={faPlusCircle} size="3x" style={{ marginBottom: '15px' }} />
+              <h3 style={{ margin: 0 }}>Ajouter un article (Image + Texte alterné)</h3>
             </div>
           )}
         </div>
 
-        {/* FOOTER BLEU */}
+        {/* FOOTER */}
         <footer className="mag-footer-v2">
           <img src="/assets/logos/logoMama.png" alt="Logo" className="mag-footer-logo" />
-          <p>© {new Date().getFullYear()} - Association Mama Esther - Tous droits réservés</p>
+          <p>© {new Date().getFullYear()} - Association Mama Esther - Tous droits réservés - {data.title[currentLang]}</p>
           <div className="mag-footer-btns">
-            <button className="mag-btn-news" title="Lien vers contact">Des questions ? Contactez-nous !</button>
-            <button className="mag-btn-news" title="Lien vers mentions légales">Mentions légales</button>
-            <button className="mag-btn-news" style={{ opacity: 0.7 }} title="Lien de désinscription">Désinscription</button>
+            <button className="mag-btn-news">Contact</button>
+            <button className="mag-btn-news">Mentions légales</button>
+            <button className="mag-btn-news" style={{ opacity: 0.5 }}>Désinscription</button>
           </div>
         </footer>
 
       </div>
 
-      {/* BOITE A OUTILS (DROITE) */}
-      {activeBlockId && !isPreview && (
+      {/* BOITE A OUTILS (DROITE) - TOUJOURS VISIBLE SI PAS PREVIEW */}
+      {!isPreview && (
         <div className="sidebar-toolbox">
           <div className="toolbox-header">
-            <FontAwesomeIcon icon={faPalette} /> Outils de style
+            <FontAwesomeIcon icon={faPalette} /> Outils de Style
           </div>
-          
+
           <div className="tool-group">
-            <label><FontAwesomeIcon icon={faTextHeight} /> Taille du texte</label>
-            <select className="tool-select-v2" onChange={(e) => handleStyleChange(activeBlockId, 'fontSize', e.target.value)}>
-              <option value="1.1rem">Petit</option>
-              <option value="1.25rem" selected>Normal</option>
-              <option value="1.5rem">Grand</option>
-              <option value="1.8rem">Titre</option>
+            <label>Mise en forme rapide</label>
+            <div className="rich-text-tools">
+              <button className="btn-tool-rich" onClick={() => execCommand('bold')} title="Gras" style={{ fontWeight: 'bold' }}>G</button>
+              <button className="btn-tool-rich" onClick={() => execCommand('italic')} title="Italique" style={{ fontStyle: 'italic', fontFamily: '"Times New Roman", Times, serif', fontWeight: '500', fontSize: '1.2rem' }}>I</button>
+              <button className="btn-tool-rich" onClick={() => execCommand('underline')} title="Souligné" style={{ textDecoration: 'underline' }}>S</button>
+            </div>
+          </div>
+
+          <div className="tool-group">
+            <label><FontAwesomeIcon icon={faTextHeight} /> Taille de police</label>
+            <select className="tool-select-v2" onChange={(e) => {
+              if (activeBlockId && activeBlockId !== 'edito') handleStyleChange(activeBlockId, 'fontSize', e.target.value);
+              else execCommand('fontSize', e.target.value);
+            }}>
+              <option value="3">Petit</option>
+              <option value="4" selected>Normal</option>
+              <option value="5">Grand</option>
+              <option value="6">Très Grand</option>
             </select>
           </div>
 
           <div className="tool-group">
-            <label><FontAwesomeIcon icon={faFillDrip} /> Couleur du texte</label>
-            <input type="color" className="tool-color-picker" onChange={(e) => handleStyleChange(activeBlockId, 'color', e.target.value)} defaultValue="#ffffff" />
+            <label><FontAwesomeIcon icon={faFillDrip} /> Couleur de police</label>
+            <input type="color" className="tool-color-picker" onChange={(e) => {
+               if (activeBlockId && activeBlockId !== 'edito') handleStyleChange(activeBlockId, 'color', e.target.value);
+               else execCommand('foreColor', e.target.value);
+            }} defaultValue="#ffffff" />
           </div>
 
-          <button className="tool-btn-close" onClick={() => setActiveBlockId(null)}>Appliquer les changements</button>
+          <div className="tool-group">
+            <label>Polices (Style Word)</label>
+            <select className="tool-select-v2" onChange={(e) => execCommand('fontName', e.target.value)}>
+              <option value="Alegreya Sans">Alegreya Sans (Défaut)</option>
+              <option value="Arial">Arial</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Verdana">Verdana</option>
+            </select>
+          </div>
+
+          <div style={{ marginTop: '10px', fontSize: '0.8rem', opacity: 0.7, fontStyle: 'italic' }}>
+            Sélectionnez du texte pour appliquer les styles Word.
+          </div>
+
+          <button className="tool-btn-close" onClick={() => setActiveBlockId(null)}>Prêt !</button>
         </div>
       )}
     </div>

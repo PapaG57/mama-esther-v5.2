@@ -23,6 +23,7 @@ const Missions = lazy(() => import("./pages/Missions"));
 const Sponsor = lazy(() => import("./pages/Sponsor"));
 const FundraisingMaterials = lazy(() => import("./pages/FundraisingMaterials"));
 const Volunteer = lazy(() => import("./pages/Volunteer"));
+const NewsletterView = lazy(() => import("./pages/NewsletterView"));
 const Page404 = lazy(() => import("./pages/404"));
 
 function App() {
@@ -56,8 +57,10 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/mentions-legales" element={<MentionsLegales />} />
+          <Route path="/newsletter/view/:id" element={<NewsletterView />} />
           <Route path="/admin" element={<AdminAccessGate><Admin /></AdminAccessGate>} />
           <Route path="/admin/newsletter/new" element={<AdminAccessGate><AdminNewsletterEditor /></AdminAccessGate>} />
+          <Route path="/admin/newsletter/edit/:id" element={<AdminAccessGate><AdminNewsletterEditor /></AdminAccessGate>} />
           <Route path="*" element={<Page404 />} />
         </Routes>
       </Suspense>

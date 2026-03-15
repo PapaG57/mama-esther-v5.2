@@ -141,11 +141,11 @@
   },
   "newsletters": {
     "filterAll": "Tous",
-    "viewOnline": "🌐 Voir en ligne",
-    "viewPdf": "📄 voir en PDF",
-    "downloadPdf": "📄 Télécharger PDF",
-    "webVersion": "🌐 Version web",
-    "titleGallery": "📰 Nos newsletters",
+    "viewOnline": "Voir en ligne",
+    "viewPdf": "Voir en PDF",
+    "downloadPdf": "Télécharger PDF",
+    "webVersion": "Version web",
+    "titleGallery": "Nos newsletters",
     "subtitleGallery": "Retrouvez les publications de l'association Mama Esther :",
     "list": {
       "news1": {

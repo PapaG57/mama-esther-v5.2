@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -10,6 +11,7 @@ import { toast } from 'react-toastify';
 
 const AdminNewsletters = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [newsletters, setNewsletters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
@@ -42,10 +44,25 @@ const AdminNewsletters = () => {
       setNewsletters(res.data);
     } catch (err) {
       console.error(err);
-      toast.error(t('admin.newsletters.messages.error'));
+      toast.error("Erreur lors de la récupération des newsletters");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Voulez-vous vraiment supprimer cette newsletter ?")) return;
+    try {
+      await newsletterService.delete(id);
+      toast.success("Newsletter supprimée !");
+      fetchNewsletters();
+    } catch (err) {
+      toast.error("Erreur lors de la suppression");
+    }
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/admin/newsletter/edit/${id}`);
   };
 
   const handleInputChange = (e, lang = null, field = null) => {
@@ -333,10 +350,17 @@ const AdminNewsletters = () => {
                     </td>
                     <td>
                       <div className="admin-v2-actions">
-                        <button className="admin-v2-btn-icon" style={{ background: 'rgba(0,122,94,0.1)', color: 'var(--color-green)' }}>
+                        <button 
+                          className="admin-v2-btn-icon" 
+                          style={{ background: 'rgba(0,122,94,0.1)', color: 'var(--color-green)' }}
+                          onClick={() => handleEdit(news._id || news.newsletterNumber)}
+                        >
                           <FontAwesomeIcon icon={faEdit} />
                         </button>
-                        <button className="admin-v2-btn-icon delete">
+                        <button 
+                          className="admin-v2-btn-icon delete"
+                          onClick={() => handleDelete(news._id || news.newsletterNumber)}
+                        >
                           <FontAwesomeIcon icon={faTrash} />
                         </button>
                       </div>

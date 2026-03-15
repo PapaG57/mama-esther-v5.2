@@ -1,28 +1,57 @@
-/* STUDIO NEWSLETTER V2.5 - STYLE ONG MODERNE */
+/* STUDIO NEWSLETTER V2.8 - OUTIL DE CRÉATION MODULAIRE */
 .newsletter-editor-layout {
   min-height: 100vh;
   background: #f4f7f6;
-  padding-top: 180px; /* Plus de place pour la Navbar */
+  padding-top: 180px;
 }
 
+/* BARRE LATÉRALE GAUCHE (ACTIONS PRINCIPALES) */
 .editor-toolbar {
   position: fixed; 
-  top: 90px; /* Juste en dessous de la Navbar principale */
-  left: 0; right: 0; height: 75px;
-  background: white; display: flex; align-items: center;
-  justify-content: space-between; padding: 0 40px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 900;
+  top: 110px;
+  left: 20px;
+  width: 80px;
+  height: auto;
+  background: white; 
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 25px 0;
+  box-shadow: 10px 10px 40px rgba(0,0,0,0.1); 
+  z-index: 2100;
+  border-radius: 40px;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-.lang-selector-v2 {
-  display: flex; background: #f0f0f0; border-radius: 40px; padding: 4px;
+.editor-toolbar h2 { display: none; }
+
+/* BOITE A OUTILS DROITE (JAUNE) */
+.sidebar-toolbox {
+  position: fixed; 
+  right: 20px; 
+  top: 110px;
+  width: 320px; 
+  background: #fcd116; /* Fond Jaune demandé */
+  padding: 30px; 
+  border-radius: 24px;
+  box-shadow: -10px 10px 40px rgba(0,0,0,0.1);
+  z-index: 2050; 
+  color: #333;
+  display: flex; 
+  flex-direction: column; 
+  gap: 25px;
+  border: 1px solid rgba(0,0,0,0.05);
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 /* LE CONTENEUR DU MAGAZINE */
 .editor-container {
-  max-width: 950px; margin: 40px auto;
+  max-width: 950px; 
+  margin: 40px auto;
   background: #007a5e; /* Vert Institutionnel */
-  min-height: 1200px;
+  min-height: 1000px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.15);
   padding: 0;
   position: relative;
@@ -35,21 +64,23 @@
 /* HEADER - BANNIERE */
 .mag-header-banner {
   width: 100%;
-  max-height: 400px;
+  height: 400px;
   background: #222;
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.mag-header-banner img { width: 100%; height: auto; display: block; transition: transform 0.3s; }
-.mag-header-banner:hover img { transform: scale(1.02); }
 
-.img-overlay-btn {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.6); color: white; padding: 12px 24px;
-  border-radius: 30px; opacity: 0; transition: 0.3s; pointer-events: none;
+.mag-header-banner img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  display: block; 
 }
-.mag-header-banner:hover .img-overlay-btn { opacity: 1; }
 
 .mag-content-padding { padding: 40px 60px; }
 
@@ -61,7 +92,7 @@
   padding-bottom: 20px;
 }
 
-/* EDITO (FOND BLEU) - PHOTO OVALE */
+/* EDITO (FOND BLEU) */
 .mag-edito-box {
   background: #1e9bf4;
   display: grid; grid-template-columns: 220px 1fr;
@@ -70,128 +101,204 @@
   border-radius: 24px;
 }
 .mag-edito-left { text-align: center; }
-
-.president-img-wrapper {
-  position: relative; display: inline-block; cursor: pointer;
-}
 .mag-edito-img {
-  width: 180px; height: 240px; /* Hauteur > Largeur pour l'ovale */
-  border-radius: 90px; /* Forme ovale */
+  width: 180px; height: 240px;
+  border-radius: 90px;
   border: 6px solid white; object-fit: cover;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-.img-mini-btn {
-  position: absolute; bottom: 10px; right: 10px;
-  background: #fcd116; color: #333; width: 40px; height: 40px;
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .edito-text { font-size: 1.2rem; line-height: 1.7; text-align: justify; hyphens: auto; }
 
 /* ARTICLES - ALTERNANCE AUTO */
 .mag-articles-list { display: flex; flex-direction: column; gap: 80px; }
-
 .mag-article-row {
   display: grid; grid-template-columns: 1fr 1.2fr;
   gap: 50px; align-items: center;
 }
 
-/* Inversion pour les blocs pairs */
-.mag-article-row:nth-child(even) {
-  direction: rtl;
-}
-.mag-article-row:nth-child(even) > * {
-  direction: ltr; /* Remettre le texte dans le bon sens */
-}
+/* Inversion automatique via RTL/LTR */
+.mag-article-row:nth-child(even) { direction: rtl; }
+.mag-article-row:nth-child(even) > * { direction: ltr; }
 
 .mag-article-img-box {
-  width: 100%; border-radius: 20px; overflow: hidden;
-  cursor: pointer; background: rgba(255,255,255,0.1);
-  display: flex; align-items: center; justify-content: center;
-  min-height: 300px; border: 2px dashed rgba(255,255,255,0.2);
-  transition: 0.3s;
+  width: 100%; 
+  height: 350px; /* Taille fixe pour éviter l'invasion */
+  border-radius: 20px; 
+  overflow: hidden;
+  cursor: pointer; 
+  background: rgba(255,255,255,0.1);
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  position: relative;
+  border: 2px dashed rgba(255,255,255,0.2);
 }
-.mag-article-img-box:hover { border-color: white; background: rgba(255,255,255,0.15); }
 .mag-article-img-box img { width: 100%; height: 100%; object-fit: cover; }
 
-.add-img-placeholder {
-  display: flex; flex-direction: column; align-items: center; gap: 15px;
-  color: rgba(255,255,255,0.6); font-weight: bold;
+/* STYLE DE BASE : GLASSMORPHE PROFESSIONNEL */
+.editor-toolbar .v2-btn-icon,
+.v2-btn.v2-btn-green,
+.mag-action-btn,
+.ai-helper-btn,
+.tool-btn-close,
+.mag-btn-news,
+.btn-delete {
+  background: rgba(0, 0, 0, 0.3) !important; /* Plus transparent */
+  backdrop-filter: blur(10px) !important; /* Flou légèrement augmenté pour compenser */
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* Hover effects pour tous sauf Gemini */
+.editor-toolbar .v2-btn-icon:hover,
+.v2-btn.v2-btn-green:hover,
+.mag-action-btn:hover,
+.tool-btn-close:hover,
+.mag-btn-news:hover,
+.btn-delete:hover {
+  background: rgba(0, 0, 0, 0.5) !important; /* Plus transparent au survol aussi */
+  transform: translateY(-2px) scale(1.05);
+  border-color: var(--color-green) !important;
+}
+
+/* Ajustements spécifiques */
+.editor-toolbar .v2-btn-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.v2-btn.v2-btn-green, .mag-action-btn, .ai-helper-btn, .mag-btn-news, .tool-btn-close {
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  gap: 10px;
+}
+
+.btn-delete {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #ff4d4d !important;
+}
+
+/* BOUTON GEMINI AI ULTRA-PRO */
+.ai-helper-btn {
+  background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570) !important;
+  background-size: 200% 200% !important;
+  animation: aurora 5s ease infinite !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  padding: 12px 28px !important;
+  border-radius: 30px !important;
+  font-weight: 700 !important;
+  color: white !important;
+  box-shadow: 0 8px 20px rgba(155, 114, 203, 0.4) !important;
+  gap: 12px !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.ai-helper-btn svg {
+  width: 28px; /* Logo encore plus gros */
+  height: 28px;
+  filter: drop-shadow(0 0 5px rgba(255,255,255,0.8));
+}
+
+.ai-helper-btn:hover {
+  transform: translateY(-3px) scale(1.08) !important; /* Zoom plus prononcé */
+  box-shadow: 0 12px 25px rgba(155, 114, 203, 0.6) !important;
+  /* Suppression de l'override de background et border pour garder le gradient Aurora intact */
+}
+
+@keyframes aurora {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* BOUTONS D'ACTION (STYLE PRO TRANSPARENT) */
+.mag-action-btn {
+  position: relative;
+  z-index: 20;
+}
+
+/* Fix pour bouton dans bannière et image article */
+.mag-header-banner .mag-action-btn { position: absolute; z-index: 50; }
+.mag-article-img-box .mag-action-btn { position: absolute; z-index: 50; }
 
 .mag-article-text { font-size: 1.25rem; line-height: 1.7; text-align: justify; hyphens: auto; }
+.block-actions { display: flex; gap: 15px; margin-top: 25px; align-items: center; }
 
-.block-actions { display: flex; gap: 15px; margin-top: 25px; }
-
-/* BOUTON GEMINI */
-.ai-helper-btn {
-  background: linear-gradient(135deg, #1e9bf4, #7a5cf2);
-  color: white; border: none; padding: 10px 20px;
-  border-radius: 12px; cursor: pointer; font-weight: 600;
-  display: flex; align-items: center; transition: 0.3s;
-  box-shadow: 0 4px 15px rgba(30, 155, 244, 0.3);
+/* BOITE A OUTILS TEXTE */
+.rich-text-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.btn-tool-rich {
+  background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1);
+  padding: 10px; border-radius: 10px; cursor: pointer; font-weight: 800;
 }
-.ai-helper-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 155, 244, 0.4); }
+.btn-tool-rich:hover, .btn-tool-rich.active { background: #333; color: white; }
 
-.btn-delete { color: #ff4d4d !important; background: rgba(255,77,77,0.1) !important; }
-
-/* BOITE A OUTILS SIDEBAR */
-.sidebar-toolbox {
-  position: fixed; right: 30px; top: 200px;
-  width: 280px; background: #fcd116; /* Jaune */
-  padding: 30px; border-radius: 24px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-  z-index: 1000; color: #333;
-  display: flex; flex-direction: column; gap: 25px;
-}
-
-.toolbox-header {
-  font-size: 1.2rem; font-weight: 800; text-transform: uppercase;
-  display: flex; align-items: center; gap: 10px; border-bottom: 2px solid rgba(0,0,0,0.1);
-  padding-bottom: 15px;
-}
-
-.tool-group { display: flex; flex-direction: column; gap: 10px; }
-.tool-group label { font-weight: 700; font-size: 0.9rem; color: #555; }
-
-.tool-select-v2 {
-  padding: 12px; border-radius: 12px; border: 2px solid rgba(0,0,0,0.05);
-  background: white; font-weight: 600; cursor: pointer;
-}
-
-.tool-color-picker {
-  width: 100%; height: 50px; border: none; border-radius: 12px; cursor: pointer;
-  background: white; padding: 5px;
-}
-
-.tool-btn-close {
-  background: #333; color: white; border: none; padding: 15px;
-  border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px;
-  transition: 0.3s;
-}
-.tool-btn-close:hover { background: #000; }
+.tool-group label { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: #555; }
+.tool-select-v2 { padding: 12px; border-radius: 12px; border: none; width: 100%; font-weight: 600; }
+.tool-color-picker { width: 100%; height: 50px; border: none; border-radius: 12px; cursor: pointer; }
+.tool-btn-close { background: #333; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
 /* FOOTER */
-.mag-footer-v2 {
-  background: #1e9bf4; padding: 60px 40px; text-align: center;
-  margin-top: 100px;
+.mag-footer-v2 { 
+  background: #1e9bf4; 
+  padding: 80px 40px; 
+  text-align: center; 
+  margin-top: 100px; 
 }
-.mag-footer-logo { width: 70px; margin-bottom: 20px; filter: brightness(0) invert(1); }
-.mag-footer-btns { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 40px; }
-.mag-btn-news {
-  background: #007a5e; color: white; padding: 12px 24px;
-  border-radius: 12px; border: none; cursor: pointer;
-  font-weight: 700; transition: 0.3s;
+
+.mag-footer-logo { 
+  width: 90px; 
+  margin-bottom: 30px; 
+  filter: brightness(0) invert(1); 
 }
-.mag-btn-news:hover { transform: translateY(-3px); background: #fcd116; color: #333; }
+
+.mag-footer-v2 p {
+  font-size: 1rem;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+.mag-footer-btns {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.mag-btn-news { 
+  background: #007a5e !important; /* Retour au vert */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: white !important; 
+  padding: 14px 28px !important; 
+  border-radius: 12px !important; 
+  border: none !important; 
+  font-weight: 700 !important; 
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+
+.mag-btn-news:hover {
+  background: var(--color-dark) !important;
+  transform: translateY(-3px) !important;
+}
 
 /* EDITABLE AREA */
-.editable-area:focus { 
-  outline: 3px solid #fcd116; border-radius: 8px; background: rgba(255,255,255,0.05); padding: 5px;
-}
+.editable-area:focus { outline: 3px solid #fcd116; border-radius: 8px; }
 
 /* PREVIEW MODE */
-.preview-mode .editor-toolbar { display: none; }
+.preview-mode .editor-toolbar, .preview-mode .sidebar-toolbox { display: none; }
 .preview-mode .newsletter-editor-layout { padding-top: 0; }
-.preview-mode .sidebar-toolbox { display: none; }

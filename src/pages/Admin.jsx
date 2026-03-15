@@ -265,7 +265,11 @@ export default function Admin() {
             </div>
           </div>
 
-          <div className="admin-v2-grid">
+          <div className="admin-v2-list-section" style={{ marginTop: '40px' }}>
+            <AdminNewsletters />
+          </div>
+
+          <div className="admin-v2-grid" style={{ marginTop: '40px' }}>
             <div className="admin-v2-card" style={{ cursor: 'pointer', border: '2px solid var(--color-green)', transition: 'transform 0.3s' }} onClick={() => navigate('/admin/newsletter/new')}>
               <h2 style={{ textAlign: 'center' }}>
                 <FontAwesomeIcon icon={faNewspaper} style={{ marginRight: '15px' }} />
