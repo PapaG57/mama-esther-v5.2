@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../styles/NewsletterV2.css";
 import { useTranslation } from "react-i18next";
 import { newsletterService } from "../api/services";
-import { newsletters as staticNewsletters } from "../data/newsletters";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import HandSpinner from "../components/HandSpinner";
 
 import NewsletterGallery from "../components/NewsletterGallery";
@@ -50,15 +49,12 @@ const NewsletterV2 = () => {
                 required
               />
               <button type="submit" disabled={isSubmitting} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                {isSubmitting ? <HandSpinner /> : t("v2.btns.subscribe")}
+                {isSubmitting ? <HandSpinner size="30px" /> : t("v2.btns.subscribe")}
               </button>
             </form>
           </div>
 
-          <div className="v2-newsletter-right-side">
-            <NewsletterGallery />
-          </div>
-
+          <NewsletterGallery />
         </div>
       </div>
     </section>

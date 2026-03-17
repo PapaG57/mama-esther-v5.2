@@ -145,6 +145,10 @@
     "viewPdf": "Voir en PDF",
     "downloadPdf": "Télécharger PDF",
     "webVersion": "Version web",
+    "delete": "Supprimer",
+    "confirmDelete": "Voulez-vous vraiment supprimer cette newsletter ?",
+    "deleteSuccess": "Newsletter supprimée avec succès !",
+    "deleteError": "Erreur lors de la suppression de la newsletter.",
     "titleGallery": "Nos newsletters",
     "subtitleGallery": "Retrouvez les publications de l'association Mama Esther :",
     "list": {

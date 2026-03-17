@@ -2,11 +2,11 @@
 import "../styles/components/HandSpinner.css";
 import { useTranslation } from "react-i18next";
 
-export default function HandSpinner({ fullPage = false, text = "" }) {
+export default function HandSpinner({ fullPage = false, text = "", size = "100px" }) {
   const { t } = useTranslation();
 
   const SpinnerSVG = () => (
-    <svg className="hand" viewBox="0 0 32 20">
+    <svg className="hand" viewBox="0 0 32 20" style={{ width: size }}>
       <defs>
         <clipPath id="finger-pinky">
           <rect rx="2.5" ry="2.5" width="6" height="15" />

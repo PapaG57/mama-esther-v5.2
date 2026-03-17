@@ -63,7 +63,7 @@ function NewsletterGallery() {
     if (newsletters.length <= 1) return;
     if (scrollIndex === newsletters.length * 2) {
       setTimeout(() => {
-        const track = document.querySelector('.v2-newsletter-track-gallery');
+        const track = document.querySelector('.v2-newsletter-track');
         if (track) track.style.transition = 'none';
         setScrollIndex(newsletters.length);
         setTimeout(() => {
@@ -73,7 +73,7 @@ function NewsletterGallery() {
     }
     if (scrollIndex === newsletters.length - 1) {
       setTimeout(() => {
-        const track = document.querySelector('.v2-newsletter-track-gallery');
+        const track = document.querySelector('.v2-newsletter-track');
         if (track) track.style.transition = 'none';
         setScrollIndex(newsletters.length * 2 - 1);
         setTimeout(() => {
@@ -87,11 +87,10 @@ function NewsletterGallery() {
   const gap = 30;
 
   return (
-    <div className="v2-newsletter-gallery-wrapper">
-      <div className="v2-newsletter-right-side">
+    <div className="v2-newsletter-gallery-wrapper v2-newsletter-right-side">
         <div className="v2-newsletter-grid-wrapper">
           <div 
-            className="v2-newsletter-track-gallery"
+            className="v2-newsletter-track"
             style={{ 
               display: 'flex',
               gap: `${gap}px`,
@@ -100,7 +99,7 @@ function NewsletterGallery() {
             }}
           >
             {loading ? (
-              <div style={{width: '240px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><HandSpinner /></div>
+              <div style={{width: '240px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><HandSpinner size="40px" /></div>
             ) : displayItems.map((item, i) => (
               item.isSeparator ? (
                 <div className="v2-magazine-separator" key={i}>
@@ -149,7 +148,6 @@ function NewsletterGallery() {
           <button className="v2-mag-nav-btn" onClick={nextSlide} disabled={newsletters.length <= 1}><FontAwesomeIcon icon={faChevronRight} /></button>
         </div>
       </div>
-    </div>
   );
 }
 
