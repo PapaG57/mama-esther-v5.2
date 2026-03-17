@@ -42,8 +42,18 @@ const NewsletterView = () => {
     fetchNewsletter();
   }, [id, t]);
 
-  if (loading) return <HandSpinner />;
-  if (!newsletter) return <div className="v2-container" style={{padding: '100px 0', textAlign: 'center'}}><h2>Newsletter non trouvée</h2><button className="v2-btn v2-btn-green" onClick={() => navigate('/')}>Retour</button></div>;
+  if (loading) return <HandSpinner fullPage={true} />;
+  
+  if (!newsletter) return (
+    <>
+      <Navbar hideDonate={true} />
+      <div className="v2-container" style={{padding: '150px 0', textAlign: 'center'}}>
+        <h2>Newsletter non trouvée</h2>
+        <button className="v2-btn v2-btn-green" onClick={() => navigate('/')}>Retour</button>
+      </div>
+      <Footer />
+    </>
+  );
 
   const currentLang = i18n.language.split("-")[0]; 
   const content = newsletter.content?.[currentLang] || newsletter.content?.['fr'] || [];
@@ -52,72 +62,77 @@ const NewsletterView = () => {
   const articles = content.filter(b => b.type !== 'edito');
 
   return (
-    <div className="newsletter-editor-layout preview-mode" style={{paddingTop: '100px', paddingBottom: '100px'}}>
+    <div className="newsletter-view-page">
       <Navbar hideDonate={true} />
       
-      <div className="v2-container" style={{marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <button className="v2-btn v2-btn-outline" onClick={() => navigate(-1)}>
-          <FontAwesomeIcon icon={faArrowLeft} style={{marginRight: '10px'}} />
-          {t("actuality.back")}
-        </button>
-        {newsletter.pdfPath && (
-          <a href={newsletter.pdfPath} target="_blank" rel="noopener noreferrer" className="v2-btn v2-btn-yellow">
-            <FontAwesomeIcon icon={faFilePdf} style={{marginRight: '10px'}} />
-            {t("newsletters.downloadPdf")}
-          </a>
-        )}
-      </div>
-
-      <div className="editor-container">
-        <div className="mag-header-banner">
-          <img src={newsletter.bannerImage || "/assets/actualities/actuality7.webp"} alt="Banner" />
-        </div>
-
-        <div className="mag-content-padding">
-          <h1 className="mag-main-title">
-            {newsletter.title?.[currentLang] || newsletter.title?.['fr']}
-          </h1>
-
-          {edito && (
-            <div className="mag-edito-box">
-              <div className="mag-edito-left">
-                <img 
-                  src={edito.image || "/assets/mentions/president-mama.webp"} 
-                  alt="Edito" 
-                  className="mag-edito-img" 
-                />
-              </div>
-              <div className="mag-edito-right">
-                <div className="edito-text" dangerouslySetInnerHTML={{ __html: edito.content }} />
-              </div>
-            </div>
+      <main className="newsletter-editor-layout preview-mode" style={{paddingTop: '120px', paddingBottom: '60px'}}>
+        <div className="v2-container" style={{marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <button className="v2-btn v2-btn-outline" onClick={() => navigate(-1)}>
+            <FontAwesomeIcon icon={faArrowLeft} style={{marginRight: '10px'}} />
+            {t("actuality.back")}
+          </button>
+          {newsletter.pdfPath && (
+            <a href={newsletter.pdfPath} target="_blank" rel="noopener noreferrer" className="v2-btn v2-btn-yellow">
+              <FontAwesomeIcon icon={faFilePdf} style={{marginRight: '10px'}} />
+              {t("newsletters.downloadPdf")}
+            </a>
           )}
-
-          <div className="mag-articles-list">
-            {articles.map((article, idx) => (
-              <div className="mag-article-row" key={idx}>
-                <div className="mag-article-img-box">
-                  <img src={article.image || "/assets/actualities/news.webp"} alt={article.title || "Article"} />
-                </div>
-                <div className="mag-article-text-box">
-                  <div className="mag-article-text" dangerouslySetInnerHTML={{ __html: article.text }} />
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
 
-        <div className="mag-footer-v2">
-          <img src="/assets/logos/logoMama.png" alt="Logo" className="mag-footer-logo" />
-          <p>{t("v2.footer.associationName")}</p>
-          <div className="mag-footer-btns">
-            <button className="mag-btn-news" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
-              {t("v2.btns.backToTop")}
-            </button>
+        <div className="editor-container">
+          <div className="mag-header-banner">
+            <img src={newsletter.bannerImage || "/assets/actualities/actuality7.webp"} alt="Banner" />
           </div>
+
+          <div className="mag-content-padding">
+            <h1 className="mag-main-title">
+              {newsletter.title?.[currentLang] || newsletter.title?.['fr']}
+            </h1>
+
+            {edito && (
+              <section className="mag-edito-box">
+                <div className="mag-edito-left">
+                  <h3 style={{ color: 'white', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.9rem' }}>
+                    {currentLang === 'fr' ? "Le mot de la Présidente" : "A word from the President"}
+                  </h3>
+                  <img 
+                    src={edito.image || "/assets/mentions/president-mama.webp"} 
+                    alt="President" 
+                    className="mag-edito-img" 
+                  />
+                </div>
+                <div className="mag-edito-right">
+                  <div className="edito-text" dangerouslySetInnerHTML={{ __html: edito.content }} />
+                </div>
+              </section>
+            )}
+
+            <div className="mag-articles-list">
+              {articles.map((article, idx) => (
+                <article className="mag-article-row" key={idx}>
+                  <div className="mag-article-img-box">
+                    <img src={article.image || "/assets/actualities/news.webp"} alt={article.title || "Article"} />
+                  </div>
+                  <div className="mag-article-right">
+                    <div className="mag-article-text" dangerouslySetInnerHTML={{ __html: article.text }} />
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <footer className="mag-footer-v2">
+            <img src="/assets/logos/logoMama.png" alt="Logo" className="mag-footer-logo" />
+            <p>© {new Date().getFullYear()} - {t("v2.hero.associationName")} - {t("newsletters.titleGallery")}</p>
+            <div className="mag-footer-btns">
+              <button className="mag-btn-news" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+                {t("topbar.backToTop")}
+              </button>
+            </div>
+          </footer>
         </div>
-      </div>
-      {/* Ajout du Footer global ici */}
+      </main>
+
       <Footer />
     </div>
   );
