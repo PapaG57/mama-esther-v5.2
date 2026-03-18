@@ -239,7 +239,7 @@ const AdminNewsletterEditor = () => {
     }
   };
 
-  if (loading) return <HandSpinner />;
+  if (loading) return <HandSpinner fullPage={true} />;
 
   return (
     <div className={`newsletter-editor-layout ${isPreview ? 'preview-mode' : ''}`}>
