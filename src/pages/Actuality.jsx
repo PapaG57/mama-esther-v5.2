@@ -19,13 +19,14 @@ const ActualityPageV2 = () => {
   const newsPerPage = 3;
 
   const news = [
+    // PAGE 3 (Les plus récentes)
     {
       id: 9,
-      slug: "newsletter-3",
+      slug: "conception-porche-terrasses",
       title: t("newsletters.list.news3.title"),
       date: "15 Octobre 2025",
       category: "institutionnel",
-      img: "/assets/actualities/actuality7.webp",
+      img: "/assets/actualities/actuality9.webp",
       content: t("newsletters.list.news3.summary"),
       pdfPath: "/assets/newsletter-pdf/pdf/newsletter3-octobre-2025.pdf"
     },
@@ -51,6 +52,7 @@ const ActualityPageV2 = () => {
       img: "/assets/actualities/actuality7.webp",
       content: t("actuality.articles.article7.content")
     },
+    // PAGE 2
     {
       id: 6,
       slug: "pose-premiere-pierre",
@@ -82,6 +84,7 @@ const ActualityPageV2 = () => {
         { label: "Voir le façonnage des planches", url: "/videos/façonnage-planches.mp4" }
       ]
     },
+    // PAGE 1 (Les plus anciennes)
     {
       id: 3,
       slug: "preparation-parpaings",
@@ -176,8 +179,49 @@ const ActualityPageV2 = () => {
     return () => { document.body.style.overflow = "unset"; };
   }, [selectedVideo]);
 
-  const PaginationControls = () => (
-    totalPages > 1 && (
+  const PaginationControls = () => {
+    if (totalPages <= 1) return null;
+
+    const renderPageNumbers = () => {
+      const pages = [];
+      const delta = 1; // Un voisin avant/après la page active
+
+      for (let i = 1; i <= totalPages; i++) {
+        // Afficher la page si :
+        // 1. C'est la première ou la deuxième page (pour avoir le 1, 2 ...)
+        // 2. C'est la dernière page
+        // 3. C'est la page active ou un de ses voisins directs
+        if (
+          i === 1 || 
+          i === 2 ||
+          i === totalPages || 
+          (i >= currentPage - delta && i <= currentPage + delta)
+        ) {
+          // On évite les doublons (si i=2 est aussi un voisin par exemple)
+          if (!pages.find(p => p.key === i.toString())) {
+            pages.push(
+              <button
+                key={i}
+                className={`pag-number ${currentPage === i ? 'active' : ''}`}
+                onClick={() => { setCurrentPage(i); window.scrollTo(0, 400); }}
+              >
+                {i}
+              </button>
+            );
+          }
+        } 
+        // Ajouter l'ellipse si on a un trou de plus d'une page
+        else if (
+          (i === currentPage - delta - 1 && i > 2) || 
+          (i === currentPage + delta + 1 && i < totalPages)
+        ) {
+          pages.push(<span key={`ellipsis-${i}`} className="pag-ellipsis">...</span>);
+        }
+      }
+      return pages;
+    };
+
+    return (
       <div className="v2-pagination">
         <button 
           className="pag-btn" 
@@ -186,9 +230,11 @@ const ActualityPageV2 = () => {
         >
           <FontAwesomeIcon icon={faChevronLeft} />
         </button>
-        <span className="pag-info">
-          {t("actuality.pagination", { current: currentPage, total: totalPages })}
-        </span>
+        
+        <div className="pag-numbers-list">
+          {renderPageNumbers()}
+        </div>
+
         <button 
           className="pag-btn" 
           onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo(0, 400); }}
@@ -197,8 +243,8 @@ const ActualityPageV2 = () => {
           <FontAwesomeIcon icon={faChevronRight} />
         </button>
       </div>
-    )
-  );
+    );
+  };
 
   return (
     <div className="v2-layout">

@@ -7,46 +7,12 @@ const ActualityV2 = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const newsItems = [
+  // Les 6 éléments pour le carousel (Page 3 + les 2 dernières de la Page 2 + Carte Neutre)
+  const latestNews = [
     { 
-      slug: "newsletter-3",
-      img: "/assets/actualities/actuality7.webp", 
+      slug: "conception-porche-terrasses",
+      img: "/assets/actualities/actuality9.webp", 
       title: t("newsletters.list.news3.title") 
-    },
-    { 
-      slug: "visite-terrain",
-      img: "/assets/actualities/actuality1.webp", 
-      title: t("actuality.articles.article2.title") 
-    },
-    { 
-      slug: "signature-agrement",
-      img: "/assets/actualities/actuality2.webp", 
-      title: t("actuality.articles.article1.title") 
-    },
-    { 
-      slug: "preparation-parpaings",
-      img: "/assets/actualities/actuality3.webp", 
-      title: t("actuality.articles.article3.title") 
-    },
-    { 
-      slug: "abattage-arbres",
-      img: "/assets/actualities/actuality4.webp", 
-      title: t("actuality.articles.article4.title") 
-    },
-    { 
-      slug: "delimitation-terrain",
-      img: "/assets/actualities/actuality5.webp", 
-      title: t("actuality.articles.article5.title") 
-    },
-    { 
-      slug: "pose-premiere-pierre",
-      img: "/assets/actualities/actuality6.webp", 
-      title: t("actuality.articles.article6.title") 
-    },
-    { 
-      slug: "elevation-murs",
-      img: "/assets/actualities/actuality7.webp", 
-      title: t("actuality.articles.article7.title") 
     },
     { 
       slug: "derniers-moellons",
@@ -54,11 +20,26 @@ const ActualityV2 = () => {
       title: t("actuality.articles.article8.title") 
     },
     { 
+      slug: "elevation-murs",
+      img: "/assets/actualities/actuality7.webp", 
+      title: t("actuality.articles.article7.title") 
+    },
+    { 
+      slug: "pose-premiere-pierre",
+      img: "/assets/actualities/actuality6.webp", 
+      title: t("actuality.articles.article6.title") 
+    },
+    { 
+      slug: "delimitation-terrain",
+      img: "/assets/actualities/actuality5.webp", 
+      title: t("actuality.articles.article5.title") 
+    },
+    { 
       slug: "cameroun",
       img: "/assets/actualities/cameroun-village.webp", 
       title: t("actuality.articles.article9.title"), 
       isNeutral: true 
-    },
+    }
   ];
 
   const handleNavigate = (slug) => {
@@ -66,7 +47,7 @@ const ActualityV2 = () => {
   };
 
   // Doubler la liste pour créer l'effet de boucle infinie sans saut
-  const infiniteItems = [...newsItems, ...newsItems];
+  const infiniteItems = [...latestNews, ...latestNews];
 
   return (
     <section className="v2-news">
@@ -83,7 +64,6 @@ const ActualityV2 = () => {
                 className={`v2-news-card ${item.isNeutral ? "is-neutral" : ""}`} 
                 key={index} 
                 onClick={() => !item.isNeutral && handleNavigate(item.slug)}
-                style={{ cursor: item.isNeutral ? "default" : "pointer" }}
               >
                 <div className="v2-news-img-wrapper">
                   <img src={item.img} alt={item.title} />
@@ -101,6 +81,15 @@ const ActualityV2 = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="v2-news-cta">
+          <button 
+            className="v2-btn v2-btn-outline-green" 
+            onClick={() => navigate('/actualities')}
+          >
+            {t("actualitySection.button")}
+          </button>
         </div>
       </div>
     </section>
