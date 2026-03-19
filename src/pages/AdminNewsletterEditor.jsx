@@ -23,6 +23,7 @@ const AdminNewsletterEditor = () => {
   const currentLang = i18n.language.split('-')[0] === 'en' ? 'en' : 'fr';
   
   const [activeBlockId, setActiveBlockId] = useState(null);
+  const [showMobileTools, setShowMobileTools] = useState(false);
   const fileInputRef = useRef(null);
   const [uploadTarget, setUploadTarget] = useState(null);
 
@@ -254,7 +255,7 @@ const AdminNewsletterEditor = () => {
             <FontAwesomeIcon icon={faArrowLeft} />
           </button>
           
-          <div style={{ height: '2px', width: '30px', background: '#eee' }}></div>
+          <div className="toolbar-separator" style={{ height: '2px', width: '30px', background: '#eee' }}></div>
           
           <button className="v2-btn-icon" onClick={() => setIsPreview(!isPreview)} title="Aperçu">
             <FontAwesomeIcon icon={faEye} />
@@ -264,10 +265,15 @@ const AdminNewsletterEditor = () => {
             <FontAwesomeIcon icon={faSave} />
           </button>
 
-          <div style={{ height: '2px', width: '30px', background: '#eee' }}></div>
+          <div className="toolbar-separator" style={{ height: '2px', width: '30px', background: '#eee' }}></div>
 
           <button className="v2-btn-icon" onClick={addBlock} title="Ajouter un article">
             <FontAwesomeIcon icon={faPlusCircle} />
+          </button>
+
+          {/* BOUTON MOBILE POUR OUVRIR LES OUTILS */}
+          <button className="v2-btn-icon btn-mobile-tools" onClick={() => setShowMobileTools(!showMobileTools)} title="Outils de style">
+            <FontAwesomeIcon icon={faPalette} />
           </button>
         </div>
       )}
@@ -365,7 +371,7 @@ const AdminNewsletterEditor = () => {
                     contentEditable={!isPreview}
                     suppressContentEditableWarning={true}
                     onBlur={(e) => handleTextChange('text', e.target.innerText, block.id)}
-                    onClick={() => setActiveBlockId(block.id)}
+                    onClick={() => { setActiveBlockId(block.id); setShowMobileTools(true); }}
                   >
                     {block.text[currentLang]}
                   </div>
@@ -408,7 +414,7 @@ const AdminNewsletterEditor = () => {
 
       {/* BOITE A OUTILS (DROITE) - TOUJOURS VISIBLE SI PAS PREVIEW */}
       {!isPreview && (
-        <div className="sidebar-toolbox">
+        <div className={`sidebar-toolbox ${showMobileTools ? 'mobile-open' : ''}`}>
           <div className="toolbox-header">
             <FontAwesomeIcon icon={faPalette} /> Outils de Style
           </div>
@@ -458,7 +464,7 @@ const AdminNewsletterEditor = () => {
             Sélectionnez du texte pour appliquer les styles Word.
           </div>
 
-          <button className="tool-btn-close" onClick={() => setActiveBlockId(null)}>Prêt !</button>
+          <button className="tool-btn-close" onClick={() => { setActiveBlockId(null); setShowMobileTools(false); }}>Prêt !</button>
         </div>
       )}
     </div>
