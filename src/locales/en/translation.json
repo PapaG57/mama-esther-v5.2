@@ -142,8 +142,9 @@
   "newsletters": {
     "filterAll": "All",
     "viewOnline": "View online",
-    "viewPdf": "view PDF",
+    "viewPdf": "View as PDF",
     "downloadPdf": "Download PDF",
+    "downloadAsPdf": "download as pdf",
     "webVersion": "Web version",
     "titleGallery": "Our newsletters",
     "subtitleGallery": "Find the publications of the Mama Esther association:",
@@ -290,7 +291,11 @@
     "writeUs": "Write to us"
   },
   "unsubscribe": {
-    "title": "Oh no… We are sad to see you go...",
+    "title": "Unsubscribe",
+    "sadTitle": "Oh no… We are sad to see you go...",
+    "successMessage": "Unsubscription recorded",
+    "changeMind": "I made a mistake or I changed my mind",
+    "reSubscribe": "I subscribe again",
     "subtitle": "You will no longer receive our newsletter. But know that you will always be welcome to join us at any time 💚",
     "emailLabel": "Enter your email address:",
     "placeholder": "e.g. firstname.lastname@example.com",

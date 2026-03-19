@@ -144,6 +144,7 @@
     "viewOnline": "Voir en ligne",
     "viewPdf": "Voir en PDF",
     "downloadPdf": "Télécharger PDF",
+    "downloadAsPdf": "télécharger en pdf",
     "webVersion": "Version web",
     "delete": "Supprimer",
     "confirmDelete": "Voulez-vous vraiment supprimer cette newsletter ?",
@@ -294,7 +295,11 @@
     "writeUs": "Nous écrire"
   },
   "unsubscribe": {
-    "title": "Oh non… On est triste de vous voir partir...",
+    "title": "Désinscription",
+    "sadTitle": "Oh non… On est triste de vous voir partir...",
+    "successMessage": "Désinscription enregistrée",
+    "changeMind": "Je me suis trompé ou je change d'avis",
+    "reSubscribe": "Je me ré-inscrit",
     "subtitle": "Vous ne recevrez plus notre newsletter. Mais sachez que vous serez toujours le ou la bienvenue pour nous retrouver à tout moment 💚",
     "emailLabel": "Entrez votre adresse email :",
     "placeholder": "ex. prenom.nom@exemple.com",
