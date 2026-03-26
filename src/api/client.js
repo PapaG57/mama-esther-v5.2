@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// URL de l'API moderne : Utilise une variable d'environnement ou le fallback local
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// URL de l'API moderne : Utilise d'abord la config externe (modifiable post-build), sinon l'env, sinon le fallback local
+const API_BASE_URL = window.APP_CONFIG?.API_URL || import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
