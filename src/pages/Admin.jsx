@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt, faNewspaper } from "@fortawesome/free-solid-svg-icons";
-import AdminNewsletters from "../components/AdminNewsletters";
 import "../styles/AdminV2.css";
 import PasswordField from "../components/PasswordField";
 import confetti from "canvas-confetti";
@@ -263,10 +262,6 @@ export default function Admin() {
                 </tbody>
               </table>
             </div>
-          </div>
-
-          <div className="admin-v2-list-section" style={{ marginTop: '40px' }}>
-            <AdminNewsletters />
           </div>
 
           <div className="admin-v2-grid" style={{ marginTop: '40px' }}>
