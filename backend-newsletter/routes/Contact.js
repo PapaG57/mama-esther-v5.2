@@ -27,12 +27,15 @@ export default router;
 async function sendContactEmail({ name, email, subject, message }) {
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: true,
+    port: 587, // Port standard STARTTLS
+    secure: false, // Doit être false pour le port 587
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: false // Permet d'éviter les erreurs de certificat sur certains serveurs
+    }
   });
 
   await transporter.sendMail({

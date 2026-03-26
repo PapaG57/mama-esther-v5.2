@@ -44,7 +44,7 @@ const ContactV2 = () => {
 
   return (
     <div className="v2-layout">
-      {loading && <HandSpinner fullPage={true} text={t("v2.contact.form.sending")} />}
+      {loading && <HandSpinner fullPage={true} text={t("contact.form.sending")} />}
       <Navbar hideDonate={true} />
       
       {/* HERO CONTACT */}
