@@ -30,16 +30,17 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Ménage :** Suppression de tous les anciens fichiers CSS et composants obsolètes pour un projet propre.
 - [x] **Fixes :** Correction des imports relatifs, du parsing package.json et des scories de traduction.
 
-## 5. Mémo pour la prochaine session (Reprise Newsletters - 17 Mars 2026)
+## 5. Mémo pour la prochaine session (Reprise Déploiement - Mars 2026)
 **État actuel :**
-- [x] **Restauration des données :** `src/data/newsletters.js` contient maintenant les textes complets (FR/EN) pour les newsletters 1, 2 et 3.
-- [x] **Correction Visualisation :** `NewsletterView.jsx` a été restructuré pour inclure la `Navbar`, le `Footer` et corriger les clés de traduction (ex: `topbar.backToTop`).
-- [x] **Composants :** `HandSpinner` (avec prop `size`), `NewsletterV2` et `NewsletterGallery` (carousel infini) sont stabilisés.
+- [x] **Frontend :** Déployé sur LWS (`mamaesther.org`).
+- [x] **Backend :** Déployé sur Render (`https://mama-esther-backend.onrender.com`).
+- [x] **Config :** Système de `config.js` externe mis en place pour l'URL de l'API.
 
-**À FAIRE : Validation Visuelle**
-- L'utilisateur va fournir des captures d'écran (`debug.png`) pour vérifier les éventuels décalages visuels restants.
-- Vérifier si tous les articles s'affichent correctement dans `NewsletterView`.
-- Passer à la création de la Newsletter n°3 (ou futures) via le Studio.
+**À FAIRE : Finalisation**
+1. **Sync Render :** Faire `git push` des modifs de `backend-newsletter/routes/Contact.js` (fix port 587).
+2. **Vérif Config :** S'assurer que le `config.js` sur Filezilla pointe bien vers Render et non localhost.
+3. **Cache :** Tester en navigation privée pour valider la correction des clés i18n (`v2.contact.form.sending`).
+4. **Validation :** Tester l'envoi d'un message de contact réel.
 
 ---
-*Note : Cette version v5.2 est la version officielle de référence. Le projet est désormais totalement harmonisé sur le nouveau design system.*
+*Note : La version v5.2 est en ligne. Le moteur (Render) doit maintenant être synchronisé avec le front (LWS).*
