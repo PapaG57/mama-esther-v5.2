@@ -54,12 +54,27 @@ app.post("/api/upload-image", upload.single("image"), (req, res) => {
 });
 
 // 1. 🛡️ SECURITY & CORS
-app.use(helmet()); 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5000",
+  "https://mamaesther.org",
+  "https://www.mamaesther.org",
+  "https://mama-esther-v5-2.vercel.app" // Au cas où tu aurais un preview Vercel
+];
+
 app.use(
   cors({
-    origin: process.env.FRONT_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Autorise les requêtes sans origine (comme Postman ou les outils mobiles)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS non autorisé pour cette origine"));
+      }
+    },
     credentials: true,
-  }),
+  })
 );
 
 // 2. 📦 PARSERS
