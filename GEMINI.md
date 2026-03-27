@@ -30,17 +30,18 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Ménage :** Suppression de tous les anciens fichiers CSS et composants obsolètes pour un projet propre.
 - [x] **Fixes :** Correction des imports relatifs, du parsing package.json et des scories de traduction.
 
-## 5. Mémo pour la prochaine session (Reprise Déploiement - Mars 2026)
+## 5. Mémo pour la prochaine session (Reprise Déploiement - Mars 2026 - Suite)
 **État actuel :**
-- [x] **Frontend :** Déployé sur LWS (`mamaesther.org`).
-- [x] **Backend :** Déployé sur Render (`https://mama-esther-backend.onrender.com`).
-- [x] **Config :** Système de `config.js` externe mis en place pour l'URL de l'API.
+- [x] **Correctif Emails :** Passage au port 587 + `secure: false` dans `send-email.js`.
+- [x] **Config Frontend :** `public/config.js` pointe vers Render.
+- [x] **Optimisation Render :** Timeout Axios augmenté à 60s + Ping de réveil (cold start) ajouté dans `App.jsx`.
+- [x] **CORS :** Configuration mise à jour dans `server.js` pour accepter `localhost`, `mamaesther.org` (avec et sans www) et les requêtes sans origine (Postman).
 
-**À FAIRE : Finalisation**
-1. **Sync Render :** Faire `git push` des modifs de `backend-newsletter/routes/Contact.js` (fix port 587).
-2. **Vérif Config :** S'assurer que le `config.js` sur Filezilla pointe bien vers Render et non localhost.
-3. **Cache :** Tester en navigation privée pour valider la correction des clés i18n (`v2.contact.form.sending`).
-4. **Validation :** Tester l'envoi d'un message de contact réel.
+**À FAIRE : Finalisation (Demain)**
+1. **Validation Backend :** Faire un test **Postman** sur `https://mama-esther-backend.onrender.com/api/contact` pour confirmer que le serveur répond (JSON : name, email, subject, message).
+2. **Sync Frontend :** Refaire `npm run build` et renvoyer le dossier `dist` sur LWS pour inclure le ping de réveil et le nouveau timeout.
+3. **Nettoyage Serveur :** Renommer/Supprimer le fichier `default_index.html` (17Mo) sur LWS s'il bloque l'affichage du site.
+4. **Test Réel :** Valider l'envoi d'un message de contact et une inscription newsletter depuis le site en ligne.
 
 ---
 *Note : La version v5.2 est en ligne. Le moteur (Render) doit maintenant être synchronisé avec le front (LWS).*
