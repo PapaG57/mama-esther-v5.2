@@ -27,6 +27,20 @@ const NewsletterView = lazy(() => import("./pages/NewsletterView"));
 const Page404 = lazy(() => import("./pages/404"));
 
 function App() {
+  // ⚡ Ping de réveil pour Render (Cold Start)
+  useEffect(() => {
+    const wakeUpServer = async () => {
+      try {
+        const rootUrl = apiClient.defaults.baseURL.replace("/api", "");
+        await fetch(rootUrl, { mode: 'no-cors' }); 
+        console.log("⚡ Ping de réveil envoyé au serveur Render...");
+      } catch (err) {
+        // On ignore l'erreur, c'est juste un ping "fire and forget"
+      }
+    };
+    wakeUpServer();
+  }, []);
+
   return (
     <Router>
       <ScrollToTop />
