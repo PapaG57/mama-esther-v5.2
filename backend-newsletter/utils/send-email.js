@@ -15,12 +15,15 @@ async function sendConfirmationEmail(email) {
 
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: true,
+    port: Number(process.env.EMAIL_PORT) || 587,
+    secure: false, // false pour le port 587
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: false
+    }
   });
 
   transporter.verify((err) => {
@@ -103,12 +106,15 @@ async function sendUnsubscribeEmail(email) {
 
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: true,
+    port: Number(process.env.EMAIL_PORT) || 587,
+    secure: false, // false pour le port 587
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: false
+    }
   });
 
   try {
@@ -140,12 +146,15 @@ async function sendUnsubscribeEmail(email) {
 async function sendAdminNotificationEmail(email, amount) {
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: true,
+    port: Number(process.env.EMAIL_PORT) || 587,
+    secure: false, // false pour le port 587
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: false
+    }
   });
 
   await transporter.sendMail({
@@ -166,12 +175,15 @@ async function sendAdminNotificationEmail(email, amount) {
 async function sendDonConfirmationEmail(email, amount) {
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: true,
+    port: Number(process.env.EMAIL_PORT) || 587,
+    secure: false, // false pour le port 587
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: false
+    }
   });
 
   await transporter.sendMail({
@@ -214,12 +226,15 @@ async function sendDonConfirmationEmail(email, amount) {
 async function sendErrorAlertEmail(error) {
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: true,
+    port: Number(process.env.EMAIL_PORT) || 587,
+    secure: false, // false pour le port 587
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: false
+    }
   });
 
   try {
