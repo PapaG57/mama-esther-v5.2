@@ -8,7 +8,7 @@ const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10000, // Sécurité : on évite les requêtes qui tournent à l'infini
+  timeout: 60000, // Augmenté à 60s pour laisser le temps à Render de se réveiller
 });
 
 // 1. INTERCEPTEUR DE REQUÊTE : On injecte le jeton s'il existe
