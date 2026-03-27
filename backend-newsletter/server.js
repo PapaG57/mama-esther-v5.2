@@ -76,7 +76,7 @@ const limiter = rateLimit({
   max: 100,
   message: "Trop de requêtes effectuées, réessayez plus tard.",
 });
-app.use("/api/", limiter);
+app.use("/api", limiter); // Retrait du slash final pour plus de souplesse
 
 // Montage des routeurs
 app.use("/api/subscribe", subscriptionRouter);
