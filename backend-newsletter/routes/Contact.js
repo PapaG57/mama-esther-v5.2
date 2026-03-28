@@ -39,10 +39,11 @@ router.post("/", validateContact, async (req, res) => {
 export default router;
 
 async function sendContactEmail({ name, email, subject, message }) {
+  console.log("📨 Tentative d'envoi d'email SMTP...");
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: Number(process.env.EMAIL_PORT) || 587,
-    secure: false, // Doit être false pour le port 587
+    secure: false,
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
@@ -52,10 +53,15 @@ async function sendContactEmail({ name, email, subject, message }) {
     }
   });
 
-  // Construction du chemin absolu vers les assets
+  // Vérification de l'existence de l'image
   const logoPath = path.join(__dirname, "..", "assets", "logoMama.png");
+  const fs = await import("fs");
+  if (!fs.existsSync(logoPath)) {
+    console.error("❌ ERREUR : Le logo est introuvable au chemin :", logoPath);
+    // On continue sans attachement pour éviter le plantage 500 si possible
+  }
 
-  await transporter.sendMail({
+  const mailOptions = {
     from: `"Mama Esther Contact" <${process.env.EMAIL_SENDER}>`,
     to: process.env.EMAIL_SENDER,
     subject: `📬 Nouveau message de ${name}`,
@@ -73,15 +79,25 @@ async function sendContactEmail({ name, email, subject, message }) {
         <p style="font-size: 0.9rem; color: #555;">Ce message a été envoyé automatiquement depuis le formulaire contact du site Mama Esther.</p>
       </div>
     `,
-    attachments: [
+  };
+
+  // N'ajouter l'attachement que si le fichier existe
+  if (fs.existsSync(logoPath)) {
+    mailOptions.attachments = [
       {
         filename: "logoMama.png",
         path: logoPath,
         cid: "logoMama",
       },
-    ],
-  });
+    ];
+  }
 
-  console.log(`📩 Mail de contact reçu de ${name}`);
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("✅ Email envoyé avec succès ! ID:", info.messageId);
+  } catch (err) {
+    console.error("❌ ERREUR SMTP DÉTAILLÉE :", err);
+    throw err;
+  }
 }
 

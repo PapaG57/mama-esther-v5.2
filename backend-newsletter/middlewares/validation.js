@@ -4,9 +4,9 @@ export const validateContact = (req, res, next) => {
   const schema = Joi.object({
     name: Joi.string().min(2).max(50).required(),
     email: Joi.string().email().required(),
-    subject: Joi.string().min(3).max(100).required(),
-    message: Joi.string().min(10).max(2000).required(),
-    extraField: Joi.string().allow('', null) // Honeypot
+    subject: Joi.string().min(1).max(100).required(),
+    message: Joi.string().min(5).max(3000).required(),
+    extraField: Joi.string().allow('', null).optional() // Honeypot
   });
 
   const { error } = schema.validate(req.body);
