@@ -74,7 +74,7 @@ const ContactV2 = () => {
                   <div className="method-icon"><FontAwesomeIcon icon={faEnvelope} /></div>
                   <div className="method-text">
                     <h4>Email</h4>
-                    <p>contact@mama-esther.org</p>
+                    <p>association@mamaesther.org</p>
                   </div>
                 </div>
                 <div className="method-item">
