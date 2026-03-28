@@ -25,6 +25,7 @@ export const newsletterService = {
   create: (data) => apiClient.post("/newsletters", data),
   update: (id, data) => apiClient.put(`/newsletters/${id}`, data),
   delete: (id) => apiClient.delete(`/newsletters/${id}`),
+  broadcast: (id) => apiClient.post(`/newsletters/${id}/broadcast`),
   aiGenerate: (prompt, action) => apiClient.post("/newsletters/ai-generate", { prompt, action }),
   uploadPdf: (id, formData) => apiClient.post(`/newsletters/${id}/upload-pdf`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' }

@@ -250,6 +250,70 @@ async function sendErrorAlertEmail(error) {
   }
 }
 
+// Fonction d’envoi d'une newsletter à un abonné
+async function sendNewsletterToSubscriber(email, newsletter) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT) || 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_SENDER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+
+  // Construction du lien de désinscription
+  const unsubscribeLink = `https://mamaesther.org/unsubscribe?email=${encodeURIComponent(email)}`;
+
+  try {
+    await transporter.sendMail({
+      from: `"Mama Esther Newsletter" <${process.env.EMAIL_SENDER}>`,
+      to: email,
+      subject: `📰 Mama Esther : ${newsletter.title.fr}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 15px; overflow: hidden;">
+          <div style="background-color: #007a5e; padding: 20px; text-align: center;">
+            <img src="cid:logoFooter" alt="Mama Esther" style="max-width: 100px;" />
+          </div>
+          
+          <div style="padding: 30px;">
+            <h1 style="color: #007a5e; font-size: 24px;">${newsletter.title.fr}</h1>
+            <p style="color: #555; line-height: 1.6; font-size: 16px;">
+              ${newsletter.summary.fr}
+            </p>
+            
+            <div style="margin: 30px 0; text-align: center;">
+              <a href="https://mamaesther.org/newsletter/view/${newsletter._id}" 
+                 style="background-color: #fcd116; color: #ce1126; padding: 12px 25px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">
+                Lire la version complète en ligne 💚
+              </a>
+            </div>
+
+            <p style="font-size: 14px; color: #888; border-top: 1px solid #eee; padding-top: 20px; margin-top: 40px;">
+              Vous recevez cet e-mail car vous êtes inscrit à la newsletter de l'Association Mama Esther.
+              <br /><br />
+              <a href="${unsubscribeLink}" style="color: #ce1126; text-decoration: underline;">Se désinscrire</a>
+            </p>
+          </div>
+        </div>
+      `,
+      attachments: [
+        {
+          filename: "logoMama.png",
+          path: path.join(__dirname, "..", "assets", "logoMama.png"),
+          cid: "logoFooter",
+        },
+      ],
+    });
+  } catch (err) {
+    console.error(`❌ Échec envoi newsletter à ${email} :`, err);
+    throw err;
+  }
+}
+
 // Export des fonctions
 export {
   sendConfirmationEmail,
@@ -257,5 +321,7 @@ export {
   sendDonConfirmationEmail,
   sendAdminNotificationEmail,
   sendErrorAlertEmail,
+  sendNewsletterToSubscriber,
 };
+
 

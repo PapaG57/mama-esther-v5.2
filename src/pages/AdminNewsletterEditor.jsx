@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faArrowLeft, faSave, faEye, faEyeSlash, 
   faImage, faPlusCircle, faRobot, faTrash,
-  faTextHeight, faPalette, faFillDrip, faCheckCircle
+  faTextHeight, faPalette, faFillDrip, faCheckCircle,
+  faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
 import { newsletterService } from '../api/services';
 import { toast } from 'react-toastify';
@@ -232,11 +233,32 @@ const AdminNewsletterEditor = () => {
         toast.success("Newsletter mise à jour avec succès !");
       } else {
         await newsletterService.create(formatted);
-        toast.success("Newsletter n°3 publiée avec succès !");
+        toast.success("Newsletter créée avec succès !");
       }
       navigate('/admin');
     } catch (err) {
       toast.error("Erreur lors de l'enregistrement : " + (err.message || "Serveur injoignable"));
+    }
+  };
+
+  const handleBroadcast = async () => {
+    if (!id) {
+      toast.warning("Veuillez d'abord enregistrer la newsletter avant de l'envoyer.");
+      return;
+    }
+
+    if (!window.confirm("🚀 Voulez-vous vraiment diffuser cette newsletter à TOUS les abonnés ? Cette action est irréversible.")) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await newsletterService.broadcast(id);
+      toast.success(res.data.message || "La diffusion a commencé !");
+    } catch (err) {
+      toast.error("Erreur lors de la diffusion : " + (err.response?.data?.error || err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -264,6 +286,12 @@ const AdminNewsletterEditor = () => {
           <button className="v2-btn-icon" style={{ color: 'var(--color-green)' }} onClick={handleSave} title="Enregistrer">
             <FontAwesomeIcon icon={faSave} />
           </button>
+
+          {id && (
+            <button className="v2-btn-icon" style={{ color: '#007a5e' }} onClick={handleBroadcast} title="Diffuser à tous les abonnés">
+              <FontAwesomeIcon icon={faPaperPlane} />
+            </button>
+          )}
 
           <div className="toolbar-separator" style={{ height: '2px', width: '30px', background: '#eee' }}></div>
 

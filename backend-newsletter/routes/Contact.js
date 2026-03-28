@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 import path from "path";
 import { fileURLToPath } from "url";
 import { validateContact } from "../middlewares/validation.js";
+import Contact from "../models/Contact.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,10 +19,16 @@ router.post("/", validateContact, async (req, res) => {
   }
 
   try {
+    // 💾 Sauvegarde en base de données
+    const nouveauMessage = new Contact({ name, email, subject, message });
+    await nouveauMessage.save();
+
+    // 📧 Envoi de l'e-mail
     await sendContactEmail({ name, email, subject, message });
+    
     res.status(200).json({ message: "Message envoyé avec succès 💚" });
   } catch (error) {
-    console.error("❌ Erreur complète envoi mail contact :", error);
+    console.error("❌ Erreur complète route contact :", error);
     res.status(500).json({ 
       message: "Erreur serveur lors de l’envoi.",
       error: error.message 

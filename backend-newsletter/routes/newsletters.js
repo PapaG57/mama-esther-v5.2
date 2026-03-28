@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import multer from "multer";
 import path from "path";
 import { generateNewsletterPdf } from "../utils/pdf-generator.js";
+import Subscriber from "../models/Subscriber.js";
+import { sendNewsletterToSubscriber } from "../utils/send-email.js";
 
 dotenv.config();
 
@@ -188,6 +190,47 @@ router.post("/ai-generate", verifyAdmin, async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: "Échec de l'IA" });
+  }
+});
+
+// 5. 🚀 ROUTE DE DIFFUSION (MASS MAILING)
+router.post("/:id/broadcast", verifyAdmin, async (req, res) => {
+  try {
+    const newsletter = await Newsletter.findById(req.params.id);
+    if (!newsletter) return res.status(404).json({ error: "Newsletter non trouvée" });
+
+    const subscribers = await Subscriber.find({});
+    if (subscribers.length === 0) return res.status(400).json({ message: "Aucun abonné à qui envoyer la newsletter." });
+
+    logger.info(`📢 Lancement de la diffusion de la newsletter ${newsletter.newsletterNumber} à ${subscribers.length} abonnés.`);
+
+    // On lance l'envoi en arrière-plan pour ne pas bloquer l'admin
+    (async () => {
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const subscriber of subscribers) {
+        try {
+          await sendNewsletterToSubscriber(subscriber.email, newsletter);
+          successCount++;
+          // Petit délai de 200ms pour éviter de saturer le serveur SMTP (Outlook/LWS)
+          await new Promise(resolve => setTimeout(resolve, 200));
+        } catch (sendErr) {
+          failCount++;
+          logger.error(`❌ Échec envoi newsletter à ${subscriber.email}:`, sendErr);
+        }
+      }
+
+      logger.info(`✅ Diffusion terminée. Succès: ${successCount}, Échecs: ${failCount}`);
+    })();
+
+    res.json({ 
+      message: `La diffusion à ${subscribers.length} abonnés a commencé en arrière-plan.`,
+      subscriberCount: subscribers.length 
+    });
+  } catch (err) {
+    logger.error("Erreur lors de la diffusion de la newsletter:", err);
+    res.status(500).json({ error: "Erreur serveur lors de la diffusion" });
   }
 });
 

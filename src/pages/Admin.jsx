@@ -33,6 +33,7 @@ export default function Admin() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const [nomDonateur, setNomDonateur] = useState("");
+  const [emailDonateur, setEmailDonateur] = useState("");
   const [montant, setMontant] = useState("");
   const [commentaires, setCommentaires] = useState("");
   const [source, setSource] = useState("");
@@ -98,6 +99,7 @@ export default function Admin() {
     e.preventDefault();
     const data = {
       nomDonateur,
+      email: emailDonateur,
       montant: parseFloat(montant),
       commentaires,
       source: source === "Autres (préciser)" ? sourcePrecise : source,
@@ -106,6 +108,7 @@ export default function Admin() {
       await adminService.addManualDonation(data);
       toast.success(t("admin.messages.donAdded"));
       setNomDonateur("");
+      setEmailDonateur("");
       setMontant("");
       setCommentaires("");
       setSource("");
@@ -201,6 +204,7 @@ export default function Admin() {
               </h2>
               <form onSubmit={handleManualDonation} className="admin-v2-form">
                 <input type="text" className="admin-v2-input" placeholder={t("admin.forms.donatorName")} value={nomDonateur} onChange={(e) => setNomDonateur(e.target.value)} required />
+                <input type="email" className="admin-v2-input" placeholder="Email du donateur (pour remerciement)" value={emailDonateur} onChange={(e) => setEmailDonateur(e.target.value)} />
                 <input type="number" className="admin-v2-input" placeholder={t("admin.forms.amount")} value={montant} onChange={(e) => setMontant(e.target.value)} required />
                 <select className="admin-v2-input" value={source} onChange={(e) => setSource(e.target.value)} required>
                   <option value="">{t("admin.forms.source")}</option>
