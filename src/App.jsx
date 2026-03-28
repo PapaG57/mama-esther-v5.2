@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import AdminAccessGate from "./components/AdminAccessGate";
 import ScrollToTopButton from "./components/ScrollToTopButton";
 import HandSpinner from "./components/HandSpinner";
+import MaintenanceNotice from "./components/MaintenanceNotice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -44,6 +45,7 @@ function App() {
 
   return (
     <Router>
+      <MaintenanceNotice />
       <ScrollToTop />
       <ScrollToTopButton />
       <ToastContainer 
