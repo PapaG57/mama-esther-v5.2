@@ -1,5 +1,6 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import apiClient from "./api/client";
 import ScrollToTop from "./utils/ScrollToTop";
 import Footer from "./components/Footer";
 import AdminAccessGate from "./components/AdminAccessGate";
