@@ -1,4 +1,4 @@
-/* CONTACT V2 - FRIENDLY & CLEAN */
+/* CONTACT V2 - FULLY RESPONSIVE & CLEAN */
 .contact-v2-hero {
   height: 40vh;
   background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("/assets/contact/contact.webp") center/cover;
@@ -7,19 +7,31 @@
   padding-top: 80px;
 }
 
+.contact-v2-hero h1 {
+  font-size: 3.5rem;
+  color: white;
+  font-weight: 900;
+  text-align: center;
+  width: 100%;
+}
+
 .contact-v2-section {
-  padding: 100px 0;
+  padding: 80px 0;
   background: white;
 }
 
 .contact-v2-grid {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
   align-items: flex-start;
 }
 
 /* INFO SIDE */
+.contact-info-side {
+  flex: 1 1 400px;
+}
+
 .info-header h2 {
   font-size: 2.5rem;
   font-weight: 900;
@@ -100,6 +112,7 @@
 
 /* FORM SIDE */
 .contact-form-side {
+  flex: 1 1 500px;
   background: var(--color-light);
   padding: 50px;
   border-radius: 30px;
@@ -130,6 +143,7 @@
 }
 
 .form-group input, .form-group select, .form-group textarea {
+  width: 100%;
   padding: 15px;
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 10px;
@@ -140,11 +154,7 @@
 
 .form-group select {
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  /* Double background : l'un pour la flèche jaune, l'autre pour le bloc vert sur la droite */
-  background-image: 
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23fcd116' d='M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z'/%3E%3C/svg%3E"),
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23fcd116' d='M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z'/%3E%3C/svg%3E"),
     linear-gradient(to right, transparent calc(100% - 60px), var(--color-green) calc(100% - 60px));
   background-repeat: no-repeat;
   background-position: right 20px center, right;
@@ -161,7 +171,7 @@
 
 /* MAP SECTION */
 .contact-v2-map {
-  padding-bottom: 100px;
+  padding-bottom: 80px;
 }
 
 .map-card {
@@ -172,32 +182,73 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 30px;
 }
 
 .map-text h3 {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 900;
   margin-bottom: 10px;
 }
 
-/* Responsive */
-@media (max-width: 992px) {
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 1024px) {
   .contact-v2-grid {
-    grid-template-columns: 1fr;
-    gap: 60px;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-v2-hero {
+    height: 30vh;
   }
   
+  .contact-v2-hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .contact-v2-section {
+    padding: 50px 0;
+  }
+
+  .contact-v2-grid {
+    flex-direction: column;
+  }
+
+  .contact-info-side, .contact-form-side {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .info-header h2 {
+    font-size: 1.8rem;
+  }
+
   .contact-form-side {
     padding: 30px 20px;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .map-card {
     flex-direction: column;
     text-align: center;
-    gap: 30px;
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-v2-hero h1 {
+    font-size: 1.8rem;
+  }
+  
+  .contact-form-side {
+    padding: 20px 15px;
+  }
+  
+  .v2-container {
+    padding: 0 20px;
   }
 }

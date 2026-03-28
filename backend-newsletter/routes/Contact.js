@@ -40,18 +40,27 @@ export default router;
 
 async function sendContactEmail({ name, email, subject, message }) {
   console.log("📨 Tentative d'envoi d'email SMTP...");
+  
+  const port = Number(process.env.EMAIL_PORT) || 587;
+  const isSecure = port === 465;
+
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT) || 587,
-    secure: false,
+    port: port,
+    secure: isSecure,
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
     },
     tls: {
       rejectUnauthorized: false
-    }
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    logger: true, // 📝 Affiche les logs SMTP
+    debug: true   // 📝 Affiche les échanges de données
   });
+
 
   // Vérification de l'existence de l'image
   const logoPath = path.join(__dirname, "..", "assets", "logoMama.png");

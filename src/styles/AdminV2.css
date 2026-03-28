@@ -15,9 +15,15 @@
 
 .admin-v2-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
   margin-bottom: 60px;
+}
+
+@media (max-width: 1024px) {
+  .admin-v2-container h1 {
+    font-size: 2.2rem;
+  }
 }
 
 .admin-v2-card {
@@ -154,15 +160,44 @@
 .strength-fort { color: var(--color-green); }
 
 @media (max-width: 768px) {
+  .admin-v2-container {
+    padding: 100px 0 40px;
+  }
+
+  .admin-v2-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+
   .admin-v2-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
   
   .admin-v2-card {
     padding: 25px;
+    border-radius: 25px;
+  }
+
+  .admin-v2-card h2 {
+    font-size: 1.2rem;
   }
   
   .admin-v2-list-section {
     padding: 20px;
+    border-radius: 25px;
+  }
+
+  .admin-v2-table th, .admin-v2-table td {
+    padding: 12px 10px;
+    font-size: 0.85rem;
+  }
+
+  /* Cache les colonnes Date et Source sur petit mobile pour éviter le scroll excessif */
+  .admin-v2-table th:nth-child(3), 
+  .admin-v2-table td:nth-child(3),
+  .admin-v2-table th:nth-child(4), 
+  .admin-v2-table td:nth-child(4) {
+    display: none;
   }
 }
