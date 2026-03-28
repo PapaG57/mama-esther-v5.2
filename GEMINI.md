@@ -30,28 +30,27 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Ménage :** Suppression de tous les anciens fichiers CSS et composants obsolètes pour un projet propre.
 - [x] **Fixes :** Correction des imports relatifs, du parsing package.json et des scories de traduction.
 
-## 5. Mémo pour la prochaine session (Finalisation Déploiement - Mars 2026)
+## 5. Mémo pour la prochaine session (Reprise après blocage SMTP - Mars 2026)
 **État actuel :**
 - [x] **Correctif Page Blanche :** Import de `useEffect` et `apiClient` ajouté dans `App.jsx`.
-- [x] **E-mail de Contact :** Changement de `contact@` en `association@mamaesther.org`.
 - [x] **Restaurations V5 :**
-    - Envoi d'e-mail automatique lors des dons (Remerciement + Admin).
-    - Ajout du champ Email dans l'Admin pour les dons manuels.
-    - Système de **Diffusion Newsletter** (Mass Mailing) ajouté dans l'éditeur.
-    - Enregistrement des messages de contact en base de données.
+    - Envoi d'e-mail automatique lors des dons (Remerciement + Admin) via `donationController.js`.
+    - Système de **Diffusion Newsletter** (Mass Mailing) ajouté dans l'éditeur et le backend.
+    - Enregistrement des messages de contact en base de données (`models/Contact.js`).
 - [x] **Design & Responsivité :**
-    - Admin V2 100% responsive.
-    - Contact V2 100% responsive (Flexbox).
-    - Hero Home corrigé pour mobile (décalage Navbar).
-    - Logo FG DEV agrandi et lisible dans le Footer.
-- [x] **Debug SMTP :** Activation du mode `debug: true` et `logger: true` dans le backend pour traquer les erreurs d'authentification.
+    - Admin V2 et Contact V2 100% responsive (Flexbox).
+    - Nettoyage de `App.css` (suppression du max-width 1280px qui bloquait la fluidité).
+    - Hero Home corrigé pour mobile (padding 150px pour libérer la Navbar).
+    - Logo FG DEV (`New_Logo_FG_DEV256.png`) corrigé, agrandi et espacé dans le Footer.
+- [x] **Debug SMTP :** Activation du mode `debug: true` dans le backend.
 
-**À FAIRE : Validation Finale**
-1. **Fix .env :** Vérifier les identifiants SMTP pour corriger l'erreur `535 Auth Failed` en local.
-2. **Sync GitHub :** Pousser les modifs backend pour le redéploiement Render.
-3. **Build Front :** `npm run build` et déploiement du `dist` sur LWS.
-4. **Nettoyage :** Supprimer `default_index.html` sur LWS.
-5. **Test Réel :** Valider l'envoi d'un message et l'inscription newsletter en ligne.
+**À RÉGLER (Priorités) :**
+1. **Le "Mur" SMTP (LWS) :** L'authentification `florent.gerard@mamaesther.org` échoue systématiquement (Error 535) sur ports 465/587 en local, malgré des identifiants valides dans Outlook. 
+   - *Piste :* Vérifier si SPA (Secure Password Auth) est requis ou si l'IP locale est bannie.
+2. **Accès Admin (401) :** Le login admin en local est refusé.
+   - *Action :* Créer un script de réinitialisation de l'admin en base de données.
+3. **Sync & Déploiement :** Une fois le local OK, pousser sur GitHub/Render et faire le build final pour LWS.
+
 
 
 
