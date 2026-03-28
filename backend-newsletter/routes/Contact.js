@@ -2,6 +2,7 @@
 import { Router } from "express";
 import nodemailer from "nodemailer";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import { validateContact } from "../middlewares/validation.js";
 import Contact from "../models/Contact.js";
@@ -64,7 +65,7 @@ async function sendContactEmail({ name, email, subject, message }) {
 
   // Vérification de l'existence de l'image
   const logoPath = path.join(__dirname, "..", "assets", "logoMama.png");
-  const fs = await import("fs");
+  
   if (!fs.existsSync(logoPath)) {
     console.error("❌ ERREUR : Le logo est introuvable au chemin :", logoPath);
     // On continue sans attachement pour éviter le plantage 500 si possible

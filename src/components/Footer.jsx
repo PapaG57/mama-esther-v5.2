@@ -202,7 +202,7 @@ function Footer() {
               rel="noreferrer"
             >
               <img
-                src="/assets/logos/footer-logoFGDEV.png"
+                src="/assets/logos/New_Logo_FG_DEV256.png"
                 alt="logo de la société FG Développement"
                 title="Cliquez pour visiter le site"
               />

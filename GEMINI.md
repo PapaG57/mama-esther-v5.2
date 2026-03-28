@@ -34,14 +34,25 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 **État actuel :**
 - [x] **Correctif Page Blanche :** Import de `useEffect` et `apiClient` ajouté dans `App.jsx`.
 - [x] **E-mail de Contact :** Changement de `contact@` en `association@mamaesther.org`.
-- [x] **Robustesse Backend :** Sécurisation des chemins absolus (`__dirname`) pour les attachements d'e-mails (fix erreur 500 Render).
-- [x] **Logs :** Ajout de logs détaillés en cas d'erreur sur la route `/api/contact`.
+- [x] **Restaurations V5 :**
+    - Envoi d'e-mail automatique lors des dons (Remerciement + Admin).
+    - Ajout du champ Email dans l'Admin pour les dons manuels.
+    - Système de **Diffusion Newsletter** (Mass Mailing) ajouté dans l'éditeur.
+    - Enregistrement des messages de contact en base de données.
+- [x] **Design & Responsivité :**
+    - Admin V2 100% responsive.
+    - Contact V2 100% responsive (Flexbox).
+    - Hero Home corrigé pour mobile (décalage Navbar).
+    - Logo FG DEV agrandi et lisible dans le Footer.
+- [x] **Debug SMTP :** Activation du mode `debug: true` et `logger: true` dans le backend pour traquer les erreurs d'authentification.
 
 **À FAIRE : Validation Finale**
-1. **Sync GitHub :** Pousser les modifs backend pour déclencher le redéploiement Render.
-2. **Build Front :** `npm run build` et déploiement du `dist` sur LWS.
-3. **Nettoyage :** Supprimer `default_index.html` sur LWS.
-4. **Test Réel :** Valider l'envoi d'un message et l'inscription newsletter.
+1. **Fix .env :** Vérifier les identifiants SMTP pour corriger l'erreur `535 Auth Failed` en local.
+2. **Sync GitHub :** Pousser les modifs backend pour le redéploiement Render.
+3. **Build Front :** `npm run build` et déploiement du `dist` sur LWS.
+4. **Nettoyage :** Supprimer `default_index.html` sur LWS.
+5. **Test Réel :** Valider l'envoi d'un message et l'inscription newsletter en ligne.
+
 
 
 ---

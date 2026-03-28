@@ -236,42 +236,44 @@
   .v2-hero {
     height: auto;
     min-height: 100vh;
-    padding: 120px 0 60px;
+    padding: 150px 0 60px; /* Augmenté de 120px à 150px pour la sécurité Navbar */
   }
 
   .v2-hero-overlay {
     justify-content: center;
     text-align: center;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    align-items: flex-start; /* Aligne en haut pour laisser de la place au scroll */
+    padding-top: 150px;
   }
 
   .v2-hero-container {
     flex-direction: column;
-    gap: 40px;
+    gap: 30px;
+  }
+
+  .v2-hero-content {
+    order: 1;
   }
 
   .v2-hero-aside {
+    order: 2;
     flex: 1;
     justify-content: center;
     width: 100%;
   }
 
-  .v2-hero-aside .bible-verse {
-    max-width: 100%;
-  }
-
-  .v2-hero-content {
-    padding: 0;
-  }
-
   .v2-hero-title {
-    font-size: 2.2rem;
+    font-size: 2rem; /* Légèrement réduit pour éviter les retours à la ligne brusques */
+    margin-bottom: 20px;
   }
 
   .v2-hero-text {
-    font-size: 1.1rem;
-    margin-bottom: 30px;
+    font-size: 1.05rem;
+    margin-bottom: 25px;
+    padding: 0 10px;
   }
+
 
   .v2-hero-btns {
     flex-direction: column;
