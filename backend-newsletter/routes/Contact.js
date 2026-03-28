@@ -50,7 +50,7 @@ async function sendContactEmail({ name, email, subject, message }) {
   const user = process.env.EMAIL_SENDER ? process.env.EMAIL_SENDER.trim() : "";
   const pass = process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.trim() : "";
   const host = process.env.EMAIL_HOST ? process.env.EMAIL_HOST.trim() : "";
-  const port = Number(process.env.EMAIL_PORT) || 465;
+  const port = Number(process.env.EMAIL_PORT) || 587;
 
   console.log(`👤 Login : [${user}]`);
   console.log(`🔑 MDP : [${pass.length} caractères]`);
@@ -58,7 +58,7 @@ async function sendContactEmail({ name, email, subject, message }) {
   const transporter = nodemailer.createTransport({
     host: host,
     port: port,
-    secure: port === 465, // true pour 465, false pour 587
+    secure: port === 465, // true pour 465, false pour 587 (STARTTLS)
     auth: {
       user: user,
       pass: pass,
