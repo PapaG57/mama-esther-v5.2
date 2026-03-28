@@ -40,27 +40,36 @@ router.post("/", validateContact, async (req, res) => {
 export default router;
 
 async function sendContactEmail({ name, email, subject, message }) {
+  console.log("📨 --- DIAGNOSTIC ENVIRONNEMENT ---");
+  console.log("📂 Dossier actuel :", process.cwd());
+  console.log("🔑 Clés détectées :", Object.keys(process.env).filter(k => k.includes("EMAIL") || k.includes("ADMIN")));
   console.log("📨 Tentative d'envoi d'email SMTP...");
+
   
-  const port = Number(process.env.EMAIL_PORT) || 587;
-  const isSecure = port === 465;
+  // 🛡️ Nettoyage des variables (au cas où il y aurait des espaces invisibles)
+  const user = process.env.EMAIL_SENDER ? process.env.EMAIL_SENDER.trim() : "";
+  const pass = process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.trim() : "";
+  const host = process.env.EMAIL_HOST ? process.env.EMAIL_HOST.trim() : "";
+  const port = Number(process.env.EMAIL_PORT) || 465;
+
+  console.log(`👤 Login : [${user}]`);
+  console.log(`🔑 MDP : [${pass.length} caractères]`);
 
   const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
+    host: host,
     port: port,
-    secure: isSecure,
+    secure: port === 465, // true pour 465, false pour 587
     auth: {
-      user: process.env.EMAIL_SENDER,
-      pass: process.env.EMAIL_PASSWORD,
+      user: user,
+      pass: pass,
     },
+    authMethod: 'LOGIN',
     tls: {
-      rejectUnauthorized: false
-    },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    logger: true, // 📝 Affiche les logs SMTP
-    debug: true   // 📝 Affiche les échanges de données
+      rejectUnauthorized: false, // Important pour LWS
+      minVersion: 'TLSv1.2'
+    }
   });
+
 
 
   // Vérification de l'existence de l'image
@@ -73,7 +82,7 @@ async function sendContactEmail({ name, email, subject, message }) {
 
   const mailOptions = {
     from: `"Mama Esther Contact" <${process.env.EMAIL_SENDER}>`,
-    to: process.env.EMAIL_SENDER,
+    to: process.env.ADMIN_EMAIL && process.env.ADMIN_EMAIL.includes('@') ? process.env.ADMIN_EMAIL : process.env.EMAIL_SENDER,
     subject: `📬 Nouveau message de ${name}`,
     html: `
       <div style="font-family: Bahnschrift, Arial, sans-serif;">
