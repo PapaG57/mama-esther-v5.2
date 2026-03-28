@@ -2,7 +2,11 @@
 import { Router } from "express";
 import nodemailer from "nodemailer";
 import path from "path";
+import { fileURLToPath } from "url";
 import { validateContact } from "../middlewares/validation.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const router = Router();
 
 router.post("/", validateContact, async (req, res) => {
@@ -17,8 +21,11 @@ router.post("/", validateContact, async (req, res) => {
     await sendContactEmail({ name, email, subject, message });
     res.status(200).json({ message: "Message envoyé avec succès 💚" });
   } catch (error) {
-    console.error("❌ Erreur envoi mail contact :", error);
-    res.status(500).json({ message: "Erreur serveur lors de l’envoi." });
+    console.error("❌ Erreur complète envoi mail contact :", error);
+    res.status(500).json({ 
+      message: "Erreur serveur lors de l’envoi.",
+      error: error.message 
+    });
   }
 });
 
@@ -27,16 +34,19 @@ export default router;
 async function sendContactEmail({ name, email, subject, message }) {
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: 587, // Port standard STARTTLS
+    port: Number(process.env.EMAIL_PORT) || 587,
     secure: false, // Doit être false pour le port 587
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
     },
     tls: {
-      rejectUnauthorized: false // Permet d'éviter les erreurs de certificat sur certains serveurs
+      rejectUnauthorized: false
     }
   });
+
+  // Construction du chemin absolu vers les assets
+  const logoPath = path.join(__dirname, "..", "assets", "logoMama.png");
 
   await transporter.sendMail({
     from: `"Mama Esther Contact" <${process.env.EMAIL_SENDER}>`,
@@ -59,7 +69,7 @@ async function sendContactEmail({ name, email, subject, message }) {
     attachments: [
       {
         filename: "logoMama.png",
-        path: path.resolve("assets/logoMama.png"),
+        path: logoPath,
         cid: "logoMama",
       },
     ],
@@ -67,3 +77,4 @@ async function sendContactEmail({ name, email, subject, message }) {
 
   console.log(`📩 Mail de contact reçu de ${name}`);
 }
+

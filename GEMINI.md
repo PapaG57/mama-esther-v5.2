@@ -30,18 +30,19 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Ménage :** Suppression de tous les anciens fichiers CSS et composants obsolètes pour un projet propre.
 - [x] **Fixes :** Correction des imports relatifs, du parsing package.json et des scories de traduction.
 
-## 5. Mémo pour la prochaine session (Reprise Déploiement - Mars 2026 - Suite)
+## 5. Mémo pour la prochaine session (Finalisation Déploiement - Mars 2026)
 **État actuel :**
-- [x] **Correctif Emails :** Passage au port 587 + `secure: false` dans `send-email.js`.
-- [x] **Config Frontend :** `public/config.js` pointe vers Render.
-- [x] **Optimisation Render :** Timeout Axios augmenté à 60s + Ping de réveil (cold start) ajouté dans `App.jsx`.
-- [x] **CORS :** Configuration mise à jour dans `server.js` pour accepter `localhost`, `mamaesther.org` (avec et sans www) et les requêtes sans origine (Postman).
+- [x] **Correctif Page Blanche :** Import de `useEffect` et `apiClient` ajouté dans `App.jsx`.
+- [x] **E-mail de Contact :** Changement de `contact@` en `association@mamaesther.org`.
+- [x] **Robustesse Backend :** Sécurisation des chemins absolus (`__dirname`) pour les attachements d'e-mails (fix erreur 500 Render).
+- [x] **Logs :** Ajout de logs détaillés en cas d'erreur sur la route `/api/contact`.
 
-**À FAIRE : Finalisation (Demain)**
-1. **Validation Backend :** Faire un test **Postman** sur `https://mama-esther-backend.onrender.com/api/contact` pour confirmer que le serveur répond (JSON : name, email, subject, message).
-2. **Sync Frontend :** Refaire `npm run build` et renvoyer le dossier `dist` sur LWS pour inclure le ping de réveil et le nouveau timeout.
-3. **Nettoyage Serveur :** Renommer/Supprimer le fichier `default_index.html` (17Mo) sur LWS s'il bloque l'affichage du site.
-4. **Test Réel :** Valider l'envoi d'un message de contact et une inscription newsletter depuis le site en ligne.
+**À FAIRE : Validation Finale**
+1. **Sync GitHub :** Pousser les modifs backend pour déclencher le redéploiement Render.
+2. **Build Front :** `npm run build` et déploiement du `dist` sur LWS.
+3. **Nettoyage :** Supprimer `default_index.html` sur LWS.
+4. **Test Réel :** Valider l'envoi d'un message et l'inscription newsletter.
+
 
 ---
 *Note : La version v5.2 est en ligne. Le moteur (Render) doit maintenant être synchronisé avec le front (LWS).*

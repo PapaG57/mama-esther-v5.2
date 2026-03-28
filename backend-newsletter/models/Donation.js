@@ -6,6 +6,11 @@ const donationSchema = new Schema({
     required: true,
     trim: true,
   },
+  email: {
+    type: String,
+    trim: true,
+    lowercase: true,
+  },
   montant: {
     type: Number,
     required: true,

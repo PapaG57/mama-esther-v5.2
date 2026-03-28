@@ -1,6 +1,7 @@
 import express from "express";
 import { creerDon } from "../Controllers/donationController.js";
 import Donation from "../models/Donation.js";
+import { sendDonConfirmationEmail, sendAdminNotificationEmail } from "../utils/send-email.js";
 import PDFDocument from "pdfkit";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -15,7 +16,7 @@ router.post("/", creerDon);
 
 // Route pour ajouter un don manuel
 router.post("/manual", async (req, res) => {
-  const { nomDonateur, montant, commentaires, admin, campagne, source } =
+  const { nomDonateur, montant, email, commentaires, admin, campagne, source } =
     req.body;
 
   if (!nomDonateur || !montant) {
@@ -25,6 +26,7 @@ router.post("/manual", async (req, res) => {
   try {
     const don = new Donation({
       nomDonateur,
+      email: email || null,
       montant,
       source: source || "manuel",
       commentaires: commentaires || "Don manuel (virement, espèces, etc.)",
@@ -34,7 +36,19 @@ router.post("/manual", async (req, res) => {
     });
 
     await don.save();
-    res.status(201).json({ message: "Don manuel enregistré", don });
+
+    // 📧 Envoi des emails (Remerciement + Notification Admin)
+    if (email) {
+      await sendDonConfirmationEmail(email, montant).catch(err => 
+        console.error("❌ Échec envoi email confirmation don manuel :", err)
+      );
+    }
+
+    await sendAdminNotificationEmail(email || "Don Manuel", montant).catch(err => 
+      console.error("❌ Échec envoi notification admin don manuel :", err)
+    );
+
+    res.status(201).json({ message: "Don manuel enregistré et emails envoyés", don });
   } catch (error) {
     console.error("Erreur ajout don manuel :", error);
     res.status(500).json({
@@ -43,6 +57,7 @@ router.post("/manual", async (req, res) => {
     });
   }
 });
+
 
 // Route pour total cumulé
 router.get("/count", async (req, res) => {

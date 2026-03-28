@@ -1,18 +1,15 @@
 import nodemailer from "nodemailer";
 import path from "path";
+import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Fonction d’envoi d'email de confirmation après inscription
 async function sendConfirmationEmail(email) {
-  console.log("📦 Tentative de connexion SMTP...");
-  console.log("📧 Expéditeur :", process.env.EMAIL_SENDER);
-  console.log(
-    "🔑 Mot de passe (raccourci) :",
-    process.env.EMAIL_PASSWORD?.slice(0, 4) + "..."
-  );
-
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: Number(process.env.EMAIL_PORT) || 587,
@@ -23,14 +20,6 @@ async function sendConfirmationEmail(email) {
     },
     tls: {
       rejectUnauthorized: false
-    }
-  });
-
-  transporter.verify((err) => {
-    if (err) {
-      console.error("❌ Vérification SMTP échouée :", err);
-    } else {
-      console.log("✅ Transport SMTP prêt à envoyer !");
     }
   });
 
@@ -68,42 +57,31 @@ async function sendConfirmationEmail(email) {
       attachments: [
         {
           filename: "banniere.png",
-          path: path.resolve("assets/banniere.png"),
+          path: path.join(__dirname, "..", "assets", "banniere.png"),
           cid: "banniereHeader",
         },
         {
           filename: "photoMama.jpg",
-          path: path.resolve("assets/photoMama.jpg"),
+          path: path.join(__dirname, "..", "assets", "photoMama.jpg"),
           cid: "photoIntro",
         },
         {
           filename: "logoMama.png",
-          path: path.resolve("assets/logoMama.png"),
+          path: path.join(__dirname, "..", "assets", "logoMama.png"),
           cid: "logoFooter",
         },
       ],
     });
 
-    console.log("✉️ Mail envoyé !");
-    console.log("📤 Mail accepté :", info.accepted);
-    console.log("📪 Mail rejeté :", info.rejected);
-    console.log("📄 Réponse SMTP :", info.response);
+    console.log("✉️ Mail de confirmation envoyé !");
   } catch (err) {
-    console.error("❌ Envoi mail échoué :", err);
-    if (err.response) {
-  console.error("📄 Réponse SMTP :", err.response);
-}
-if (err.code) {
-  console.error("📛 Code erreur :", err.code);
-}
+    console.error("❌ Envoi mail confirmation échoué :", err);
     throw err;
   }
 }
 
 // Fonction d’envoi d'email de confirmation après désinscription
 async function sendUnsubscribeEmail(email) {
-  console.log("📦 Préparation du mail de désinscription...");
-
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: Number(process.env.EMAIL_PORT) || 587,
@@ -118,24 +96,28 @@ async function sendUnsubscribeEmail(email) {
   });
 
   try {
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: `"Mama Esther" <${process.env.EMAIL_SENDER}>`,
       to: email,
-      subject: "✅ Confirmation d'inscription",
-      html: `...`,
+      subject: "Désinscription confirmée",
+      html: `
+        <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+          <h2>Votre désinscription a été prise en compte 💚</h2>
+          <p>Vous ne recevrez plus nos prochaines newsletters.</p>
+          <hr />
+          <img src="cid:logoFooter" alt="Logo Mama Esther" style="max-width:80px;" />
+        </div>
+      `,
       attachments: [
         {
           filename: "logoMama.png",
-          path: path.resolve("assets/logoMama.png"),
+          path: path.join(__dirname, "..", "assets", "logoMama.png"),
           cid: "logoFooter",
         },
       ],
     });
 
     console.log("✉️ Mail de désinscription envoyé !");
-    console.log("📤 Mail accepté :", info.accepted);
-    console.log("📪 Mail rejeté :", info.rejected);
-    console.log("📄 Réponse SMTP :", info.response);
   } catch (err) {
     console.error("❌ Échec envoi mail désinscription :", err);
     throw err;
@@ -157,18 +139,22 @@ async function sendAdminNotificationEmail(email, amount) {
     }
   });
 
-  await transporter.sendMail({
-    from: `"Système Mama Esther" <${process.env.EMAIL_SENDER}>`,
-    to: process.env.ADMIN_EMAIL,
-    subject: "📥 Nouveau don reçu",
-    html: `
-      <div style="font-family: Arial, sans-serif; padding: 20px;">
-        <h3>Nouveau don enregistré</h3>
-        <p><strong>Email du donateur :</strong> ${email}</p>
-        <p><strong>Montant :</strong> ${amount} €</p>
-      </div>
-    `,
-  });
+  try {
+    await transporter.sendMail({
+      from: `"Système Mama Esther" <${process.env.EMAIL_SENDER}>`,
+      to: process.env.ADMIN_EMAIL,
+      subject: "📥 Nouveau don reçu",
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h3>Nouveau don enregistré</h3>
+          <p><strong>Email du donateur :</strong> ${email}</p>
+          <p><strong>Montant :</strong> ${amount} €</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("❌ Échec envoi notification admin :", err);
+  }
 }
 
 // Fonction d’envoi d'email de confirmation après un don
@@ -186,40 +172,44 @@ async function sendDonConfirmationEmail(email, amount) {
     }
   });
 
-  await transporter.sendMail({
-    from: `"Association Mama Esther" <${process.env.EMAIL_SENDER}>`,
-    to: email,
-    subject: "Merci pour votre don 💚",
-    html: `
-  <div style="font-family: Arial, sans-serif; text-align: center; background-color: #fdfdfd; padding: 20px;">
-    <img src="cid:banniereHeader" alt="Bannière" style="width:100%; max-width:600px; border-radius:10px; margin-bottom:20px;" />
+  try {
+    await transporter.sendMail({
+      from: `"Association Mama Esther" <${process.env.EMAIL_SENDER}>`,
+      to: email,
+      subject: "Merci pour votre don 💚",
+      html: `
+    <div style="font-family: Arial, sans-serif; text-align: center; background-color: #fdfdfd; padding: 20px;">
+      <img src="cid:banniereHeader" alt="Bannière" style="width:100%; max-width:600px; border-radius:10px; margin-bottom:20px;" />
 
-    <h2 style="color:#007a5e;">🙏 Merci infiniment !</h2>
-    <p>Nous avons bien reçu votre don de <strong>${amount} €</strong>.</p>
-    <p>Grâce à vous, L'association Mama Esther poursuit sa mission d’amour et de solidarité.</p>
+      <h2 style="color:#007a5e;">🙏 Merci infiniment !</h2>
+      <p>Nous avons bien reçu votre don de <strong>${amount} €</strong>.</p>
+      <p>Grâce à vous, L'association Mama Esther poursuit sa mission d’amour et de solidarité.</p>
 
-    <blockquote style="font-style: italic; background-color: #e6f9ef; padding: 20px; border-radius: 10px; margin: 30px 0; color: #007a5e;">
-      “C’est dans les petites attentions que nous bâtissons les plus grands espoirs.”
-    </blockquote>
+      <blockquote style="font-style: italic; background-color: #e6f9ef; padding: 20px; border-radius: 10px; margin: 30px 0; color: #007a5e;">
+        “C’est dans les petites attentions que nous bâtissons les plus grands espoirs.”
+      </blockquote>
 
-    <hr style="margin:30px 0;" />
-    <img src="cid:logoFooter" alt="Logo Mama Esther" style="max-width:80px;" />
-    <p style="font-size:0.85rem; color:#555;">Association Mama Esther – Ensemble pour le bien 💚</p>
-  </div>
-`,
-    attachments: [
-      {
-        filename: "banniere.png",
-        path: path.resolve("assets/banniere.png"),
-        cid: "banniereHeader",
-      },
-      {
-        filename: "logoMama.png",
-        path: path.resolve("assets/logoMama.png"),
-        cid: "logoFooter",
-      },
-    ],
-  });
+      <hr style="margin:30px 0;" />
+      <img src="cid:logoFooter" alt="Logo Mama Esther" style="max-width:80px;" />
+      <p style="font-size:0.85rem; color:#555;">Association Mama Esther – Ensemble pour le bien 💚</p>
+    </div>
+  `,
+      attachments: [
+        {
+          filename: "banniere.png",
+          path: path.join(__dirname, "..", "assets", "banniere.png"),
+          cid: "banniereHeader",
+        },
+        {
+          filename: "logoMama.png",
+          path: path.join(__dirname, "..", "assets", "logoMama.png"),
+          cid: "logoFooter",
+        },
+      ],
+    });
+  } catch (err) {
+    console.error("❌ Échec envoi mail confirmation don :", err);
+  }
 }
 
 // Fonction d’envoi d'email d'alerte en cas d'erreur critique
@@ -260,7 +250,7 @@ async function sendErrorAlertEmail(error) {
   }
 }
 
-// Export des deux fonctions (nommés)
+// Export des fonctions
 export {
   sendConfirmationEmail,
   sendUnsubscribeEmail,
@@ -268,3 +258,4 @@ export {
   sendAdminNotificationEmail,
   sendErrorAlertEmail,
 };
+

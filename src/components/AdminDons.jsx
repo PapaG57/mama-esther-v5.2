@@ -6,6 +6,7 @@ import { adminService } from "../api/services";
 const AdminDons = () => {
   const { t } = useTranslation();
   const [nomDonateur, setNomDonateur] = useState("");
+  const [email, setEmail] = useState("");
   const [montant, setMontant] = useState("");
   const [message, setMessage] = useState("");
   const [campagne, setCampagne] = useState("");
@@ -30,6 +31,7 @@ const AdminDons = () => {
     e.preventDefault();
     const nouveauDon = { 
       nomDonateur, 
+      email,
       montant: parseFloat(montant), 
       commentaires: message, 
       source: campagne || "Manuel" 
@@ -39,6 +41,7 @@ const AdminDons = () => {
       await adminService.addManualDonation(nouveauDon);
       alert(t("admin.messages.donAdded"));
       setNomDonateur("");
+      setEmail("");
       setMontant("");
       setMessage("");
       setCampagne("");
@@ -64,6 +67,13 @@ const AdminDons = () => {
               value={nomDonateur}
               onChange={(e) => setNomDonateur(e.target.value)}
               required
+            />
+            <input
+              type="email"
+              className="input-standard"
+              placeholder="Email du donateur (pour remerciement)"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="number"
