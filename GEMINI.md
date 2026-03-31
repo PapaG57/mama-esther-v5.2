@@ -45,14 +45,31 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Debug SMTP :** Activation du mode `debug: true` dans le backend.
 
 **À RÉGLER (Priorités) :**
-1. **Le "Mur" SMTP (LWS) :** L'authentification `florent.gerard@mamaesther.org` échoue systématiquement (Error 535) sur ports 465/587 en local, malgré des identifiants valides dans Outlook. 
-   - *Piste :* Vérifier si SPA (Secure Password Auth) est requis ou si l'IP locale est bannie.
-2. **Accès Admin (401) :** Le login admin en local est refusé.
-   - *Action :* Créer un script de réinitialisation de l'admin en base de données.
-3. **Sync & Déploiement :** Une fois le local OK, pousser sur GitHub/Render et faire le build final pour LWS.
+1. **Le "Mur" SMTP (LWS) :** ✅ RÉSOLU (Local). Authentification OK en local. À surveiller lors du passage sur Render.
+2. **Accès Admin (401) :** ✅ RÉSOLU. Utilisation de `reset-admin.js` pour synchroniser les identifiants en base.
+3. **Sync & Déploiement :** 🚀 EN COURS. Configuration de la liaison Frontend (LWS) -> Backend (Render).
 
+## 6. Guide de Déploiement Hybride (LWS / Render)
+Cette configuration sépare le Frontend statique (LWS) du Backend dynamique (Render).
 
+### A. Backend (Render)
+1. **Dashboard Render :** Créer un "Web Service" lié au dossier `backend-newsletter/`.
+2. **Variables d'env :** Ajouter `MONGO_URI`, `JWT_SECRET`, `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_SENDER`, `EMAIL_PASSWORD`, `ADMIN_EMAIL`.
+3. **Commandes :** 
+   - Build : `npm install`
+   - Start : `node server.js`
+4. **URL :** Récupérer l'URL générée (ex: `https://mama-esther-api.onrender.com`).
 
+### B. Frontend (LWS)
+Le frontend doit être "buildé" localement avant l'envoi FTP sur LWS pour intégrer l'URL de l'API Render.
+1. **Fichier `.env.production` :** Créer ce fichier à la racine (front) avec :
+   `VITE_API_URL=https://[TON-URL-RENDER].onrender.com/api`
+2. **Build :** Lancer `npm run build`. Vite injectera l'URL dans les fichiers minifiés.
+3. **Déploiement :** Envoyer le contenu du dossier `dist/` sur le FTP LWS.
+4. **Config Dynamique (Optionnel) :** Si besoin de changer l'URL sans rebuild, modifier `public/config.js` sur le FTP :
+   ```javascript
+   window.APP_CONFIG = { API_URL: "https://[NOUVELLE-URL].onrender.com/api" };
+   ```
 
 ---
-*Note : La version v5.2 est en ligne. Le moteur (Render) doit maintenant être synchronisé avec le front (LWS).*
+*Note : La version v5.2 est prête pour la mise en production. La stabilité SMTP est la clé du succès final.*
