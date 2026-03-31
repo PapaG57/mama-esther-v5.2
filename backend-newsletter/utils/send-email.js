@@ -21,6 +21,8 @@ const createTransporter = () => {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
     },
+    debug: true,
+    logger: true,
     tls: {
       rejectUnauthorized: false
     },

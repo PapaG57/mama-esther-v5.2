@@ -46,14 +46,14 @@ async function sendContactEmail({ name, email, subject, message }) {
   console.log("📨 Tentative d'envoi d'email SMTP...");
 
   
-  // 🛡️ Nettoyage des variables (au cas où il y aurait des espaces invisibles)
-  const user = process.env.EMAIL_SENDER ? process.env.EMAIL_SENDER.trim() : "";
-  const pass = process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.trim() : "";
-  const host = process.env.EMAIL_HOST ? process.env.EMAIL_HOST.trim() : "";
+  // 🛡️ Nettoyage des variables (suppression des espaces et des guillemets résiduels)
+  const user = process.env.EMAIL_SENDER ? process.env.EMAIL_SENDER.trim().replace(/^["']|["']$/g, '') : "";
+  const pass = process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.trim().replace(/^["']|["']$/g, '') : "";
+  const host = process.env.EMAIL_HOST ? process.env.EMAIL_HOST.trim().replace(/^["']|["']$/g, '') : "";
   const port = Number(process.env.EMAIL_PORT) || 587;
 
   console.log(`👤 Login : [${user}]`);
-  console.log(`🔑 MDP : [${pass.length} caractères]`);
+  console.log(`🔑 MDP : [${pass.length} caractères] (Guillemets nettoyés si présents)`);
 
   const transporter = nodemailer.createTransport({
     host: host,
@@ -63,11 +63,13 @@ async function sendContactEmail({ name, email, subject, message }) {
       user: user,
       pass: pass,
     },
-    authMethod: 'LOGIN',
+    authMethod: 'LOGIN', // Force la méthode LOGIN pour LWS
     tls: {
-      rejectUnauthorized: false, // Important pour LWS
+      rejectUnauthorized: false, // Indispensable pour les certificats auto-signés LWS
       minVersion: 'TLSv1.2'
-    }
+    },
+    debug: true, // Active les logs détaillés de nodemailer
+    logger: true // Affiche la conversation SMTP dans la console
   });
 
 
