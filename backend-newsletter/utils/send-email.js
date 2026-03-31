@@ -13,21 +13,28 @@ const createTransporter = () => {
   const port = Number(process.env.EMAIL_PORT) || 587;
   const isSecure = port === 465;
 
+  // 🛡️ Nettoyage des variables (suppression des espaces et des guillemets résiduels)
+  const user = process.env.EMAIL_SENDER ? process.env.EMAIL_SENDER.trim().replace(/^["']|["']$/g, '') : "";
+  const pass = process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.trim().replace(/^["']|["']$/g, '') : "";
+  const host = process.env.EMAIL_HOST ? process.env.EMAIL_HOST.trim().replace(/^["']|["']$/g, '') : "";
+
   return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
+    host: host,
     port: port,
     secure: isSecure,
     auth: {
-      user: process.env.EMAIL_SENDER,
-      pass: process.env.EMAIL_PASSWORD,
+      user: user,
+      pass: pass,
     },
+    authMethod: 'LOGIN', // Indispensable pour la compatibilité LWS
     debug: true,
     logger: true,
     tls: {
-      rejectUnauthorized: false
+      rejectUnauthorized: false, // Indispensable pour les serveurs mutualisés LWS
+      minVersion: 'TLSv1.2'
     },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
   });
 };
 
