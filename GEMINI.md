@@ -36,7 +36,7 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Restaurations V5 :**
     - Envoi d'e-mail automatique lors des dons (Remerciement + Admin) via `donationController.js`.
     - Système de **Diffusion Newsletter** (Mass Mailing) ajouté dans l'éditeur et le backend.
-    - Enregistrement des messages de contact en base de données (`models/Contact.js`).
+    - **Page Contact :** ✅ Enregistrement des messages fonctionnel en local et sur le serveur web.
 - [x] **Design & Responsivité :**
     - Admin V2 et Contact V2 100% responsive (Flexbox).
     - Nettoyage de `App.css` (suppression du max-width 1280px qui bloquait la fluidité).
@@ -45,9 +45,10 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Debug SMTP :** Activation du mode `debug: true` dans le backend.
 
 **À RÉGLER (Priorités) :**
-1. **Le "Mur" SMTP (LWS) :** ✅ RÉSOLU (Local). Authentification OK en local. À surveiller lors du passage sur Render.
-2. **Accès Admin (401) :** ✅ RÉSOLU. Utilisation de `reset-admin.js` pour synchroniser les identifiants en base.
-3. **Sync & Déploiement :** 🚀 EN COURS. Configuration de la liaison Frontend (LWS) -> Backend (Render).
+1. **Inscription Newsletter :** ❌ Bloqué. Ne fonctionne pas encore (même en local).
+2. **Le "Mur" SMTP (LWS) :** ✅ RÉSOLU (Local). Authentification OK en local. À surveiller lors du passage sur Render.
+3. **Accès Admin (401) :** ✅ RÉSOLU. Utilisation de `reset-admin.js` pour synchroniser les identifiants en base.
+4. **Sync & Déploiement :** 🚀 EN COURS. Configuration de la liaison Frontend (LWS) -> Backend (Render).
 
 ## 6. Guide de Déploiement Hybride (LWS / Render)
 Cette configuration sépare le Frontend statique (LWS) du Backend dynamique (Render).
