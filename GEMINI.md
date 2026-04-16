@@ -37,6 +37,7 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
     - Envoi d'e-mail automatique lors des dons (Remerciement + Admin) via `donationController.js`.
     - Système de **Diffusion Newsletter** (Mass Mailing) ajouté dans l'éditeur et le backend.
     - **Page Contact :** ✅ Enregistrement des messages fonctionnel en local et sur le serveur web.
+- [x] **Inscription Newsletter :** ✅ RÉSOLU. Inscription rendue non-bloquante vis-à-vis du SMTP (évite les erreurs 500).
 - [x] **Design & Responsivité :**
     - Admin V2 et Contact V2 100% responsive (Flexbox).
     - Nettoyage de `App.css` (suppression du max-width 1280px qui bloquait la fluidité).
@@ -45,10 +46,13 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Debug SMTP :** Activation du mode `debug: true` dans le backend.
 
 **À RÉGLER (Priorités) :**
-1. **Inscription Newsletter :** ❌ Bloqué. Ne fonctionne pas encore (même en local).
-2. **Le "Mur" SMTP (LWS) :** ✅ RÉSOLU (Local). Authentification OK en local. À surveiller lors du passage sur Render.
-3. **Accès Admin (401) :** ✅ RÉSOLU. Utilisation de `reset-admin.js` pour synchroniser les identifiants en base.
-4. **Sync & Déploiement :** 🚀 EN COURS. Configuration de la liaison Frontend (LWS) -> Backend (Render).
+1. **Migration SQLite :** 🛠️ Quitter MongoDB pour SQLite (plus de problèmes d'IP ou d'accès site).
+2. **Récupération des données :** 📥 Lancer `test-db.js` pour tenter d'extraire les données de MongoDB avant migration.
+3. **Validation Finale :** ✅ Re-tester tous les formulaires sur le site (Newsletter, Contact, Dons).
+4. **Sync & Déploiement :** 🚀 Configurer Render pour supporter le fichier SQLite (Persistance).
+
+---
+*Note : Tout le travail sur les e-mails personnalisés et les corrections frontend a été sauvegardé.*
 
 ## 6. Guide de Déploiement Hybride (LWS / Render)
 Cette configuration sépare le Frontend statique (LWS) du Backend dynamique (Render).
