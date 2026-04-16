@@ -35,7 +35,7 @@ export const validateDonation = (req, res, next) => {
     montant: Joi.number().positive().required(),
     message: Joi.string().allow('', null),
     commentaires: Joi.string().allow('', null), // Used in Admin.jsx
-    source: Joi.string().required(),
+    source: Joi.string().allow('', null).optional(),
     admin: Joi.string().allow('', null)
   });
 

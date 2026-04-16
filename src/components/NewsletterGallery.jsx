@@ -120,7 +120,7 @@ function NewsletterGallery() {
                     
                     {/* BOUTONS GLASSMORPHISM AU CENTRE */}
                     <div className="v2-mag-actions-overlay">
-                      <button className="v2-mag-btn-glass" onClick={() => navigate(`/newsletter/view/${item._id || item.id}`)}>
+                      <button className="v2-mag-btn-glass" onClick={() => navigate(`/newsletter/view/${item.id}`)}>
                         <FontAwesomeIcon icon={faGlobe} style={{ color: '#fcd116' }} />
                         {t("newsletters.viewOnline")}
                       </button>

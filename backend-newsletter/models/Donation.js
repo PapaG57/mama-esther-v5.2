@@ -19,7 +19,7 @@ const Donation = sequelize.define('Donation', {
   source: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 'manuel',
+    defaultValue: 'HelloAsso',
   },
   commentaires: {
     type: DataTypes.TEXT,

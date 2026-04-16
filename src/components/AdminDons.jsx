@@ -116,13 +116,13 @@ const AdminDons = () => {
               </thead>
               <tbody>
                 {donsManuels.map((don, index) => (
-                  <tr key={don._id || index}>
+                  <tr key={don.id || index}>
                     <td>{don.nomDonateur}</td>
                     <td>{don.montant} €</td>
                     <td>{don.commentaires || don.message || "-"}</td>
                     <td>{don.source || "-"}</td>
                     <td>
-                      <button className="v2-link-btn" onClick={() => window.open(`/api/donations/manual/${don._id}/pdf`, '_blank')}>
+                      <button className="v2-link-btn" onClick={() => window.open(`/api/donations/manual/${don.id}/pdf`, '_blank')}>
                         {t("admin.table.viewFile")}
                       </button>
                     </td>
