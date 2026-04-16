@@ -5,6 +5,7 @@ import { sendDonConfirmationEmail, sendAdminNotificationEmail } from "../utils/s
 import PDFDocument from "pdfkit";
 import { fileURLToPath } from "url";
 import path from "path";
+import { Op, fn, col, literal } from "sequelize";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,7 +25,7 @@ router.post("/manual", async (req, res) => {
   }
 
   try {
-    const don = new Donation({
+    const don = await Donation.create({
       nomDonateur,
       email: email || null,
       montant,
@@ -34,8 +35,6 @@ router.post("/manual", async (req, res) => {
       campagne: campagne || null,
       date: new Date(),
     });
-
-    await don.save();
 
     // 📧 Envoi des emails (Remerciement + Notification Admin)
     if (email) {
@@ -62,10 +61,7 @@ router.post("/manual", async (req, res) => {
 // Route pour total cumulé
 router.get("/count", async (req, res) => {
   try {
-    const result = await Donation.aggregate([
-      { $group: { _id: null, total: { $sum: "$montant" } } },
-    ]);
-    const total = result[0]?.total || 0;
+    const total = await Donation.sum('montant') || 0;
     res.json({ total });
   } catch (error) {
     console.error("Erreur lors du calcul du montant total :", error);
@@ -79,8 +75,11 @@ router.get("/count", async (req, res) => {
 // Route pour compter les donateurs uniques
 router.get("/donors/count", async (req, res) => {
   try {
-    const donors = await Donation.distinct("nomDonateur");
-    res.json({ count: donors.length });
+    const count = await Donation.count({
+      distinct: true,
+      col: 'nomDonateur'
+    });
+    res.json({ count });
   } catch (error) {
     console.error("Erreur calcul donateurs :", error);
     res.status(500).json({
@@ -95,11 +94,9 @@ router.get("/campagne/:nom", async (req, res) => {
   const nomCampagne = req.params.nom;
 
   try {
-    const result = await Donation.aggregate([
-      { $match: { campagne: nomCampagne } },
-      { $group: { _id: null, total: { $sum: "$montant" } } },
-    ]);
-    const total = result[0]?.total || 0;
+    const total = await Donation.sum('montant', {
+      where: { campagne: nomCampagne }
+    }) || 0;
     res.json({ campagne: nomCampagne, total });
   } catch (error) {
     console.error("Erreur calcul campagne :", error);
@@ -113,7 +110,7 @@ router.get("/campagne/:nom", async (req, res) => {
 // Liste complète des dons
 router.get("/", async (req, res) => {
   try {
-    const dons = await Donation.find().sort({ date: -1 });
+    const dons = await Donation.findAll({ order: [['date', 'DESC']] });
     res.json(dons);
   } catch (error) {
     console.error("Erreur récupération dons :", error);
@@ -131,11 +128,13 @@ router.get("/annee", async (req, res) => {
   const fin = new Date(`${anneeActuelle}-12-31T23:59:59.999Z`);
 
   try {
-    const result = await Donation.aggregate([
-      { $match: { date: { $gte: debut, $lte: fin } } },
-      { $group: { _id: null, total: { $sum: "$montant" } } },
-    ]);
-    const total = result[0]?.total || 0;
+    const total = await Donation.sum('montant', {
+      where: {
+        date: {
+          [Op.between]: [debut, fin]
+        }
+      }
+    }) || 0;
     res.json({ annee: anneeActuelle, total });
   } catch (error) {
     console.error("Erreur calcul dons année :", error);
@@ -153,15 +152,23 @@ router.get("/mois", async (req, res) => {
   const fin = new Date(`${anneeActuelle}-12-31T23:59:59.999Z`);
 
   try {
-    const result = await Donation.aggregate([
-      { $match: { date: { $gte: debut, $lte: fin } } },
-      { $group: { _id: { $month: "$date" }, total: { $sum: "$montant" } } },
-      { $sort: { _id: 1 } },
-    ]);
+    const result = await Donation.findAll({
+      attributes: [
+        [fn('EXTRACT', literal('MONTH FROM date')), 'month'],
+        [fn('SUM', col('montant')), 'total']
+      ],
+      where: {
+        date: {
+          [Op.between]: [debut, fin]
+        }
+      },
+      group: [literal('month')],
+      order: [[literal('month'), 'ASC']]
+    });
 
     const donsParMois = Array.from({ length: 12 }, (_, i) => {
-      const moisTrouvé = result.find((r) => r._id === i + 1);
-      return { mois: i + 1, total: moisTrouvé ? moisTrouvé.total : 0 };
+      const moisTrouvé = result.find((r) => parseInt(r.get('month')) === i + 1);
+      return { mois: i + 1, total: moisTrouvé ? parseFloat(moisTrouvé.get('total')) : 0 };
     });
 
     res.json({ annee: anneeActuelle, donsParMois });
@@ -181,19 +188,28 @@ router.get("/mois/pdf", async (req, res) => {
   const fin = new Date(`${anneeActuelle}-12-31T23:59:59.999Z`);
 
   try {
-    const result = await Donation.aggregate([
-      { $match: { date: { $gte: debut, $lte: fin } } },
-      { $group: { _id: { $month: "$date" }, total: { $sum: "$montant" } } },
-      { $sort: { _id: 1 } },
-    ]);
+    const result = await Donation.findAll({
+      attributes: [
+        [fn('EXTRACT', literal('MONTH FROM date')), 'month'],
+        [fn('SUM', col('montant')), 'total']
+      ],
+      where: {
+        date: {
+          [Op.between]: [debut, fin]
+        }
+      },
+      group: [literal('month')],
+      order: [[literal('month'), 'ASC']]
+    });
 
     const donsParMois = Array.from({ length: 12 }, (_, i) => {
-      const moisTrouvé = result.find((r) => r._id === i + 1);
+      const moisTrouvé = result.find((r) => parseInt(r.get('month')) === i + 1);
+      const total = moisTrouvé ? parseFloat(moisTrouvé.get('total')) : 0;
       return {
         mois: new Date(anneeActuelle, i).toLocaleString("fr-FR", {
           month: "long",
         }),
-        total: moisTrouvé ? moisTrouvé.total : 0,
+        total: total,
       };
     });
 

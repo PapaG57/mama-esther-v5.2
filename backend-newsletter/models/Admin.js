@@ -1,20 +1,23 @@
-import { Schema, model } from "mongoose";
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
 
-const adminSchema = new Schema({
+const Admin = sequelize.define('Admin', {
   identifiant: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
     unique: true,
-    trim: true,
   },
   motDePasse: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   crééLe: {
-    type: Date,
-    default: Date.now,
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
+}, {
+  tableName: 'admins',
+  timestamps: false, // On utilise crééLe manuellement
 });
 
-export default model("Admin", adminSchema);
+export default Admin;

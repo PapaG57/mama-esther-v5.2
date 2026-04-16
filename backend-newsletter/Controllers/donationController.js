@@ -5,8 +5,7 @@ export const creerDon = async (req, res) => {
   const { nomDonateur, montant, email } = req.body;
 
   try {
-    const nouveauDon = new Donation(req.body);
-    await nouveauDon.save();
+    const nouveauDon = await Donation.create(req.body);
 
     // 📧 Envoi des emails (Confirmation au donateur + Alerte à l'admin)
     if (email) {
@@ -31,4 +30,3 @@ export const creerDon = async (req, res) => {
     });
   }
 };
-

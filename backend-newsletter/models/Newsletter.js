@@ -1,43 +1,45 @@
-import { Schema, model } from "mongoose";
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
 
-const newsletterSchema = new Schema({
+const Newsletter = sequelize.define('Newsletter', {
   newsletterNumber: {
-    type: Number,
-    required: true,
-    unique: true, // Pour suivre l'ordre (ex: 4, 5, 6...)
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    unique: true,
   },
   title: {
-    fr: { type: String, required: true },
-    en: { type: String, required: true }
+    type: DataTypes.JSONB, // { fr: '...', en: '...' }
+    allowNull: false,
   },
   date: {
-    type: Date,
-    default: Date.now,
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
   summary: {
-    fr: { type: String, required: true },
-    en: { type: String, required: true }
+    type: DataTypes.JSONB,
+    allowNull: false,
   },
   content: {
-    // Structure JSON pour stocker les blocs (Texte, Image, Titre)
-    fr: { type: Array, required: true },
-    en: { type: Array, required: true }
+    type: DataTypes.JSONB,
+    allowNull: false,
   },
   coverImage: {
-    type: String, // URL de l'image stockée sur le serveur
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   pdfPath: {
-    type: String, // URL du PDF généré
+    type: DataTypes.STRING,
   },
   tags: {
-    fr: [String],
-    en: [String]
+    type: DataTypes.JSONB, // { fr: [], en: [] }
   },
   isPublished: {
-    type: Boolean,
-    default: false
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   }
-}, { timestamps: true });
+}, {
+  tableName: 'newsletters',
+  timestamps: true,
+});
 
-export default model("Newsletter", newsletterSchema);
+export default Newsletter;

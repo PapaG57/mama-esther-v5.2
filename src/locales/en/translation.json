@@ -82,6 +82,7 @@
     "sending": "Sending in progress…",
     "send": "Send",
     "success": "✅ Registration successful!",
+    "alreadySubscribed": "This email address is already registered 💚",
     "error": "❌ An error occurred.",
     "close": "Close"
   },

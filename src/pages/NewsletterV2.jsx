@@ -23,7 +23,11 @@ const NewsletterV2 = () => {
       toast.success(t("registration.success"));
       setEmail("");
     } catch (error) {
-      toast.error(t("registration.error"));
+      if (error.status === 409) {
+        toast.info(t("registration.alreadySubscribed") || "Cette adresse email est déjà inscrite 💚");
+      } else {
+        toast.error(t("registration.error"));
+      }
     } finally {
       setIsSubmitting(false);
     }

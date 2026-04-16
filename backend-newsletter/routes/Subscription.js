@@ -16,19 +16,21 @@ router.post("/", validateSubscription, async (req, res) => {
   }
 
   try {
-    const exists = await Subscriber.findOne({ email });
+    const exists = await Subscriber.findOne({ where: { email } });
     if (exists) {
       return res.status(409).json({ message: "Email déjà inscrit" });
     }
 
-    const newSubscriber = new Subscriber({ email });
-    await newSubscriber.save();
+    await Subscriber.create({ email });
 
-    await sendConfirmationEmail(email); // Envoi de l'email de confirmation
+    // Envoi de l'email de confirmation (non bloquant)
+    sendConfirmationEmail(email).catch(err => 
+      console.error("📧 Erreur asynchrone mail confirmation :", err)
+    );
 
     res.status(201).json({ message: "Inscription réussie 💚" });
   } catch (err) {
-    console.error("❌ Erreur complète :", err);
+    console.error("❌ Erreur complète inscription :", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });

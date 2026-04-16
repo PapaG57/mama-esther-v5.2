@@ -1,37 +1,42 @@
-import { Schema, model } from "mongoose";
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
 
-const donationSchema = new Schema({
+const Donation = sequelize.define('Donation', {
   nomDonateur: {
-    type: String,
-    required: true,
-    trim: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   email: {
-    type: String,
-    trim: true,
-    lowercase: true,
+    type: DataTypes.STRING,
+    validate: {
+      isEmail: true,
+    },
   },
   montant: {
-    type: Number,
-    required: true,
+    type: DataTypes.FLOAT,
+    allowNull: false,
   },
   source: {
-    type: String,
-    required: true,
-    trim: true,
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'manuel',
   },
   commentaires: {
-    type: String,
-    trim: true,
+    type: DataTypes.TEXT,
+  },
+  campagne: {
+    type: DataTypes.STRING,
   },
   admin: {
-    type: String,
-    trim: true,
+    type: DataTypes.STRING,
   },
   date: {
-    type: Date,
-    default: Date.now,
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
+}, {
+  tableName: 'donations',
+  timestamps: false,
 });
 
-export default model("Donation", donationSchema);
+export default Donation;

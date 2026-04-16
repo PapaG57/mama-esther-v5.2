@@ -4,7 +4,7 @@ import verifyAdmin from "../middlewares/verifyAdmin.js";
 import logger from "../utils/logger.js";
 import dotenv from "dotenv";
 import multer from "multer";
-import path from "path";
+import { Op } from "sequelize";
 import { generateNewsletterPdf } from "../utils/pdf-generator.js";
 import Subscriber from "../models/Subscriber.js";
 import { sendNewsletterToSubscriber } from "../utils/send-email.js";
@@ -36,7 +36,10 @@ const upload = multer({
 // 1. 📜 LISTER TOUTES LES NEWSLETTERS (PUBLIQUE)
 router.get("/", async (req, res) => {
   try {
-    const newsletters = await Newsletter.find({ isPublished: true }).sort({ newsletterNumber: -1 });
+    const newsletters = await Newsletter.findAll({ 
+      where: { isPublished: true },
+      order: [['newsletterNumber', 'DESC']] 
+    });
     res.json(newsletters);
   } catch (err) {
     logger.error("Erreur listing newsletters:", err);
@@ -47,24 +50,30 @@ router.get("/", async (req, res) => {
 // 2. 🔍 RÉCUPÉRER UNE NEWSLETTER PAR NUMÉRO OU ID (PUBLIQUE)
 router.get("/:id", async (req, res) => {
   try {
-    const isNumeric = !isNaN(req.params.id);
-    let query = { _id: req.params.id };
+    const idParam = req.params.id;
+    const isNumeric = !isNaN(idParam);
     
+    let newsletter;
     if (isNumeric) {
-      query = { $or: [{ _id: req.params.id }, { newsletterNumber: parseInt(req.params.id) }] };
+      const num = parseInt(idParam);
+      newsletter = await Newsletter.findOne({
+        where: {
+          [Op.or]: [
+            { id: num },
+            { newsletterNumber: num }
+          ]
+        }
+      });
+    } else {
+      // Si ce n'est pas un nombre, on ne cherche que par ID (si c'était un UUID par exemple)
+      // Mais ici nos IDs sont des entiers, donc si c'est pas numérique, ça n'existe pas.
+      return res.status(404).json({ error: "Newsletter non trouvée (ID invalide)" });
     }
 
-    const newsletter = await Newsletter.findOne(query);
     if (!newsletter) return res.status(404).json({ error: "Newsletter non trouvée" });
     res.json(newsletter);
   } catch (err) {
-    // Si l'ID n'est pas un ObjectId valide mais qu'on a un numéro, on tente par numéro
-    if (!isNaN(req.params.id)) {
-      try {
-        const newsletterByNum = await Newsletter.findOne({ newsletterNumber: parseInt(req.params.id) });
-        if (newsletterByNum) return res.json(newsletterByNum);
-      } catch (e) { /* ignore */ }
-    }
+    logger.error("Erreur récupération newsletter:", err);
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
@@ -72,21 +81,21 @@ router.get("/:id", async (req, res) => {
 // 3. ✍️ CRÉER UNE NEWSLETTER (ADMIN SEULEMENT)
 router.post("/", verifyAdmin, async (req, res) => {
   try {
-    const lastNews = await Newsletter.findOne().sort({ newsletterNumber: -1 });
+    const lastNews = await Newsletter.findOne({
+      order: [['newsletterNumber', 'DESC']]
+    });
     const nextNumber = lastNews ? lastNews.newsletterNumber + 1 : 1;
     
-    const newNews = new Newsletter({
+    const newNews = await Newsletter.create({
       ...req.body,
       newsletterNumber: nextNumber
     });
     
-    await newNews.save();
-    
     // Génération automatique du PDF en arrière-plan
     (async () => {
       try {
-        const pdfUrl = await generateNewsletterPdf(newNews._id, nextNumber, newNews.date);
-        await Newsletter.findByIdAndUpdate(newNews._id, { $set: { pdfPath: pdfUrl } });
+        const pdfUrl = await generateNewsletterPdf(newNews.id, nextNumber, newNews.date);
+        await Newsletter.update({ pdfPath: pdfUrl }, { where: { id: newNews.id } });
         logger.info(`PDF auto-généré pour la newsletter ${nextNumber}`);
       } catch (pdfErr) {
         logger.error(`Erreur lors de la génération automatique du PDF pour ${nextNumber}:`, pdfErr);
@@ -103,18 +112,37 @@ router.post("/", verifyAdmin, async (req, res) => {
 // 3bis. 📝 MODIFIER UNE NEWSLETTER (ADMIN SEULEMENT)
 router.put("/:id", verifyAdmin, async (req, res) => {
   try {
-    const updatedNews = await Newsletter.findOneAndUpdate(
-      { $or: [{ _id: req.params.id }, { newsletterNumber: parseInt(req.params.id) }] },
-      { $set: req.body },
-      { new: true, runValidators: true }
-    );
-    if (!updatedNews) return res.status(404).json({ error: "Newsletter non trouvée" });
+    const idParam = req.params.id;
+    const isNumeric = !isNaN(idParam);
+    
+    if (!isNumeric) return res.status(400).json({ error: "ID invalide" });
+    const num = parseInt(idParam);
+
+    const [affectedCount] = await Newsletter.update(req.body, {
+      where: {
+        [Op.or]: [
+          { id: num },
+          { newsletterNumber: num }
+        ]
+      }
+    });
+
+    if (affectedCount === 0) return res.status(404).json({ error: "Newsletter non trouvée" });
+
+    const updatedNews = await Newsletter.findOne({
+      where: {
+        [Op.or]: [
+          { id: num },
+          { newsletterNumber: num }
+        ]
+      }
+    });
 
     // Régénération automatique du PDF en arrière-plan
     (async () => {
       try {
-        const pdfUrl = await generateNewsletterPdf(updatedNews._id, updatedNews.newsletterNumber, updatedNews.date);
-        await Newsletter.findByIdAndUpdate(updatedNews._id, { $set: { pdfPath: pdfUrl } });
+        const pdfUrl = await generateNewsletterPdf(updatedNews.id, updatedNews.newsletterNumber, updatedNews.date);
+        await Newsletter.update({ pdfPath: pdfUrl }, { where: { id: updatedNews.id } });
         logger.info(`PDF auto-régénéré pour la newsletter ${updatedNews.newsletterNumber}`);
       } catch (pdfErr) {
         logger.error(`Erreur lors de la régénération automatique du PDF pour ${updatedNews.newsletterNumber}:`, pdfErr);
@@ -131,8 +159,17 @@ router.put("/:id", verifyAdmin, async (req, res) => {
 // 3ter. 🗑️ SUPPRIMER UNE NEWSLETTER (ADMIN SEULEMENT)
 router.delete("/:id", verifyAdmin, async (req, res) => {
   try {
-    const deleted = await Newsletter.findOneAndDelete({ 
-      $or: [{ _id: req.params.id }, { newsletterNumber: parseInt(req.params.id) }] 
+    const idParam = req.params.id;
+    if (isNaN(idParam)) return res.status(400).json({ error: "ID invalide" });
+    const num = parseInt(idParam);
+
+    const deleted = await Newsletter.destroy({ 
+      where: {
+        [Op.or]: [
+          { id: num },
+          { newsletterNumber: num }
+        ]
+      }
     });
     if (!deleted) return res.status(404).json({ error: "Newsletter non trouvée" });
     res.json({ message: "Newsletter supprimée avec succès" });
@@ -144,14 +181,23 @@ router.delete("/:id", verifyAdmin, async (req, res) => {
 // 3quater. 📁 RÉGÉNÉRER PDF (ADMIN SEULEMENT)
 router.post("/:id/generate-pdf", verifyAdmin, async (req, res) => {
   try {
+    const idParam = req.params.id;
+    if (isNaN(idParam)) return res.status(400).json({ error: "ID invalide" });
+    const num = parseInt(idParam);
+
     const newsletter = await Newsletter.findOne({ 
-      $or: [{ _id: req.params.id }, { newsletterNumber: parseInt(req.params.id) }] 
+      where: {
+        [Op.or]: [
+          { id: num },
+          { newsletterNumber: num }
+        ]
+      }
     });
     
     if (!newsletter) return res.status(404).json({ error: "Newsletter non trouvée" });
     
-    const pdfUrl = await generateNewsletterPdf(newsletter._id, newsletter.newsletterNumber, newsletter.date);
-    await Newsletter.findByIdAndUpdate(newsletter._id, { $set: { pdfPath: pdfUrl } });
+    const pdfUrl = await generateNewsletterPdf(newsletter.id, newsletter.newsletterNumber, newsletter.date);
+    await Newsletter.update({ pdfPath: pdfUrl }, { where: { id: newsletter.id } });
     
     res.json({ message: "PDF généré avec succès", pdfPath: pdfUrl });
   } catch (err) {
@@ -165,14 +211,23 @@ router.post("/:id/upload-pdf", verifyAdmin, upload.single("pdf"), async (req, re
   try {
     if (!req.file) return res.status(400).json({ error: "Aucun fichier PDF envoyé" });
     
+    const idParam = req.params.id;
+    if (isNaN(idParam)) return res.status(400).json({ error: "ID invalide" });
+    const num = parseInt(idParam);
+
     const pdfUrl = `/uploads/pdf/${req.file.filename}`;
-    const updatedNews = await Newsletter.findOneAndUpdate(
-      { $or: [{ _id: req.params.id }, { newsletterNumber: parseInt(req.params.id) }] },
-      { $set: { pdfPath: pdfUrl } },
-      { new: true }
+    const [affectedCount] = await Newsletter.update(
+      { pdfPath: pdfUrl },
+      { where: {
+          [Op.or]: [
+            { id: num },
+            { newsletterNumber: num }
+          ]
+        }
+      }
     );
     
-    if (!updatedNews) return res.status(404).json({ error: "Newsletter non trouvée" });
+    if (affectedCount === 0) return res.status(404).json({ error: "Newsletter non trouvée" });
     res.json({ message: "PDF mis à jour avec succès", pdfPath: pdfUrl });
   } catch (err) {
     logger.error("Erreur upload PDF:", err);
@@ -196,10 +251,10 @@ router.post("/ai-generate", verifyAdmin, async (req, res) => {
 // 5. 🚀 ROUTE DE DIFFUSION (MASS MAILING)
 router.post("/:id/broadcast", verifyAdmin, async (req, res) => {
   try {
-    const newsletter = await Newsletter.findById(req.params.id);
+    const newsletter = await Newsletter.findByPk(req.params.id);
     if (!newsletter) return res.status(404).json({ error: "Newsletter non trouvée" });
 
-    const subscribers = await Subscriber.find({});
+    const subscribers = await Subscriber.findAll();
     if (subscribers.length === 0) return res.status(400).json({ message: "Aucun abonné à qui envoyer la newsletter." });
 
     logger.info(`📢 Lancement de la diffusion de la newsletter ${newsletter.newsletterNumber} à ${subscribers.length} abonnés.`);

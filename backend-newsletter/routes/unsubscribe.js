@@ -13,14 +13,14 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    // Tentative de suppression dans MongoDB
-    const result = await Subscriber.deleteOne({ email });
+    // Tentative de suppression
+    const deletedCount = await Subscriber.destroy({ where: { email } });
 
     console.log("🔍 Requête reçue :", email);
-    console.log("Résultat MongoDB :", result);
+    console.log("Nombre de désinscriptions :", deletedCount);
 
     // Si aucune adresse n'a été supprimée
-    if (result.deletedCount === 0) {
+    if (deletedCount === 0) {
       return res.status(404).json({ error: "Email non trouvé dans la base." });
     }
 

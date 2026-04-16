@@ -14,19 +14,18 @@ router.post("/register", async (req, res) => {
   try {
     const { identifiant, motDePasse } = req.body;
 
-    const adminExistant = await Admin.findOne({ identifiant });
+    const adminExistant = await Admin.findOne({ where: { identifiant } });
     if (adminExistant) {
       return res.status(400).json({ error: "Identifiant déjà utilisé" });
     }
 
     const hash = await _hash(motDePasse, 10);
 
-    const nouvelAdmin = new Admin({
+    await Admin.create({
       identifiant,
       motDePasse: hash,
     });
 
-    await nouvelAdmin.save();
     res.status(201).json({ message: "Administrateur créé avec succès" });
   } catch (err) {
     console.error("Erreur création admin :", err);
@@ -39,7 +38,7 @@ router.post("/login", async (req, res) => {
   try {
     const { identifiant, motDePasse } = req.body;
 
-    const admin = await Admin.findOne({ identifiant });
+    const admin = await Admin.findOne({ where: { identifiant } });
     if (!admin) {
       return res.status(401).json({ error: "Identifiant incorrect" });
     }
@@ -50,7 +49,7 @@ router.post("/login", async (req, res) => {
     }
 
     const token = sign(
-      { id: admin._id, identifiant: admin.identifiant },
+      { id: admin.id, identifiant: admin.identifiant },
       process.env.JWT_SECRET,
       { expiresIn: "2h" }
     );
@@ -67,14 +66,13 @@ router.post("/manual-donation", verifyAdmin, validateDonation, async (req, res) 
   try {
     const { nomDonateur, montant, message, source } = req.body;
 
-    const don = new Donation({
+    await Donation.create({
       nomDonateur,
       montant,
-      message,
+      commentaires: message, // On mappe message vers commentaires
       source,
     });
 
-    await don.save();
     res.status(201).json({ message: "Don manuel ajouté avec succès" });
   } catch (err) {
     console.error("Erreur ajout don manuel :", err);
@@ -85,7 +83,7 @@ router.post("/manual-donation", verifyAdmin, validateDonation, async (req, res) 
 // 🔒 Route protégée : accès aux dons
 router.get("/dons", verifyAdmin, async (req, res) => {
   try {
-    const dons = await Donation.find().sort({ date: -1 });
+    const dons = await Donation.findAll({ order: [['date', 'DESC']] });
     res.json(dons);
   } catch (err) {
     console.error("Erreur récupération dons :", err);
@@ -95,13 +93,12 @@ router.get("/dons", verifyAdmin, async (req, res) => {
 
 // 🔥 Route DELETE pour supprimer un don (protégée)
 router.delete("/dons/:id", verifyAdmin, async (req, res) => {
-  console.log("ID reçu pour suppression:", req.params.id);
   try {
-    const don = await Donation.findByIdAndDelete(req.params.id);
-    if (!don) {
+    const deleted = await Donation.destroy({ where: { id: req.params.id } });
+    if (!deleted) {
       return res.status(404).json({ error: "Don introuvable" });
     }
-    res.status(204).send(); // ou res.json({ message: "Don supprimé" });
+    res.status(204).send();
   } catch (err) {
     console.error("Erreur suppression:", err);
     res.status(500).json({ error: "Erreur serveur" });

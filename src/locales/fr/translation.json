@@ -82,6 +82,7 @@
     "sending": "Envoi en cours…",
     "send": "Envoyer",
     "success": "✅ Inscription réussie !",
+    "alreadySubscribed": "Cette adresse email est déjà inscrite 💚",
     "error": "❌ Une erreur est survenue.",
     "close": "Fermer"
   },

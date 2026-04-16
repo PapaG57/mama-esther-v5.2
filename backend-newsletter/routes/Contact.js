@@ -1,124 +1,38 @@
-// backend-newsletter/routes/Contact.js
 import { Router } from "express";
-import nodemailer from "nodemailer";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
+import { sendContactAdminNotificationEmail, sendContactConfirmationEmail } from "../utils/send-email.js";
 import { validateContact } from "../middlewares/validation.js";
 import Contact from "../models/Contact.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const router = Router();
 
 router.post("/", validateContact, async (req, res) => {
   const { name, email, subject, message, extraField } = req.body;
 
-  // 🕵️ Anti-spam invisible (honeypot)
+  // 🕵️ Honeypot anti-spam
   if (extraField && extraField.trim() !== "") {
+    console.log("🤖 Bot détecté sur le formulaire contact");
     return res.status(400).json({ message: "Bot détecté" });
   }
 
   try {
-    // 💾 Sauvegarde en base de données
-    const nouveauMessage = new Contact({ name, email, subject, message });
-    await nouveauMessage.save();
+    // 1. Enregistrement en base de données
+    await Contact.create({ name, email, subject, message });
 
-    // 📧 Envoi de l'e-mail
-    await sendContactEmail({ name, email, subject, message });
-    
+    // 2. Notification Admin (Non-bloquant)
+    sendContactAdminNotificationEmail({ name, email, subject, message }).catch(err => 
+      console.error("📧 Erreur notification admin contact :", err)
+    );
+
+    // 3. Confirmation Visiteur (Non-bloquant)
+    sendContactConfirmationEmail(name, email).catch(err => 
+      console.error("📧 Erreur confirmation visiteur contact :", err)
+    );
+
     res.status(200).json({ message: "Message envoyé avec succès 💚" });
   } catch (error) {
-    console.error("❌ Erreur complète route contact :", error);
-    res.status(500).json({ 
-      message: "Erreur serveur lors de l’envoi.",
-      error: error.message 
-    });
+    console.error("❌ Erreur complète contact :", error);
+    res.status(500).json({ message: "Erreur serveur lors de l’envoi." });
   }
 });
 
 export default router;
-
-async function sendContactEmail({ name, email, subject, message }) {
-  console.log("📨 --- DIAGNOSTIC ENVIRONNEMENT ---");
-  console.log("📂 Dossier actuel :", process.cwd());
-  console.log("🔑 Clés détectées :", Object.keys(process.env).filter(k => k.includes("EMAIL") || k.includes("ADMIN")));
-  console.log("📨 Tentative d'envoi d'email SMTP...");
-
-  
-  // 🛡️ Nettoyage des variables (suppression des espaces et des guillemets résiduels)
-  const user = process.env.EMAIL_SENDER ? process.env.EMAIL_SENDER.trim().replace(/^["']|["']$/g, '') : "";
-  const pass = process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.trim().replace(/^["']|["']$/g, '') : "";
-  const host = process.env.EMAIL_HOST ? process.env.EMAIL_HOST.trim().replace(/^["']|["']$/g, '') : "";
-  const port = Number(process.env.EMAIL_PORT) || 587;
-
-  console.log(`👤 Login : [${user}]`);
-  console.log(`🔑 MDP : [${pass.length} caractères] (Guillemets nettoyés si présents)`);
-
-  const transporter = nodemailer.createTransport({
-    host: host,
-    port: port,
-    secure: port === 465, // true pour 465, false pour 587 (STARTTLS)
-    auth: {
-      user: user,
-      pass: pass,
-    },
-    authMethod: 'LOGIN', // Force la méthode LOGIN pour LWS
-    tls: {
-      rejectUnauthorized: false, // Indispensable pour les certificats auto-signés LWS
-      minVersion: 'TLSv1.2'
-    },
-    debug: true, // Active les logs détaillés de nodemailer
-    logger: true // Affiche la conversation SMTP dans la console
-  });
-
-
-
-  // Vérification de l'existence de l'image
-  const logoPath = path.join(__dirname, "..", "assets", "logoMama.png");
-  
-  if (!fs.existsSync(logoPath)) {
-    console.error("❌ ERREUR : Le logo est introuvable au chemin :", logoPath);
-    // On continue sans attachement pour éviter le plantage 500 si possible
-  }
-
-  const mailOptions = {
-    from: `"Mama Esther Contact" <${process.env.EMAIL_SENDER}>`,
-    to: process.env.ADMIN_EMAIL && process.env.ADMIN_EMAIL.includes('@') ? process.env.ADMIN_EMAIL : process.env.EMAIL_SENDER,
-    subject: `📬 Nouveau message de ${name}`,
-    html: `
-      <div style="font-family: Bahnschrift, Arial, sans-serif;">
-        <h2 style="color: #007A5E;">💌 Message reçu via la page contact</h2>
-        <p><strong>Nom :</strong> ${name}</p>
-        <p><strong>Email :</strong> ${email}</p>
-        <p><strong>Objet :</strong> ${subject || "Aucun objet précisé"}</p>
-        <p><strong>Message :</strong></p>
-        <div style="background-color: #f5f5f5; padding: 12px; border-radius: 8px;">
-          ${message.replace(/\n/g, "<br />")}
-        </div>
-        <hr />
-        <p style="font-size: 0.9rem; color: #555;">Ce message a été envoyé automatiquement depuis le formulaire contact du site Mama Esther.</p>
-      </div>
-    `,
-  };
-
-  // N'ajouter l'attachement que si le fichier existe
-  if (fs.existsSync(logoPath)) {
-    mailOptions.attachments = [
-      {
-        filename: "logoMama.png",
-        path: logoPath,
-        cid: "logoMama",
-      },
-    ];
-  }
-
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Email envoyé avec succès ! ID:", info.messageId);
-  } catch (err) {
-    console.error("❌ ERREUR SMTP DÉTAILLÉE :", err);
-    throw err;
-  }
-}
-

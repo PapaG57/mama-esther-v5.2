@@ -1,14 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import mongoose from "mongoose";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import logger from "./utils/logger.js";
-
-// 🔧 Fix DNS pour MongoDB Atlas
-import dns from "node:dns/promises";
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
+import sequelize from "./config/database.js";
 
 // Import des routeurs
 import subscriptionRouter from "./routes/Subscription.js";
@@ -59,13 +55,12 @@ const allowedOrigins = [
   "http://localhost:5000",
   "https://mamaesther.org",
   "https://www.mamaesther.org",
-  "https://mama-esther-v5-2.vercel.app" // Au cas où tu aurais un preview Vercel
+  "https://mama-esther-v5-2.vercel.app"
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Autorise les requêtes sans origine (comme Postman ou les outils mobiles)
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
@@ -77,13 +72,11 @@ app.use(
   })
 );
 
+app.use(helmet());
+
 // 2. 📦 PARSERS
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-
-// 3. 🧹 SANITIZATION (Désactivé temporairement car cause un crash système)
-// app.use(mongoSanitize()); 
-// app.use(xss()); 
 
 // 4. 🚦 RATE LIMITING
 const limiter = rateLimit({
@@ -91,7 +84,7 @@ const limiter = rateLimit({
   max: 100,
   message: "Trop de requêtes effectuées, réessayez plus tard.",
 });
-app.use("/api", limiter); // Retrait du slash final pour plus de souplesse
+app.use("/api", limiter);
 
 // Montage des routeurs
 app.use("/api/subscribe", subscriptionRouter);
@@ -104,7 +97,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/newsletters", newsletterRoutes);
 
 app.get("/", (req, res) => {
-  res.send("🟢 Serveur opérationnel !");
+  res.send("🟢 Serveur opérationnel (PostgreSQL) !");
 });
 
 app.use((err, req, res, next) => {
@@ -115,16 +108,15 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Erreur interne du serveur" });
 });
 
-logger.info("🧪 Tentative de connexion à MongoDB...");
-mongoose
-  .connect(process.env.MONGO_URI, { dbName: "newsletter_db" })
+logger.info("🧪 Tentative de connexion à PostgreSQL...");
+sequelize.sync({ alter: true }) // Synchronise les modèles avec la base
   .then(() => {
-    logger.info("✅ Connexion MongoDB OK");
+    logger.info("✅ Connexion PostgreSQL OK & Tables synchronisées");
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
       logger.info(`🚀 Serveur en route sur http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
-    logger.error("❌ Erreur connexion MongoDB :", err);
+    logger.error("❌ Erreur connexion PostgreSQL :", err);
   });

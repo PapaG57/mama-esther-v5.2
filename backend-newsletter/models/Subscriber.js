@@ -1,13 +1,18 @@
-import { Schema, model } from "mongoose";
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
 
-const SubscriberSchema = new Schema({
+const Subscriber = sequelize.define('Subscriber', {
   email: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
     unique: true,
+    validate: {
+      isEmail: true,
+    },
   },
+}, {
+  tableName: 'subscribers',
+  timestamps: true,
 });
-
-const Subscriber = model("Subscriber", SubscriberSchema);
 
 export default Subscriber;
