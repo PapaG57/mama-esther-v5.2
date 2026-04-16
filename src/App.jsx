@@ -45,7 +45,6 @@ function App() {
 
   return (
     <Router>
-      <MaintenanceNotice />
       <ScrollToTop />
       <ScrollToTopButton />
       <ToastContainer 
