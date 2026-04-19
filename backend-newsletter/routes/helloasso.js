@@ -58,10 +58,12 @@ router.post("/webhook", async (req, res) => {
 
 // Route de simulation (gardée pour tes tests manuels)
 router.post("/helloasso-simulation", async (req, res) => {
-  const { amount, email, firstName, lastName } = req.body;
+  const amount = req.body.amount || req.body.montant;
+  const email = req.body.email;
+  const { firstName, lastName } = req.body;
 
   if (!amount || !email) {
-    return res.status(400).json({ message: "Montant et email requis." });
+    return res.status(400).json({ message: "Montant (ou amount) et email requis." });
   }
 
   try {

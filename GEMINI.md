@@ -30,7 +30,7 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Ménage :** Suppression de tous les anciens fichiers CSS et composants obsolètes pour un projet propre.
 - [x] **Fixes :** Correction des imports relatifs, du parsing package.json et des scories de traduction.
 
-## 5. Mémo pour la prochaine session (Reprise après blocage SMTP - Mars 2026)
+## 5. Mémo pour la prochaine session (Reprise après migration PostgreSQL - Avril 2026)
 **État actuel :**
 - [x] **Correctif Page Blanche :** Import de `useEffect` et `apiClient` ajouté dans `App.jsx`.
 - [x] **Restaurations V5 :**
@@ -38,6 +38,7 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
     - Système de **Diffusion Newsletter** (Mass Mailing) ajouté dans l'éditeur et le backend.
     - **Page Contact :** ✅ Enregistrement des messages fonctionnel en local et sur le serveur web.
 - [x] **Inscription Newsletter :** ✅ RÉSOLU. Inscription rendue non-bloquante vis-à-vis du SMTP (évite les erreurs 500).
+- [x] **Migration PostgreSQL :** ✅ RÉSOLU. Abandon de MongoDB/SQLite au profit de **PostgreSQL (Supabase)**.
 - [x] **Design & Responsivité :**
     - Admin V2 et Contact V2 100% responsive (Flexbox).
     - Nettoyage de `App.css` (suppression du max-width 1280px qui bloquait la fluidité).
@@ -46,10 +47,10 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Debug SMTP :** Activation du mode `debug: true` dans le backend.
 
 **À RÉGLER (Priorités) :**
-1. **Migration SQLite :** 🛠️ Quitter MongoDB pour SQLite (plus de problèmes d'IP ou d'accès site).
-2. **Récupération des données :** 📥 Lancer `test-db.js` pour tenter d'extraire les données de MongoDB avant migration.
-3. **Validation Finale :** ✅ Re-tester tous les formulaires sur le site (Newsletter, Contact, Dons).
-4. **Sync & Déploiement :** 🚀 Configurer Render pour supporter le fichier SQLite (Persistance).
+1. **Validation Finale :** 🔍 Re-tester tous les formulaires sur le site (Newsletter, Contact, Dons) pour confirmer la liaison avec PostgreSQL.
+2. **Récupération des données :** 📥 Vérifier si toutes les données critiques ont été migrées depuis l'ancienne base.
+3. **Sync & Déploiement :** 🚀 Finaliser le déploiement sur Render avec les variables d'environnement PostgreSQL.
+4. **Optimisation :** ⚡ Améliorer les temps de réponse si nécessaire (Render Free Tier "cold start").
 
 ---
 *Note : Tout le travail sur les e-mails personnalisés et les corrections frontend a été sauvegardé.*
@@ -59,7 +60,7 @@ Cette configuration sépare le Frontend statique (LWS) du Backend dynamique (Ren
 
 ### A. Backend (Render)
 1. **Dashboard Render :** Créer un "Web Service" lié au dossier `backend-newsletter/`.
-2. **Variables d'env :** Ajouter `MONGO_URI`, `JWT_SECRET`, `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_SENDER`, `EMAIL_PASSWORD`, `ADMIN_EMAIL`.
+2. **Variables d'env :** Ajouter `POSTGRES_URI`, `JWT_SECRET`, `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_SENDER`, `EMAIL_PASSWORD`, `ADMIN_EMAIL`.
 3. **Commandes :** 
    - Build : `npm install`
    - Start : `node server.js`
