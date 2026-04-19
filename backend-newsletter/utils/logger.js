@@ -7,23 +7,20 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   transports: [
-    // Écrit toutes les erreurs dans error.log
-    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
-    // Écrit tous les logs dans combined.log
-    new winston.transports.File({ filename: "logs/combined.log" }),
-  ],
-});
-
-// En développement, on affiche aussi dans la console avec des couleurs
-if (process.env.NODE_ENV !== "production") {
-  logger.add(
+    // Toujours ajouter la console en production pour Render
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.simple()
       ),
     })
-  );
+  ],
+});
+
+// En local uniquement, on peut écrire dans des fichiers si on veut
+if (process.env.NODE_ENV !== "production") {
+  logger.add(new winston.transports.File({ filename: "logs/error.log", level: "error" }));
+  logger.add(new winston.transports.File({ filename: "logs/combined.log" }));
 }
 
 export default logger;
