@@ -13,6 +13,8 @@ const sequelize = new Sequelize(uri || 'postgres://localhost:5432/fallback', {
   dialect: 'postgres',
   logging: false, // Passer à console.log pour le debug
   dialectOptions: {
+    // Forcer la résolution DNS en IPv4
+    family: 4,
     ssl: {
       require: true,
       rejectUnauthorized: false // Requis pour Supabase/Render
