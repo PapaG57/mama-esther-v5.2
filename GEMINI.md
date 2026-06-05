@@ -78,4 +78,4 @@ Le frontend doit être "buildé" localement avant l'envoi FTP sur LWS pour inté
    ```
 
 ---
-*Note : La version v5.2 est prête pour la mise en production. La stabilité SMTP est la clé du succès final.*
+*Note : La version v5.2 est prête pour la mise en production. La stabilité SMTP et le suivi Clarity sont opérationnels.*
