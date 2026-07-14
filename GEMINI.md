@@ -39,6 +39,9 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
     - **Page Contact :** ✅ Enregistrement des messages fonctionnel en local et sur le serveur web.
 - [x] **Inscription Newsletter :** ✅ RÉSOLU. Inscription rendue non-bloquante vis-à-vis du SMTP (évite les erreurs 500).
 - [x] **Migration PostgreSQL :** ✅ RÉSOLU. Abandon de MongoDB/SQLite au profit de **PostgreSQL (Supabase)**.
+- [x] **Connexion PostgreSQL en local (Supavisor) :** ✅ RÉSOLU. Passage par le pooler Supavisor (port 6543) pour contourner le problème des adresses IPv6-only de Supabase incompatibles avec certains réseaux locaux / Node.
+- [x] **Correctif Page Blanche (Clarity) :** ✅ RÉSOLU. Correction de l'import de la bibliothèque `@microsoft/clarity` dans `src/main.jsx` (import par défaut à la place d'un export nommé inexistant).
+- [x] **Nettoyage Favicon :** ✅ RÉSOLU. Correction du chemin d'accès dans `index.html` pour supprimer l'avertissement de Vite.
 - [x] **Design & Responsivité :**
     - Admin V2 et Contact V2 100% responsive (Flexbox).
     - Nettoyage de `App.css` (suppression du max-width 1280px qui bloquait la fluidité).
