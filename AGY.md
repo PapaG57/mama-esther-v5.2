@@ -30,7 +30,7 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Ménage :** Suppression de tous les anciens fichiers CSS et composants obsolètes pour un projet propre.
 - [x] **Fixes :** Correction des imports relatifs, du parsing package.json et des scories de traduction.
 
-## 5. Mémo pour la prochaine session (Reprise après migration PostgreSQL - Avril 2026)
+## 5. Mémo pour la prochaine session (Mise à jour Juillet 2026)
 **État actuel :**
 - [x] **Correctif Page Blanche :** Import de `useEffect` et `apiClient` ajouté dans `App.jsx`.
 - [x] **Restaurations V5 :**
@@ -40,23 +40,22 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
 - [x] **Inscription Newsletter :** ✅ RÉSOLU. Inscription rendue non-bloquante vis-à-vis du SMTP (évite les erreurs 500).
 - [x] **Migration PostgreSQL :** ✅ RÉSOLU. Abandon de MongoDB/SQLite au profit de **PostgreSQL (Supabase)**.
 - [x] **Connexion PostgreSQL en local (Supavisor) :** ✅ RÉSOLU. Passage par le pooler Supavisor (port 6543) pour contourner le problème des adresses IPv6-only de Supabase incompatibles avec certains réseaux locaux / Node.
-- [x] **Correctif Page Blanche (Clarity) :** ✅ RÉSOLU. Correction de l'import de la bibliothèque `@microsoft/clarity` dans `src/main.jsx` (import par défaut à la place d'un export nommé inexistant).
-- [x] **Nettoyage Favicon :** ✅ RÉSOLU. Correction du chemin d'accès dans `index.html` pour supprimer l'avertissement de Vite.
+- [x] **Correctif Page Blanche (Clarity) :** ✅ RÉSOLU. Correction de l'import de la bibliothèque `@microsoft/clarity` dans `src/main.jsx`.
+- [x] **Nettoyage Favicon :** ✅ RÉSOLU. Correction du chemin d'accès dans `index.html`.
 - [x] **Design & Responsivité :**
     - Admin V2 et Contact V2 100% responsive (Flexbox).
     - Nettoyage de `App.css` (suppression du max-width 1280px qui bloquait la fluidité).
     - Hero Home corrigé pour mobile (padding 150px pour libérer la Navbar).
     - Logo FG DEV (`New_Logo_FG_DEV256.png`) corrigé, agrandi et espacé dans le Footer.
-- [x] **Debug SMTP :** Activation du mode `debug: true` dans le backend.
-
-**À RÉGLER (Priorités) :**
-1. **Validation Finale :** 🔍 Re-tester tous les formulaires sur le site (Newsletter, Contact, Dons) pour confirmer la liaison avec PostgreSQL.
-2. **Récupération des données :** 📥 Vérifier si toutes les données critiques ont été migrées depuis l'ancienne base.
-3. **Sync & Déploiement :** 🚀 Finaliser le déploiement sur Render avec les variables d'environnement PostgreSQL.
-4. **Optimisation :** ⚡ Améliorer les temps de réponse si nécessaire (Render Free Tier "cold start").
+- [x] **Résolution des Erreurs de Réseau et Veille (Juillet 2026) :**
+    - **Endpoint `/api/health` :** Ajouté dans `server.js` pour tester l'état du serveur et de Supabase.
+    - **Keep-Alive Cronjobs :** Activation sur `cron-job.org` pinguant `https://mama-esther-backend.onrender.com/api/donations/count` toutes les 10 minutes (évite la mise en veille Render et la mise en pause de 7 jours de Supabase).
+    - **Pre-wake Ping React :** Dans `App.jsx`, un ping en arrière-plan réveille le serveur dès l'ouverture de n'importe quelle page.
+    - **Correction Bug "Erreur réseau" Factice :** Correction dans `Footer.jsx` et `Admin.jsx` où `err.response?.data?.error` renvoyait `undefined` et affichait à tort "Erreur réseau" lors de mauvaises saisies d'identifiants.
+    - **Compte Admin Supabase :** Administrateur réinitialisé et vérifié dans la base de données.
 
 ---
-*Note : Tout le travail sur les e-mails personnalisés et les corrections frontend a été sauvegardé.*
+*Note : Tout le travail sur la mise en veille, la stabilité SMTP, Supabase et les corrections frontend a été sauvegardé.*
 
 ## 6. Guide de Déploiement Hybride (LWS / Render)
 Cette configuration sépare le Frontend statique (LWS) du Backend dynamique (Render).
@@ -67,18 +66,18 @@ Cette configuration sépare le Frontend statique (LWS) du Backend dynamique (Ren
 3. **Commandes :** 
    - Build : `npm install`
    - Start : `node server.js`
-4. **URL :** Récupérer l'URL générée (ex: `https://mama-esther-api.onrender.com`).
+4. **URL :** Récupérer l'URL générée (`https://mama-esther-backend.onrender.com`).
 
 ### B. Frontend (LWS)
 Le frontend doit être "buildé" localement avant l'envoi FTP sur LWS pour intégrer l'URL de l'API Render.
 1. **Fichier `.env.production` :** Créer ce fichier à la racine (front) avec :
-   `VITE_API_URL=https://[TON-URL-RENDER].onrender.com/api`
+   `VITE_API_URL=https://mama-esther-backend.onrender.com/api`
 2. **Build :** Lancer `npm run build`. Vite injectera l'URL dans les fichiers minifiés.
 3. **Déploiement :** Envoyer le contenu du dossier `dist/` sur le FTP LWS.
 4. **Config Dynamique (Optionnel) :** Si besoin de changer l'URL sans rebuild, modifier `public/config.js` sur le FTP :
    ```javascript
-   window.APP_CONFIG = { API_URL: "https://[NOUVELLE-URL].onrender.com/api" };
+   window.APP_CONFIG = { API_URL: "https://mama-esther-backend.onrender.com/api" };
    ```
 
 ---
-*Note : La version v5.2 est prête pour la mise en production. La stabilité SMTP et le suivi Clarity sont opérationnels.*
+*Note : La version v5.2 est prête pour la mise en production. La stabilité SMTP, le suivi Clarity et le système Keep-Alive sont opérationnels.*
