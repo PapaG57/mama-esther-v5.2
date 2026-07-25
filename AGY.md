@@ -52,7 +52,14 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
     - **Keep-Alive Cronjobs :** Activation sur `cron-job.org` pinguant `https://mama-esther-backend.onrender.com/api/donations/count` toutes les 10 minutes (évite la mise en veille Render et la mise en pause de 7 jours de Supabase).
     - **Pre-wake Ping React :** Dans `App.jsx`, un ping en arrière-plan réveille le serveur dès l'ouverture de n'importe quelle page.
     - **Correction Bug "Erreur réseau" Factice :** Correction dans `Footer.jsx` et `Admin.jsx` où `err.response?.data?.error` renvoyait `undefined` et affichait à tort "Erreur réseau" lors de mauvaises saisies d'identifiants.
-    - **Compte Admin Supabase :** Administrateur réinitialisé et vérifié dans la base de données.
+    - **Compte Admin Supabase :** Administrateur réinitialisé et vérifié dans la base de données (`florent.gerard@mamaesther.org` / `admin`).
+
+**À RÉGLER (Priorités Prochaine Session - Refonte Infolettre & Mailing) :**
+1. **Refonte Visuelle et Ergonomique de l'Infolettre :** Revoir le design, la mise en page et la méthode de création des infolettres depuis l'espace d'administration réservé.
+2. **Base de Données Contacts / Abonnés Intégrée :**
+   - S'assurer que la table des abonnés (`Subscriptions` dans Supabase PostgreSQL) regroupe l'ensemble des contacts déjà inscrits et ceux qui s'inscriront au fur et à mesure depuis le site.
+3. **Plateforme d'Envoi Direct depuis l'Administration :**
+   - Connecter l'éditeur d'infolettre à la base de données abonnés pour effectuer les envois de masse directement depuis le site web, sans outil tiers.
 
 ---
 *Note : Tout le travail sur la mise en veille, la stabilité SMTP, Supabase et les corrections frontend a été sauvegardé.*

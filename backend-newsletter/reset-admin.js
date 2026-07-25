@@ -5,8 +5,8 @@ import sequelize from "./config/database.js";
 
 dotenv.config();
 
-const NEW_IDENTIFIER = "admin";
-const NEW_PASSWORD = "adminpassword123"; // À changer par l'utilisateur plus tard
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "florent.gerard@mamaesther.org";
+const ADMIN_PASS = process.env.EMAIL_PASSWORD || "uC6$Rs26ZHdaPTX";
 
 async function run() {
   try {
@@ -18,19 +18,27 @@ async function run() {
     await sequelize.sync({ alter: true });
     console.log("✅ Tables synchronisées !");
 
-    const hash = await bcrypt.hash(NEW_PASSWORD, 10);
+    const hash = await bcrypt.hash(ADMIN_PASS, 10);
 
-    // Supprimer l'ancien admin s'il existe
-    await Admin.destroy({ where: { identifiant: NEW_IDENTIFIER } });
+    // Supprimer les anciens comptes admins s'ils existent
+    await Admin.destroy({ where: { identifiant: ADMIN_EMAIL } });
+    await Admin.destroy({ where: { identifiant: "admin" } });
 
+    // Créer le compte principal avec l'email
     await Admin.create({
-      identifiant: NEW_IDENTIFIER,
+      identifiant: ADMIN_EMAIL,
       motDePasse: hash,
     });
 
-    console.log("✅ Administrateur réinitialisé !");
-    console.log(`👤 Identifiant : ${NEW_IDENTIFIER}`);
-    console.log(`🔑 Mot de passe : ${NEW_PASSWORD}`);
+    // Créer l'alias "admin" avec le même mot de passe pour plus de confort
+    await Admin.create({
+      identifiant: "admin",
+      motDePasse: hash,
+    });
+
+    console.log("✅ Administrateurs mis à jour avec succès !");
+    console.log(`👤 Identifiants autorisés : ${ADMIN_EMAIL} ET admin`);
+    console.log(`🔑 Mot de passe : ${ADMIN_PASS}`);
 
     await sequelize.close();
   } catch (err) {
