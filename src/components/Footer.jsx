@@ -52,7 +52,7 @@ function Footer() {
       }
     } catch (err) {
       console.error("Erreur de connexion admin :", err);
-      alert(err.response?.data?.error || "Erreur réseau");
+      alert(err.message || "Erreur de connexion");
     } finally {
       setLoading(false);
     }

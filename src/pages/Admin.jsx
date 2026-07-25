@@ -91,7 +91,7 @@ export default function Admin() {
       setMotDePasse("");
       setConfirmationMotDePasse("");
     } catch (err) {
-      toast.error(err.response?.data?.error || t("admin.messages.networkError"));
+      toast.error(err.message || t("admin.messages.networkError"));
     }
   };
 
@@ -115,7 +115,7 @@ export default function Admin() {
       setSourcePrecise("");
       fetchDons();
     } catch (err) {
-      toast.error(err.response?.data?.error || t("admin.messages.networkError"));
+      toast.error(err.message || t("admin.messages.networkError"));
     }
   };
 
@@ -127,7 +127,7 @@ export default function Admin() {
       toast.success(t("admin.messages.donDeleted"));
       fetchDons();
     } catch (err) {
-      toast.error(t("admin.messages.networkError"));
+      toast.error(err.message || t("admin.messages.networkError"));
     } finally {
       setDonASupprimer(null);
       setShowConfirmModal(false);

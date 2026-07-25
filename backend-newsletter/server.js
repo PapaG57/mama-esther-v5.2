@@ -84,6 +84,26 @@ const limiter = rateLimit({
   max: 100,
   message: "Trop de requêtes effectuées, réessayez plus tard.",
 });
+
+// 🟢 Route de santé / Keep-Alive (pour garder Render et Supabase actifs)
+app.get("/api/health", async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.status(200).json({
+      status: "ok",
+      uptime: process.uptime(),
+      db: "connected",
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "degraded",
+      db: "disconnected",
+      error: error.message
+    });
+  }
+});
+
 app.use("/api", limiter);
 
 // Montage des routeurs

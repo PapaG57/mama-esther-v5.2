@@ -36,9 +36,20 @@ apiClient.interceptors.response.use(
       }
     }
 
-    // On transforme l'erreur brute en quelque chose de plus lisible pour l'UI
+    // Message lisible pour l'UI, adapté si le serveur ou la base sort de veille
+    let msg = error.response?.data?.error;
+    if (!msg) {
+      if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
+        msg = "Le serveur était en veille et met du temps à démarrer. Veuillez réinstaller votre connexion dans 10 secondes.";
+      } else if (error.message === "Network Error") {
+        msg = "Impossible de contacter le serveur (Serveur ou base de données en veille). Réessayez dans quelques secondes.";
+      } else {
+        msg = error.message || "Erreur réseau";
+      }
+    }
+
     const customError = {
-      message: error.response?.data?.error || error.message || "Erreur réseau",
+      message: msg,
       status: error.response?.status,
       original: error
     };
