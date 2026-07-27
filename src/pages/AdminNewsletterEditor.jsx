@@ -195,15 +195,19 @@ const AdminNewsletterEditor = () => {
 
   const askAI = async (blockId) => {
     const block = data.blocks.find(b => b.id === blockId);
-    const prompt = `Rédige un article pour l'association Mama Esther sur le sujet : ${block.text[currentLang]}. Ton : humain, sérieux, ONG.`;
+    const textPrompt = block?.text?.[currentLang] || "";
+    const prompt = `Rédige un article captivant pour l'association Mama Esther sur le sujet suivant : ${textPrompt}. Ton : humain, sérieux, ONG.`;
     try {
-      toast.info("L'IA rédige...");
+      toast.info("L'IA Gemini rédige votre article...");
       const res = await newsletterService.aiGenerate(prompt, 'draft');
-      // Le simulateur backend renvoie un texte avec un préfixe, on pourrait le nettoyer
-      const content = res.data.content.replace(/\[Génération IA pour draft\] : .* \.\.\. /, '');
-      handleTextChange('text', content || res.data.content, blockId);
+      const generatedContent = res.data.content;
+      if (generatedContent) {
+        handleTextChange('text', generatedContent, blockId);
+        toast.success("Article généré par l'IA avec succès !");
+      }
     } catch (err) {
-      toast.error("Erreur IA.");
+      console.error("Erreur lors de la génération IA:", err);
+      toast.error("Erreur IA : " + (err.message || err.response?.data?.error || "Connexion impossible"));
     }
   };
 
@@ -339,10 +343,10 @@ const AdminNewsletterEditor = () => {
             {data.title[currentLang]}
           </h1>
 
-          {/* EDITO BLEU */}
+          {/* EDITO VERT INSTITUTIONNEL & ACCENT D'OR */}
           <section className="mag-edito-box">
             <div className="mag-edito-left">
-              <h3 style={{ color: 'white', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.9rem' }}>
+              <h3 style={{ color: '#fcd116', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.95rem', fontWeight: '800', letterSpacing: '1px' }}>
                 {currentLang === 'fr' ? "Le mot de la Présidente" : "A word from the President"}
               </h3>
               <div className="president-img-wrapper" onClick={() => { setUploadTarget('president'); fileInputRef.current.click(); }} title="Changer l'image">

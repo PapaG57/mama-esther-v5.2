@@ -1,7 +1,9 @@
-/* NewsletterMagazine.css - Le Template Officiel "Vert Cameroun" */
+/* NewsletterMagazine.css - Le Template Officiel "Vert Cameroun & Ong Moderne" */
 :root {
   --mag-green: #007a5e;
-  --mag-blue-edito: #2980b9;
+  --mag-green-dark: #004d3b;
+  --mag-gold: #fcd116;
+  --mag-red: #ce1126;
   --mag-white: #ffffff;
 }
 
@@ -48,28 +50,31 @@
   margin: 0;
 }
 
-/* SEPARATEUR DOUBLE LIGNE */
+/* SEPARATEUR DOUBLE LIGNE D'OR */
 .mag-double-separator {
-  border-top: 2px solid white;
-  border-bottom: 2px solid white;
+  border-top: 2px solid var(--mag-gold);
+  border-bottom: 2px solid var(--mag-gold);
   height: 6px;
   margin: 40px 0;
   width: 100%;
 }
 
-/* EDITO BOX BLEUE */
+/* EDITO BOX VERT INSTITUTIONNEL & OR */
 .mag-edito-section {
-  background: #3498db;
+  background: linear-gradient(135deg, #005c47 0%, #007a5e 100%);
   padding: 50px;
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 30px;
   align-items: center;
+  border-radius: 28px;
+  border: 2px solid rgba(252, 209, 22, 0.4);
+  box-shadow: 0 20px 45px rgba(0, 60, 45, 0.3);
 }
 
 .mag-edito-left {
   text-align: center;
-  border-right: 2px solid white;
+  border-right: 2px solid rgba(252, 209, 22, 0.4);
   padding-right: 30px;
 }
 
@@ -79,15 +84,16 @@
   letter-spacing: 4px;
   line-height: 1.4;
   margin-bottom: 30px;
+  color: var(--mag-gold);
 }
 
 .mag-edito-photo {
   width: 200px;
   height: 250px; /* Un peu plus haut pour l'effet oval */
   border-radius: 50% / 40%; /* Effet oval */
-  border: 4px solid white;
+  border: 4px solid var(--mag-gold);
   object-fit: cover;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
 .mag-oval-img {
@@ -95,12 +101,12 @@
   height: 230px;
   border-radius: 50% / 40%;
   object-fit: cover;
-  border: 3px solid white;
-  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+  border: 3px solid var(--mag-gold);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.25);
 }
 
 .mag-text-light-blue {
-  color: #a5d6f7; /* Bleu clair cohérent avec le PDF */
+  color: var(--mag-gold); /* Or harmonieux */
   font-weight: 800;
   display: block;
   margin-top: 20px;
@@ -109,8 +115,9 @@
 
 .mag-edito-text {
   font-size: 1.3rem;
-  line-height: 1.6;
-  text-align: left;
+  line-height: 1.7;
+  text-align: justify;
+  hyphens: auto;
 }
 
 /* ARTICLES & TITRES */
@@ -204,10 +211,12 @@
   border-radius: 4px;
 }
 
-/* FOOTER BLEU PDF */
+/* FOOTER VERT INSTITUTIONNEL & ACCENT D'OR */
 .mag-pdf-footer {
-  background: #2980b9;
-  padding: 40px;
+  background: linear-gradient(135deg, #004d3b 0%, #007a5e 100%);
+  border-top: 4px solid var(--mag-gold);
+  border-radius: 0 0 28px 28px;
+  padding: 60px 40px;
   text-align: center;
   margin-top: 80px;
 }

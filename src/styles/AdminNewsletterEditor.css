@@ -92,23 +92,40 @@
   padding-bottom: 20px;
 }
 
-/* EDITO (FOND BLEU) */
+/* EDITO (VERT INSTITUTIONNEL & ACCENT D'OR) */
 .mag-edito-box {
-  background: #1e9bf4;
+  background: linear-gradient(135deg, #005c47 0%, #007a5e 100%);
   display: grid; grid-template-columns: 220px 1fr;
   gap: 40px; padding: 40px; margin-bottom: 60px;
   align-items: center;
-  border-radius: 24px;
+  border-radius: 28px;
+  border: 2px solid rgba(252, 209, 22, 0.35);
+  box-shadow: 0 20px 45px rgba(0, 60, 45, 0.3);
+  position: relative;
+  overflow: hidden;
 }
+
+.mag-edito-box::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  background: rgba(252, 209, 22, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
 .mag-edito-left { text-align: center; }
 .mag-edito-img {
   width: 180px; height: 240px;
   border-radius: 90px;
-  border: 6px solid white; object-fit: cover;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  border: 5px solid #fcd116; object-fit: cover;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
 }
 
-.edito-text { font-size: 1.2rem; line-height: 1.7; text-align: justify; hyphens: auto; }
+.edito-text { font-size: 1.2rem; line-height: 1.75; text-align: justify; hyphens: auto; }
 
 /* ARTICLES - ALTERNANCE AUTO */
 .mag-articles-list { display: flex; flex-direction: column; gap: 80px; }
@@ -249,9 +266,10 @@
 .tool-color-picker { width: 100%; height: 50px; border: none; border-radius: 12px; cursor: pointer; }
 .tool-btn-close { background: #333; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-/* FOOTER */
+/* FOOTER VERT INSTITUTIONNEL AVEC ACCENT D'OR */
 .mag-footer-v2 { 
-  background: #1e9bf4; 
+  background: linear-gradient(135deg, #004d3b 0%, #007a5e 100%); 
+  border-top: 4px solid #fcd116;
   padding: 80px 40px; 
   text-align: center; 
   margin-top: 100px; 

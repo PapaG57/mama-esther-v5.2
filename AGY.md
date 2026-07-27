@@ -54,12 +54,17 @@ Ce fichier contient les directives architecturales et visuelles pour la nouvelle
     - **Correction Bug "Erreur réseau" Factice :** Correction dans `Footer.jsx` et `Admin.jsx` où `err.response?.data?.error` renvoyait `undefined` et affichait à tort "Erreur réseau" lors de mauvaises saisies d'identifiants.
     - **Compte Admin Supabase :** Administrateur réinitialisé et vérifié dans la base de données (`florent.gerard@mamaesther.org` / `admin`).
 
-**À RÉGLER (Priorités Prochaine Session - Refonte Infolettre & Mailing) :**
-1. **Refonte Visuelle et Ergonomique de l'Infolettre :** Revoir le design, la mise en page et la méthode de création des infolettres depuis l'espace d'administration réservé.
+- [x] **Refonte Visuelle et Ergonomique de l'Infolettre (Tâche n°1 accomplie) :**
+    - Suppression du bleu obsolète sur la page web et l'éditeur admin.
+    - Application de la charte institutionnelle Vert Institutionnel (#007a5e / #004d3b), touches Jaune Doré (#fcd116) et Rouge (#ce1126).
+    - Amélioration de l'édito de la présidente (dégradé vert profond + cadre photo doré), des cartes d'articles et du footer.
+    - Maintien rigoureux de la justification du texte et de la césure automatique.
+
+**À RÉGLER (Prochaines étapes) :**
 2. **Base de Données Contacts / Abonnés Intégrée :**
    - S'assurer que la table des abonnés (`Subscriptions` dans Supabase PostgreSQL) regroupe l'ensemble des contacts déjà inscrits et ceux qui s'inscriront au fur et à mesure depuis le site.
-3. **Plateforme d'Envoi Direct depuis l'Administration :**
-   - Connecter l'éditeur d'infolettre à la base de données abonnés pour effectuer les envois de masse directement depuis le site web, sans outil tiers.
+3. **Plateforme d'Envoi Direct depuis l'Administration (Générateur Email HTML Responsive) :**
+   - Connecter l'éditeur d'infolettre à la base de données abonnés pour effectuer les envois de masse directement depuis le site web avec un modèle HTML Email responsive aux couleurs de la charte.
 
 ---
 *Note : Tout le travail sur la mise en veille, la stabilité SMTP, Supabase et les corrections frontend a été sauvegardé.*
