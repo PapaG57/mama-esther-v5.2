@@ -48,10 +48,11 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Mot de passe incorrect" });
     }
 
+    const secret = process.env.JWT_SECRET || "uC6$Rs26ZHdaPTX";
     const token = sign(
       { id: admin.id, identifiant: admin.identifiant },
-      process.env.JWT_SECRET,
-      { expiresIn: "2h" }
+      secret,
+      { expiresIn: "7d" }
     );
 
     res.json({ token });

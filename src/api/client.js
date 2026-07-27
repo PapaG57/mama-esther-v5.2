@@ -27,12 +27,12 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Si l'erreur est un 401 (Jeton expiré ou invalide)
-    if (error.response && error.response.status === 401) {
+    // Si l'erreur est un 401 ou 403 (Jeton expiré ou invalide)
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       sessionStorage.removeItem("adminToken");
       // Si on n'est pas déjà sur l'accueil, on y renvoie pour forcer la reconnexion
       if (window.location.pathname !== "/") {
-        window.location.replace("/");
+        window.location.replace("/admin");
       }
     }
 
