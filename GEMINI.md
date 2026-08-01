@@ -6,6 +6,7 @@
    - Analyse du besoin et de l'architecture.
    - Rédaction de prompts chirurgicaux et très cadrés.
    - Pré-découpage des tâches en sous-étapes simples.
+   - **Ne doit pas modifier les fichiers directement ; son rôle est de préparer les prompts pour DeepSeek.**
 
 2. **Rôle de DeepSeek (Exécution / Payant) :**
    - Exécution directe du code complexe via Aider (`deepseek/deepseek-chat`).
