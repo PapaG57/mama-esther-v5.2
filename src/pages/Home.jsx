@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react"; // Ajout de useState et useRef
 import "../styles/HomeV2.css";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -12,39 +12,42 @@ const HomeV2 = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Chat AI state
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatInput, setChatInput] = useState("");
-  const [chatResponse, setChatResponse] = useState("");
-  const [isCopied, setIsCopied] = useState(false);
+  // États pour la modale de chat
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [currentInput, setCurrentInput] = useState("");
+  const aiResponseRef = useRef(null); // Réf pour la zone de réponse de l'IA
 
-  const handleOpenChat = () => {
-    setIsChatOpen(true);
-    setChatResponse("");
-    setIsCopied(false);
-  };
-
-  const handleCloseChat = () => {
-    setIsChatOpen(false);
-    setChatInput("");
-    setChatResponse("");
-    setIsCopied(false);
-  };
-
+  // Fonction pour envoyer un message (simulée pour l'exemple)
   const handleSendMessage = () => {
-    if (!chatInput.trim()) return;
-    // Simulate AI response (replace with actual API call later)
-    const simulatedResponse = `Vous avez dit : "${chatInput}". Ceci est une réponse simulée de Gemini 2.5-flash.`;
-    setChatResponse(simulatedResponse);
-    setChatInput("");
+    if (currentInput.trim() === "") return;
+
+    const newUserMessage = { sender: "user", text: currentInput };
+    setChatMessages((prevMessages) => [...prevMessages, newUserMessage]);
+    setCurrentInput("");
+
+    // Simulation d'une réponse de l'IA
+    setTimeout(() => {
+      const aiResponse = { sender: "ai", text: `Bonjour ! Vous avez dit : "${newUserMessage.text}". Comment puis-je vous aider avec votre article ?` };
+      setChatMessages((prevMessages) => [...prevMessages, aiResponse]);
+    }, 1000);
   };
 
-  const handleCopyResponse = () => {
-    if (!chatResponse) return;
-    navigator.clipboard.writeText(chatResponse).then(() => {
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    });
+  // Fonction pour copier le contenu de la dernière réponse de l'IA
+  const handleCopy = () => {
+    const lastAiMessage = chatMessages.filter(msg => msg.sender === 'ai').pop();
+    if (lastAiMessage && aiResponseRef.current) {
+      navigator.clipboard.writeText(lastAiMessage.text)
+        .then(() => alert("Contenu copié !"))
+        .catch(err => console.error("Erreur lors de la copie :", err));
+    }
+  };
+
+  // Fonction pour fermer la modale
+  const handleCloseModal = () => {
+    setShowChatModal(false);
+    setChatMessages([]); // Réinitialiser les messages à la fermeture
+    setCurrentInput("");
   };
 
   return (
@@ -65,7 +68,6 @@ const HomeV2 = () => {
               <div className="v2-hero-btns">
                 <button className="v2-btn v2-btn-primary" onClick={() => navigate('/don')}>{t("v2.btns.donate")}</button>
                 <button className="v2-btn v2-btn-outline" onClick={() => navigate('/about')}>{t("v2.btns.discover")}</button>
-                <button className="v2-btn v2-btn-outline" onClick={handleOpenChat}>Ouvrir Chat AI</button>
               </div>
             </div>
             
@@ -79,6 +81,87 @@ const HomeV2 = () => {
         </div>
         <div className="v2-scroll-indicator"></div>
       </section>
+
+      {/* Bouton pour ouvrir la modale de chat AI */}
+      <section className="v2-container" style={{ textAlign: 'center', padding: '40px 0' }}>
+        <button className="v2-btn v2-btn-primary" onClick={() => setShowChatModal(true)}>
+          Ouvrir Chat AI
+        </button>
+      </section>
+
+      {/* Modale de chat AI */}
+      {showChatModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '25px',
+            borderRadius: '10px',
+            width: '90%',
+            maxWidth: '600px',
+            boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
+            display: 'flex',
+            flexDirection: 'column',
+            maxHeight: '80vh',
+          }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#333', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>Gemini 2.5-flash</h3>
+            
+            <div style={{
+              flexGrow: 1,
+              overflowY: 'auto',
+              border: '1px solid #e0e0e0',
+              borderRadius: '5px',
+              padding: '15px',
+              marginBottom: '15px',
+              backgroundColor: '#f9f9f9',
+            }}>
+              {chatMessages.map((msg, index) => (
+                <p key={index} style={{
+                  margin: '5px 0',
+                  textAlign: msg.sender === 'user' ? 'right' : 'left',
+                  color: msg.sender === 'user' ? '#007a5e' : '#333',
+                  fontWeight: msg.sender === 'ai' ? 'bold' : 'normal',
+                }}>
+                  {msg.sender === 'user' ? 'Vous: ' : 'Gemini: '}
+                  <span ref={msg.sender === 'ai' ? aiResponseRef : null}>{msg.text}</span>
+                </p>
+              ))}
+            </div>
+
+            <textarea
+              value={currentInput}
+              onChange={(e) => setCurrentInput(e.target.value)}
+              onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
+              placeholder="Écrivez votre message ici..."
+              style={{
+                width: 'calc(100% - 20px)',
+                minHeight: '80px',
+                padding: '10px',
+                border: '1px solid #ccc',
+                borderRadius: '5px',
+                marginBottom: '15px',
+                resize: 'vertical',
+                fontSize: '1rem',
+              }}
+            />
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button className="v2-btn v2-btn-outline" onClick={handleCopy} style={{ backgroundColor: '#f0f0f0', color: '#333' }}>Copier</button>
+              <button className="v2-btn v2-btn-primary" onClick={handleCloseModal} style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}>Fermer</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 2. IMPACT STATS - Masqué temporairement car l'association est en construction
       <section id="aboutSection" className="v2-impact">
@@ -175,41 +258,6 @@ const HomeV2 = () => {
           </div>
         </div>
       </section>
-
-      {/* Chat AI Modal */}
-      {isChatOpen && (
-        <div className="chat-ai-modal-overlay" onClick={handleCloseChat}>
-          <div className="chat-ai-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="chat-ai-header">
-              <h3>Gemini 2.5-flash</h3>
-              <button className="chat-ai-close" onClick={handleCloseChat}>×</button>
-            </div>
-            <div className="chat-ai-body">
-              <div className="chat-ai-response">
-                {chatResponse ? (
-                  <p>{chatResponse}</p>
-                ) : (
-                  <p className="chat-ai-placeholder">La réponse s'affichera ici...</p>
-                )}
-              </div>
-              <textarea
-                className="chat-ai-input"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Écrivez votre message..."
-                rows="3"
-              />
-            </div>
-            <div className="chat-ai-footer">
-              <button className="chat-ai-btn" onClick={handleSendMessage}>Envoyer</button>
-              <button className="chat-ai-btn" onClick={handleCopyResponse} disabled={!chatResponse}>
-                {isCopied ? "Copié !" : "Copier"}
-              </button>
-              <button className="chat-ai-btn" onClick={handleCloseChat}>Fermer</button>
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   );
