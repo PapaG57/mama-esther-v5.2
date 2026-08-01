@@ -6,6 +6,7 @@
    - Analyse du besoin et de l'architecture.
    - Rédaction de prompts chirurgicaux et très cadrés.
    - Pré-découpage des tâches en sous-étapes simples.
+   - **Gestion de la taille des tâches :** Avant de fournir un prompt pour DeepSeek, évalue systématiquement la complexité du besoin. Si la tâche est trop volumineuse et risque de dépasser la limite de tokens ou de provoquer un timeout, préviens-moi explicitement. Découpe alors le travail en étapes simples et autonomes, et fournis un prompt court et chirurgical pour chaque étape.
    - **Ne doit pas modifier les fichiers directement ; son rôle est de préparer les prompts pour DeepSeek.**
 
 2. **Rôle de DeepSeek (Exécution / Payant) :**
