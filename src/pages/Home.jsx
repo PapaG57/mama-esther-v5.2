@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/HomeV2.css";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,41 @@ import BibleVerse from "../components/BibleVerse";
 const HomeV2 = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // Chat AI state
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [chatResponse, setChatResponse] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleOpenChat = () => {
+    setIsChatOpen(true);
+    setChatResponse("");
+    setIsCopied(false);
+  };
+
+  const handleCloseChat = () => {
+    setIsChatOpen(false);
+    setChatInput("");
+    setChatResponse("");
+    setIsCopied(false);
+  };
+
+  const handleSendMessage = () => {
+    if (!chatInput.trim()) return;
+    // Simulate AI response (replace with actual API call later)
+    const simulatedResponse = `Vous avez dit : "${chatInput}". Ceci est une réponse simulée de Gemini 2.5-flash.`;
+    setChatResponse(simulatedResponse);
+    setChatInput("");
+  };
+
+  const handleCopyResponse = () => {
+    if (!chatResponse) return;
+    navigator.clipboard.writeText(chatResponse).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    });
+  };
 
   return (
     <div className="v2-layout">
@@ -30,6 +65,7 @@ const HomeV2 = () => {
               <div className="v2-hero-btns">
                 <button className="v2-btn v2-btn-primary" onClick={() => navigate('/don')}>{t("v2.btns.donate")}</button>
                 <button className="v2-btn v2-btn-outline" onClick={() => navigate('/about')}>{t("v2.btns.discover")}</button>
+                <button className="v2-btn v2-btn-outline" onClick={handleOpenChat}>Ouvrir Chat AI</button>
               </div>
             </div>
             
@@ -139,6 +175,41 @@ const HomeV2 = () => {
           </div>
         </div>
       </section>
+
+      {/* Chat AI Modal */}
+      {isChatOpen && (
+        <div className="chat-ai-modal-overlay" onClick={handleCloseChat}>
+          <div className="chat-ai-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="chat-ai-header">
+              <h3>Gemini 2.5-flash</h3>
+              <button className="chat-ai-close" onClick={handleCloseChat}>×</button>
+            </div>
+            <div className="chat-ai-body">
+              <div className="chat-ai-response">
+                {chatResponse ? (
+                  <p>{chatResponse}</p>
+                ) : (
+                  <p className="chat-ai-placeholder">La réponse s'affichera ici...</p>
+                )}
+              </div>
+              <textarea
+                className="chat-ai-input"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Écrivez votre message..."
+                rows="3"
+              />
+            </div>
+            <div className="chat-ai-footer">
+              <button className="chat-ai-btn" onClick={handleSendMessage}>Envoyer</button>
+              <button className="chat-ai-btn" onClick={handleCopyResponse} disabled={!chatResponse}>
+                {isCopied ? "Copié !" : "Copier"}
+              </button>
+              <button className="chat-ai-btn" onClick={handleCloseChat}>Fermer</button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
