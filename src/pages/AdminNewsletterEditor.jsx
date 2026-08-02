@@ -39,6 +39,29 @@ const AdminNewsletterEditor = () => {
   // New states for other AI/Media modals
   const [showSearchImageModal, setShowSearchImageModal] = useState(false);
   const [showGenerateImageModal, setShowGenerateImageModal] = useState(false);
+  const [imagePrompt, setImagePrompt] = useState(''); // New state for image generation prompt
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false); // New state for image generation loading
+  const [generatedImageUrl, setGeneratedImageUrl] = useState(null); // New state for generated image URL
+
+  // New states for image search
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(null);
+
+  // Initialisation des résultats de recherche avec un terme par défaut au chargement de la modale
+  useEffect(() => {
+    if (showSearchImageModal) {
+      const defaultQuery = 'association';
+      // Générer dynamiquement 6 URLs d'images pour le terme par défaut
+      const initialResults = Array.from({ length: 6 }, (_, index) =>
+        `https://loremflickr.com/500/350/${encodeURIComponent(defaultQuery)}?lock=${index + 1}`
+      );
+      setSearchResults(initialResults);
+      setSelectedPhotoUrl(null); // S'assurer qu'aucune image n'est sélectionnée par défaut
+      setSearchQuery(defaultQuery); // Pré-remplir le champ de recherche
+    }
+  }, [showSearchImageModal]);
 
   // SVG Gemini Logo
   const GeminiLogo = () => (
@@ -50,16 +73,16 @@ const AdminNewsletterEditor = () => {
 
   // État initial (Outil réutilisable)
   const [data, setData] = useState({
-    title: { 
-      fr: "NEWSLETTER #", 
-      en: "NEWSLETTER #" 
+    title: {
+      fr: "NEWSLETTER #",
+      en: "NEWSLETTER #"
     },
     date: new Date().toISOString().split('T')[0],
     bannerImage: '/assets/covers/banner-news.webp',
     presidentImage: '/assets/mentions/president-mama.webp',
-    edito: { 
-      fr: "Votre édito ici...", 
-      en: "Your editorial here..." 
+    edito: {
+      fr: "Votre édito ici...",
+      en: "Your editorial here..."
     },
     blocks: [
       {
@@ -69,7 +92,7 @@ const AdminNewsletterEditor = () => {
         text: { fr: 'Votre texte d\'article ici...', en: 'Your article text here...' },
         styles: { fontSize: '1.25rem', color: 'white' }
       }
-    ], 
+    ],
     tags: {
       fr: [],
       en: []
@@ -94,7 +117,7 @@ const AdminNewsletterEditor = () => {
       setLoading(true);
       const res = await newsletterService.getById(id);
       const nl = res.data;
-      
+
       // Reconstruction de l'état blocks à partir de content
       const editoBlockFr = nl.content.fr.find(b => b.type === 'edito');
       const articleBlocksFr = nl.content.fr.filter(b => b.type !== 'edito');
@@ -188,7 +211,7 @@ const AdminNewsletterEditor = () => {
       const res = await newsletterService.uploadImage(formData);
       // On utilise l'URL relative retournée par le backend
       const imageUrl = res.data.url;
-      
+
       if (uploadTarget === 'banner') {
         setData(prev => ({ ...prev, bannerImage: imageUrl }));
       } else if (uploadTarget === 'president') {
@@ -268,6 +291,81 @@ const AdminNewsletterEditor = () => {
     setGeminiGeneratedText(''); // Clear previous generated text
     setShowGeminiModal(true);
     setCopySuccess(false); // Reset copy success state
+  };
+
+  // Mock function for image generation
+  const handleGenerateImage = () => {
+    if (!imagePrompt.trim()) {
+      toast.warning("Veuillez saisir une description pour générer l'image.");
+      return;
+    }
+    setIsGeneratingImage(true);
+    setGeneratedImageUrl(null); // Clear previous image
+
+    setTimeout(() => {
+      // Simulate API call success
+      setGeneratedImageUrl('https://via.placeholder.com/400x300?text=' + encodeURIComponent(imagePrompt));
+      setIsGeneratingImage(false);
+      toast.success("Image générée avec succès ! (Mock)");
+    }, 2000);
+  };
+
+  const handleInsertGeneratedImage = () => {
+    if (generatedImageUrl) {
+      // Logic to insert the image into the newsletter.
+      // For now, let's assume we want to add it as a new block.
+      const newBlock = {
+        id: Date.now(),
+        type: 'article',
+        image: generatedImageUrl,
+        text: { fr: 'Image générée par IA.', en: 'AI generated image.' },
+        styles: { fontSize: '1.25rem', color: 'white' }
+      };
+      setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
+      toast.success("Image insérée dans la newsletter !");
+      setShowGenerateImageModal(false); // Close modal after inserting
+      setImagePrompt(''); // Reset prompt
+      setGeneratedImageUrl(null); // Reset generated image
+    } else {
+      toast.error("Aucune image générée à insérer.");
+    }
+  };
+
+  // Mock function for searching photos
+  const handleSearchPhotos = () => {
+    const query = searchQuery.trim() || 'association'; // Terme par défaut si vide
+    setIsSearching(true);
+    setSearchResults([]);
+    setSelectedPhotoUrl(null);
+
+    setTimeout(() => {
+      const dynamicResults = Array.from({ length: 6 }, (_, index) =>
+        `https://loremflickr.com/500/350/${encodeURIComponent(query)}?lock=${index + 1}`
+      );
+      setSearchResults(dynamicResults);
+      setIsSearching(false);
+      toast.success(`Recherche de photos pour "${query}" terminée !`);
+    }, 1500);
+  };
+
+  const handleInsertSelectedPhoto = () => {
+    if (selectedPhotoUrl) {
+      const newBlock = {
+        id: Date.now(),
+        type: 'article',
+        image: selectedPhotoUrl,
+        text: { fr: 'Image recherchée.', en: 'Searched image.' },
+        styles: { fontSize: '1.25rem', color: 'white' }
+      };
+      setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
+      toast.success("Photo insérée dans la newsletter !");
+      setShowSearchImageModal(false); // Close modal after inserting
+      setSearchQuery('');
+      setSearchResults([]);
+      setSelectedPhotoUrl(null);
+    } else {
+      toast.error("Veuillez sélectionner une photo à insérer.");
+    }
   };
 
   const handleSave = async () => {
@@ -658,10 +756,79 @@ const AdminNewsletterEditor = () => {
           <div className="gemini-modal">
             <div className="gemini-modal-header">
               <h2>Recherche d'images</h2>
-              <button className="close-btn" onClick={() => setShowSearchImageModal(false)} title="Fermer la modale">&times;</button>
+              <button className="close-btn" onClick={() => {
+                setShowSearchImageModal(false);
+                setSearchQuery('');
+                setSearchResults([]);
+                setSelectedPhotoUrl(null);
+              }} title="Fermer la modale">&times;</button>
             </div>
             <div className="gemini-modal-body">
-              <p>Contenu de la modale de recherche d'images...</p>
+              <div className="search-input-group">
+                <input
+                  type="text"
+                  className="tool-select-v2"
+                  placeholder="Ex: enfance, éducation, solidarité..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => { if (e.key === 'Enter') handleSearchPhotos(); }}
+                  title="Saisissez votre recherche d'images"
+                />
+                <button
+                className="v2-btn v2-btn-green"
+                  onClick={handleSearchPhotos}
+                  disabled={isSearching || searchQuery.trim() === ''}
+                  style={{ marginLeft: '10px' }}
+                  title="Lancer la recherche"
+              >
+                  {isSearching ? 'Recherche...' : 'Rechercher'}
+              </button>
+                </div>
+
+              {isSearching && <HandSpinner fullPage={false} small={true} style={{ marginTop: '20px' }} />}
+
+              {!isSearching && searchResults.length > 0 && (
+                <div className="image-gallery">
+                  {searchResults.map((url, index) => (
+                    <div
+                      key={index}
+                      className={`image-thumbnail ${selectedPhotoUrl === url ? 'selected' : ''}`}
+                      onClick={() => setSelectedPhotoUrl(url)}
+                      title="Cliquer pour sélectionner"
+                    >
+                      <img src={url} alt={`Résultat ${index + 1}`} />
+                      {selectedPhotoUrl === url && <FontAwesomeIcon icon={faCheckCircle} className="selection-icon" />}
+                    </div>
+                  ))}
+              </div>
+              )}
+
+              {!isSearching && searchResults.length === 0 && searchQuery.trim() !== '' && (
+                <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>Aucun résultat trouvé pour "{searchQuery}".</p>
+              )}
+
+              <div className="gemini-modal-actions" style={{ marginTop: '30px' }}>
+                <button
+                  className="v2-btn"
+                  onClick={() => {
+                    setShowSearchImageModal(false);
+                    setSearchQuery('');
+                    setSearchResults([]);
+                    setSelectedPhotoUrl(null);
+                  }}
+                  title="Annuler la recherche d'image"
+                >
+                  Annuler
+                </button>
+                <button
+                  className="v2-btn v2-btn-blue"
+                  onClick={handleInsertSelectedPhoto}
+                  disabled={!selectedPhotoUrl}
+                  title="Insérer la photo sélectionnée"
+                >
+                  Insérer dans la newsletter
+                </button>
+    </div>
             </div>
           </div>
         </div>
@@ -673,10 +840,61 @@ const AdminNewsletterEditor = () => {
           <div className="gemini-modal">
             <div className="gemini-modal-header">
               <h2>Génération d'images par IA</h2>
-              <button className="close-btn" onClick={() => setShowGenerateImageModal(false)} title="Fermer la modale">&times;</button>
+              <button className="close-btn" onClick={() => {
+                setShowGenerateImageModal(false);
+                setImagePrompt('');
+                setIsGeneratingImage(false);
+                setGeneratedImageUrl(null);
+              }} title="Fermer la modale">&times;</button>
             </div>
             <div className="gemini-modal-body">
-              <p>Contenu de la modale de génération d'images par IA...</p>
+              <textarea
+                className="gemini-textarea-prompt"
+                placeholder="Décris l'image que tu souhaites générer..."
+                value={imagePrompt}
+                onChange={(e) => setImagePrompt(e.target.value)}
+                rows="4"
+                title="Description de l'image à générer"
+              ></textarea>
+              <button
+                className="v2-btn v2-btn-green"
+                onClick={handleGenerateImage}
+                disabled={isGeneratingImage || imagePrompt.trim() === ''}
+                style={{ marginTop: '15px' }}
+                title="Lancer la génération d'image"
+              >
+                {isGeneratingImage ? 'Génération en cours...' : 'Générer l\'image'}
+              </button>
+              {isGeneratingImage && <HandSpinner fullPage={false} small={true} style={{ marginTop: '15px' }} />}
+
+              {generatedImageUrl && (
+                <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                  <img src={generatedImageUrl} alt="Image générée" style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} />
+                </div>
+              )}
+
+              <div className="gemini-modal-actions" style={{ marginTop: '30px' }}>
+                <button
+                  className="v2-btn"
+                  onClick={() => {
+                    setShowGenerateImageModal(false);
+                    setImagePrompt('');
+                    setIsGeneratingImage(false);
+                    setGeneratedImageUrl(null);
+                  }}
+                  title="Annuler la génération d'image"
+                >
+                  Annuler
+                </button>
+                <button
+                  className="v2-btn v2-btn-blue"
+                  onClick={handleInsertGeneratedImage}
+                  disabled={!generatedImageUrl}
+                  title="Insérer l'image dans la newsletter"
+                >
+                  Insérer dans la newsletter
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -687,4 +905,5 @@ const AdminNewsletterEditor = () => {
 };
 
 export default AdminNewsletterEditor;
+
 
