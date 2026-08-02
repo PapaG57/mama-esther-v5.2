@@ -28,9 +28,21 @@ const AdminNewsletterEditor = () => {
   const fileInputRef = useRef(null);
   const [uploadTarget, setUploadTarget] = useState(null);
 
+  // Gemini Modal States
+  const [showGeminiModal, setShowGeminiModal] = useState(false);
+  const [geminiPrompt, setGeminiPrompt] = useState('');
+  const [geminiGeneratedText, setGeminiGeneratedText] = useState('');
+  const [geminiLoading, setGeminiLoading] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [currentBlockIdForGemini, setCurrentBlockIdForGemini] = useState(null); // New state to track block context
+
+  // New states for other AI/Media modals
+  const [showSearchImageModal, setShowSearchImageModal] = useState(false);
+  const [showGenerateImageModal, setShowGenerateImageModal] = useState(false);
+
   // SVG Gemini Logo
   const GeminiLogo = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px' }}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
       <path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" fill="currentColor"/>
       <path d="M19 3L19.71 4.71L21.42 5.42L19.71 6.13L19 7.84L18.29 6.13L16.58 5.42L18.29 4.71L19 3Z" fill="currentColor"/>
     </svg>
@@ -110,8 +122,8 @@ const AdminNewsletterEditor = () => {
         },
         blocks: reconstructedBlocks,
         tags: nl.tags || { fr: [], en: [] },
-        pdfPath: nl.pdfPath || "",
-        isPublished: nl.isPublished
+        pdfPath: '',
+        isPublished: false
       });
     } catch (err) {
       toast.error("Erreur lors du chargement de la newsletter");
@@ -193,45 +205,92 @@ const AdminNewsletterEditor = () => {
     }
   };
 
-  const askAI = async (blockId) => {
-    const block = data.blocks.find(b => b.id === blockId);
-    const textPrompt = block?.text?.[currentLang] || "";
-    const prompt = `Rédige un article captivant pour l'association Mama Esther sur le sujet suivant : ${textPrompt}. Ton : humain, sérieux, ONG.`;
+  // Function to generate content via Gemini API, called from within the modal
+  const handleGenerateInModal = async () => {
+    if (!geminiPrompt.trim()) {
+      toast.warning("Veuillez saisir un prompt pour générer du texte.");
+      return;
+    }
+
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+      toast.error("Clé API Gemini non configurée dans le fichier .env (VITE_GEMINI_API_KEY).");
+      return;
+    }
+
+    setGeminiLoading(true);
+    setGeminiGeneratedText(''); // Clear previous generated text
     try {
-      toast.info("L'IA Gemini rédige votre article...");
-      const res = await newsletterService.aiGenerate(prompt, 'draft');
-      const generatedContent = res.data.content;
+      toast.info("L'IA Gemini rédige votre contenu...");
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: geminiPrompt }] }],
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || "Erreur lors de l'appel à l'API Gemini.");
+      }
+
+      const data = await response.json();
+      const generatedContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
       if (generatedContent) {
-        handleTextChange('text', generatedContent, blockId);
-        toast.success("Article généré par l'IA avec succès !");
+        setGeminiGeneratedText(generatedContent);
+        toast.success("Contenu généré par l'IA avec succès !");
+      } else {
+        toast.warning("L'IA n'a pas généré de contenu. Veuillez réessayer ou ajuster le prompt.");
       }
     } catch (err) {
-      console.error("Erreur lors de la génération IA:", err);
-      toast.error("Erreur IA : " + (err.message || err.response?.data?.error || "Connexion impossible"));
+      console.error("Erreur lors de la génération IA dans la modale:", err);
+      toast.error("Erreur IA : " + (err.message || "Connexion impossible"));
+    } finally {
+      setGeminiLoading(false);
     }
+  };
+
+  // Function to open the Gemini modal and pre-fill prompt with block content
+  const handleOpenGeminiModalForBlock = (blockId) => {
+    const block = data.blocks.find(b => b.id === blockId);
+    if (block) {
+      setGeminiPrompt(block.text[currentLang] || ''); // Pre-fill with block content
+      setCurrentBlockIdForGemini(blockId); // Store the block ID for potential future use (e.g., applying generated text)
+    } else {
+      setGeminiPrompt(''); // Clear prompt if no block is associated
+      setCurrentBlockIdForGemini(null);
+    }
+    setGeminiGeneratedText(''); // Clear previous generated text
+    setShowGeminiModal(true);
+    setCopySuccess(false); // Reset copy success state
   };
 
   const handleSave = async () => {
     try {
       const formatted = {
         ...data,
-        summary: { 
-          fr: data.edito.fr.substring(0, 150) + '...', 
-          en: data.edito.en.substring(0, 150) + '...' 
+        summary: {
+          fr: data.edito.fr.substring(0, 150) + '...',
+          en: data.edito.en.substring(0, 150) + '...'
         },
         coverImage: data.bannerImage,
         content: {
           fr: [
-            { type: 'edito', content: data.edito.fr, image: data.presidentImage }, 
+            { type: 'edito', content: data.edito.fr, image: data.presidentImage },
             ...data.blocks.map(b => ({ ...b, text: b.text.fr }))
           ],
           en: [
-            { type: 'edito', content: data.edito.en, image: data.presidentImage }, 
+            { type: 'edito', content: data.edito.en, image: data.presidentImage },
             ...data.blocks.map(b => ({ ...b, text: b.text.en }))
           ],
         }
       };
-      
+
       if (id) {
         await newsletterService.update(id, formatted);
         toast.success("Newsletter mise à jour avec succès !");
@@ -271,71 +330,93 @@ const AdminNewsletterEditor = () => {
   return (
     <div className={`newsletter-editor-layout ${isPreview ? 'preview-mode' : ''}`}>
       <Navbar hideDonate={true} />
-      
+
       <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImageUpload} />
 
       {/* BARRE LATÉRALE GAUCHE (ACTIONS PRINCIPALES) */}
       {!isPreview && (
         <div className="editor-toolbar">
-          <button className="v2-btn-icon" onClick={() => navigate('/admin')} title="Retour à l'administration">
+          <button className="v2-btn-icon" onClick={() => navigate('/admin')} title="Retour">
             <FontAwesomeIcon icon={faArrowLeft} />
           </button>
-          
+
           <div className="toolbar-separator" style={{ height: '2px', width: '30px', background: '#eee' }}></div>
-          
-          <button className="v2-btn-icon" onClick={() => setIsPreview(!isPreview)} title="Aperçu">
+
+          <button className="v2-btn-icon" onClick={() => setIsPreview(!isPreview)} title="Aperçu de la newsletter">
             <FontAwesomeIcon icon={faEye} />
           </button>
-          
-          <button className="v2-btn-icon" style={{ color: 'var(--color-green)' }} onClick={handleSave} title="Enregistrer">
+
+          <button className="v2-btn-icon save-btn" onClick={handleSave} title="Enregistrer la newsletter">
             <FontAwesomeIcon icon={faSave} />
           </button>
 
           {id && (
-            <button className="v2-btn-icon" style={{ color: '#007a5e' }} onClick={handleBroadcast} title="Diffuser à tous les abonnés">
+            <button className="v2-btn-icon broadcast-btn" onClick={handleBroadcast} title="Diffuser la newsletter">
               <FontAwesomeIcon icon={faPaperPlane} />
             </button>
           )}
 
           <div className="toolbar-separator" style={{ height: '2px', width: '30px', background: '#eee' }}></div>
 
-          <button className="v2-btn-icon" onClick={addBlock} title="Ajouter un article">
+          <button className="v2-btn-icon add-block-btn" onClick={addBlock} title="Ajouter un bloc">
             <FontAwesomeIcon icon={faPlusCircle} />
           </button>
+
+          {/* Nouveaux boutons IA déplacés ici */}
+          <button className="v2-btn-icon ai-text-btn" onClick={() => setShowGeminiModal(true)} title="Assistant Rédaction IA">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M4 14.899A7 7 0 0 1 15.707 5h1.793a5 5 0 0 1 0 10h-1.5M9 20l3-3 3 3"/>
+                        </svg>
+                      </button>
+          <button className="v2-btn-icon photo-btn" onClick={() => setShowSearchImageModal(true)} title="Rechercher une photo">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                          <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+              </button>
+          <button className="v2-btn-icon ai-gen-img-btn" onClick={() => setShowGenerateImageModal(true)} title="Générer une image avec l'IA">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <path d="M5.2 14.2c-2.3-2.3-2.3-6.1 0-8.4s6.1-2.3 8.4 0"></path>
+                          <circle cx="14" cy="10" r="2"></circle>
+                        </svg>
+                </button>
 
           {/* BOUTON MOBILE POUR OUVRIR LES OUTILS */}
           <button className="v2-btn-icon btn-mobile-tools" onClick={() => setShowMobileTools(!showMobileTools)} title="Outils de style">
             <FontAwesomeIcon icon={faPalette} />
-          </button>
-        </div>
+              </button>
+              </div>
       )}
 
       {/* BOUTON ÉDITION (SI PREVIEW) */}
       {isPreview && (
-        <button 
-          className="v2-btn v2-btn-green" 
+        <button
+          className="v2-btn v2-btn-green"
           style={{ position: 'fixed', top: '110px', left: '20px', zIndex: 3000 }}
           onClick={() => setIsPreview(false)}
+          title="Retour à l'édition"
         >
           <FontAwesomeIcon icon={faEyeSlash} /> Retour à l'édition
-        </button>
-      )}
+                    </button>
+                  )}
 
       <div className="editor-container">
-        
+
         {/* BANNIÈRE HEADER */}
         <div className="mag-header-banner" title="Image de couverture">
           <img src={data.bannerImage} alt="Bannière" />
-          {!isPreview && (
-            <button className="mag-action-btn" onClick={() => { setUploadTarget('banner'); fileInputRef.current.click(); }}>
+                  {!isPreview && (
+            <button className="mag-action-btn" onClick={() => { setUploadTarget('banner'); fileInputRef.current.click(); }} title="Changer la bannière">
               <FontAwesomeIcon icon={faImage} /> Changer la bannière
-            </button>
-          )}
-        </div>
+                      </button>
+                  )}
+    </div>
 
         <div className="mag-content-padding">
-          <h1 
-            className="mag-main-title editable-area" 
+          <h1
+            className="mag-main-title editable-area"
             contentEditable={!isPreview}
             suppressContentEditableWarning={true}
             onBlur={(e) => handleTextChange('title', e.target.innerText)}
@@ -349,26 +430,26 @@ const AdminNewsletterEditor = () => {
               <h3 style={{ color: '#fcd116', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.95rem', fontWeight: '800', letterSpacing: '1px' }}>
                 {currentLang === 'fr' ? "Le mot de la Présidente" : "A word from the President"}
               </h3>
-              <div className="president-img-wrapper" onClick={() => { setUploadTarget('president'); fileInputRef.current.click(); }} title="Changer l'image">
-                <img 
-                  src={data.presidentImage} 
-                  alt="Avatar" 
-                  className="mag-edito-img" 
+              <div className="president-img-wrapper" onClick={() => { setUploadTarget('president'); fileInputRef.current.click(); }} title="Changer l'image de la Présidente">
+                <img
+                  src={data.presidentImage}
+                  alt="Avatar"
+                  className="mag-edito-img"
                 />
                 {!isPreview && <div className="img-mini-btn"><FontAwesomeIcon icon={faPlusCircle} /></div>}
-              </div>
+            </div>
             </div>
             <div className="mag-edito-right">
-              <div 
-                className="editable-area edito-text" 
+              <div
+                className="editable-area edito-text"
                 contentEditable={!isPreview}
                 suppressContentEditableWarning={true}
                 onBlur={(e) => handleTextChange('edito', e.target.innerText)}
               >
                 {data.edito[currentLang]}
-              </div>
-              {!isPreview && (
-                 <button className="mag-action-btn" style={{ marginTop: '20px', background: 'rgba(255,255,255,0.2)' }} onClick={() => execCommand('insertText', ' ')}>
+          </div>
+      {!isPreview && (
+                 <button className="mag-action-btn" style={{ marginTop: '20px', background: 'rgba(255,255,255,0.2)' }} onClick={() => execCommand('insertText', ' ')} title="Ajouter du texte">
                    <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
                  </button>
               )}
@@ -379,8 +460,8 @@ const AdminNewsletterEditor = () => {
           <div className="mag-articles-list">
             {data.blocks.map((block, index) => (
               <div key={block.id} className="mag-article-row">
-                <div 
-                  className="mag-article-img-box" 
+                <div
+                  className="mag-article-img-box"
                   title="Image de l'article"
                 >
                   {block.image ? (
@@ -389,16 +470,16 @@ const AdminNewsletterEditor = () => {
                     <div className="add-img-placeholder">
                       <FontAwesomeIcon icon={faImage} size="3x" color="rgba(255,255,255,0.3)" />
                       <span>Aucune image</span>
-                    </div>
-                  )}
+          </div>
+      )}
                   {!isPreview && (
-                    <button className="mag-action-btn" onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }}>
+                    <button className="mag-action-btn" onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }} title="Ajouter une image">
                       <FontAwesomeIcon icon={faImage} /> Ajouter une image
                     </button>
                   )}
-                </div>
+    </div>
                 <div className="mag-article-right" style={block.styles}>
-                  <div 
+                  <div
                     className="mag-article-text editable-area"
                     contentEditable={!isPreview}
                     suppressContentEditableWarning={true}
@@ -409,13 +490,10 @@ const AdminNewsletterEditor = () => {
                   </div>
                   {!isPreview && (
                     <div className="block-actions">
-                      <button className="mag-action-btn" style={{ background: 'rgba(255,255,255,0.1)', margin: 0 }} onClick={() => execCommand('insertText', ' ')}>
+                      <button className="mag-action-btn" style={{ background: 'rgba(255,255,255,0.1)', margin: 0 }} onClick={() => execCommand('insertText', ' ')} title="Ajouter du texte">
                         <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
                       </button>
-                      <button className="ai-helper-btn" onClick={() => askAI(block.id)}>
-                        <GeminiLogo /> Aide Gemini
-                      </button>
-                      <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)}><FontAwesomeIcon icon={faTrash} /></button>
+                      <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer ce bloc"><FontAwesomeIcon icon={faTrash} /></button>
                     </div>
                   )}
                 </div>
@@ -424,7 +502,7 @@ const AdminNewsletterEditor = () => {
           </div>
 
           {!isPreview && (
-            <div className="add-block-zone" onClick={addBlock} style={{ cursor: 'pointer', padding: '40px', border: '2px dashed rgba(255,255,255,0.3)', borderRadius: '20px', marginTop: '60px', textAlign: 'center' }}>
+            <div className="add-block-zone" onClick={addBlock} style={{ cursor: 'pointer', padding: '40px', border: '2px dashed rgba(255,255,255,0.3)', borderRadius: '20px', marginTop: '60px', textAlign: 'center' }} title="Ajouter un nouveau bloc article">
               <FontAwesomeIcon icon={faPlusCircle} size="3x" style={{ marginBottom: '15px' }} />
               <h3 style={{ margin: 0 }}>Ajouter un article (Image + Texte alterné)</h3>
             </div>
@@ -436,9 +514,9 @@ const AdminNewsletterEditor = () => {
           <img src="/assets/logos/logoMama.png" alt="Logo" className="mag-footer-logo" />
           <p>© {new Date().getFullYear()} - Association Mama Esther - Tous droits réservés - {data.title[currentLang]}</p>
           <div className="mag-footer-btns">
-            <button className="mag-btn-news">Contact</button>
-            <button className="mag-btn-news">Mentions légales</button>
-            <button className="mag-btn-news" style={{ opacity: 0.5 }}>Désinscription</button>
+            <button className="mag-btn-news" title="Contactez-nous">Contact</button>
+            <button className="mag-btn-news" title="Voir les mentions légales">Mentions légales</button>
+            <button className="mag-btn-news" style={{ opacity: 0.5 }} title="Se désinscrire de la newsletter">Désinscription</button>
           </div>
         </footer>
 
@@ -465,7 +543,7 @@ const AdminNewsletterEditor = () => {
             <select className="tool-select-v2" onChange={(e) => {
               if (activeBlockId && activeBlockId !== 'edito') handleStyleChange(activeBlockId, 'fontSize', e.target.value);
               else execCommand('fontSize', e.target.value);
-            }}>
+            }} title="Changer la taille de police">
               <option value="3">Petit</option>
               <option value="4" selected>Normal</option>
               <option value="5">Grand</option>
@@ -478,12 +556,12 @@ const AdminNewsletterEditor = () => {
             <input type="color" className="tool-color-picker" onChange={(e) => {
                if (activeBlockId && activeBlockId !== 'edito') handleStyleChange(activeBlockId, 'color', e.target.value);
                else execCommand('foreColor', e.target.value);
-            }} defaultValue="#ffffff" />
+            }} defaultValue="#ffffff" title="Changer la couleur du texte" />
           </div>
 
           <div className="tool-group">
             <label>Polices (Style Word)</label>
-            <select className="tool-select-v2" onChange={(e) => execCommand('fontName', e.target.value)}>
+            <select className="tool-select-v2" onChange={(e) => execCommand('fontName', e.target.value)} title="Changer la police">
               <option value="Alegreya Sans">Alegreya Sans (Défaut)</option>
               <option value="Arial">Arial</option>
               <option value="Georgia">Georgia</option>
@@ -496,11 +574,117 @@ const AdminNewsletterEditor = () => {
             Sélectionnez du texte pour appliquer les styles Word.
           </div>
 
-          <button className="tool-btn-close" onClick={() => { setActiveBlockId(null); setShowMobileTools(false); }}>Prêt !</button>
+          <button className="tool-btn-close" onClick={() => { setActiveBlockId(null); setShowMobileTools(false); }} title="Fermer les outils">Prêt !</button>
         </div>
       )}
+
+      {/* Gemini 2.5 Flash Modal (Texte IA) */}
+      {showGeminiModal && (
+        <div className="gemini-modal-overlay">
+          <div className="gemini-modal">
+            <div className="gemini-modal-header">
+              <h2><GeminiLogo /> Gemini 2.5 Flash</h2>
+              <button className="close-btn" onClick={() => {
+                setShowGeminiModal(false);
+                setGeminiPrompt('');
+                setGeminiGeneratedText('');
+                setCopySuccess(false);
+                setCurrentBlockIdForGemini(null);
+              }} title="Fermer la modale">&times;</button>
+            </div>
+            <div className="gemini-modal-body">
+              <textarea
+                className="gemini-textarea-prompt"
+                placeholder="Saisissez votre demande ici (ex: 'Rédige un paragraphe sur l'importance des dons pour notre association.')"
+                value={geminiPrompt}
+                onChange={(e) => setGeminiPrompt(e.target.value)}
+                rows="6"
+                title="Saisissez votre prompt pour Gemini"
+              ></textarea>
+              <button
+                className="v2-btn v2-btn-green"
+                onClick={handleGenerateInModal}
+                disabled={geminiLoading || geminiPrompt.trim() === ''}
+                style={{ marginTop: '15px' }}
+                title="Générer du texte avec Gemini"
+              >
+                {geminiLoading ? 'Génération...' : 'Générer'}
+              </button>
+              {geminiLoading && <HandSpinner fullPage={false} small={true} />}
+              <textarea
+                className="gemini-textarea-generated"
+                value={geminiGeneratedText}
+                readOnly
+                rows="10"
+                placeholder="Le texte généré par Gemini apparaîtra ici."
+                style={{ marginTop: '20px' }}
+                title="Texte généré par Gemini"
+              ></textarea>
+              <div className="gemini-modal-actions">
+                <button
+                  className="v2-btn v2-btn-blue"
+                  onClick={() => {
+                    navigator.clipboard.writeText(geminiGeneratedText);
+                    setCopySuccess(true);
+                    setTimeout(() => setCopySuccess(false), 2000);
+                  }}
+                  disabled={!geminiGeneratedText}
+                  title="Copier le texte généré"
+                >
+                  {copySuccess ? <FontAwesomeIcon icon={faCheckCircle} /> : 'Copier'}
+                </button>
+                <button
+                  className="v2-btn"
+                  onClick={() => {
+                    setShowGeminiModal(false);
+                    setGeminiPrompt('');
+                    setGeminiGeneratedText('');
+                    setCopySuccess(false);
+                    setCurrentBlockIdForGemini(null); // Reset on modal close
+                  }}
+                  title="Fermer la modale Gemini"
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Placeholder for Search Image Modal */}
+      {showSearchImageModal && (
+        <div className="gemini-modal-overlay">
+          <div className="gemini-modal">
+            <div className="gemini-modal-header">
+              <h2>Recherche d'images</h2>
+              <button className="close-btn" onClick={() => setShowSearchImageModal(false)} title="Fermer la modale">&times;</button>
+            </div>
+            <div className="gemini-modal-body">
+              <p>Contenu de la modale de recherche d'images...</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Placeholder for Generate Image Modal */}
+      {showGenerateImageModal && (
+        <div className="gemini-modal-overlay">
+          <div className="gemini-modal">
+            <div className="gemini-modal-header">
+              <h2>Génération d'images par IA</h2>
+              <button className="close-btn" onClick={() => setShowGenerateImageModal(false)} title="Fermer la modale">&times;</button>
+            </div>
+            <div className="gemini-modal-body">
+              <p>Contenu de la modale de génération d'images par IA...</p>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
 
 export default AdminNewsletterEditor;
+

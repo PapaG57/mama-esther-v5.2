@@ -7,58 +7,65 @@
 
 /* BARRE LATÉRALE GAUCHE (ACTIONS PRINCIPALES) */
 .editor-toolbar {
-  position: fixed; 
+  position: fixed;
   top: 110px;
   left: 20px;
   width: 80px;
   height: auto;
-  background: white; 
-  display: flex; 
+  background: white;
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
   padding: 25px 0;
-  box-shadow: 10px 10px 40px rgba(0,0,0,0.1); 
+  box-shadow: 10px 10px 40px rgba(0, 0, 0, 0.1);
   z-index: 2100;
   border-radius: 40px;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.editor-toolbar h2 { display: none; }
+.editor-toolbar h2 {
+  display: none;
+}
 
 /* BOITE A OUTILS DROITE (JAUNE) */
 .sidebar-toolbox {
-  position: fixed; 
-  right: 20px; 
+  position: fixed;
+  right: 20px;
   top: 110px;
-  width: 320px; 
+  width: 320px;
   background: #fcd116; /* Fond Jaune demandé */
-  padding: 30px; 
+  padding: 30px;
   border-radius: 24px;
-  box-shadow: -10px 10px 40px rgba(0,0,0,0.1);
-  z-index: 2050; 
+  box-shadow: -10px 10px 40px rgba(0, 0, 0, 0.1);
+  z-index: 2050;
   color: #333;
-  display: flex; 
-  flex-direction: column; 
+  display: flex;
+  flex-direction: column;
   gap: 25px;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   max-height: 80vh;
   overflow-y: auto;
 }
 
 /* LE CONTENEUR DU MAGAZINE */
 .editor-container {
-  max-width: 950px; 
+  max-width: 800px;
   margin: 40px auto;
-  background: #007a5e; /* Vert Institutionnel */
+  background: white; /* Changé de vert institutionnel à blanc pour éviter les fonds parasites */
   min-height: 1000px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   padding: 0;
   position: relative;
-  font-family: 'Alegreya Sans', sans-serif;
-  color: white;
+  font-family: "Alegreya Sans", sans-serif;
+  color: #333; /* Changé en une couleur foncée pour le texte sur fond blanc */
   border-radius: 8px;
   overflow: hidden;
+}
+
+.editor-container img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* HEADER - BANNIERE */
@@ -75,28 +82,37 @@
   justify-content: center;
 }
 
-.mag-header-banner img { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: cover; 
-  display: block; 
+.mag-header-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.mag-content-padding { padding: 40px 60px; }
+.mag-content-padding {
+  padding: 40px 60px;
+}
 
 .mag-main-title {
-  font-size: 2.8rem; font-weight: 900; color: white;
-  text-align: center; text-transform: uppercase;
-  letter-spacing: 3px; margin: 40px 0;
-  border-bottom: 2px solid rgba(255,255,255,0.2);
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 40px 0;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 20px;
 }
 
 /* EDITO (VERT INSTITUTIONNEL & ACCENT D'OR) */
 .mag-edito-box {
   background: linear-gradient(135deg, #005c47 0%, #007a5e 100%);
-  display: grid; grid-template-columns: 220px 1fr;
-  gap: 40px; padding: 40px; margin-bottom: 60px;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  padding: 40px;
+  margin-bottom: 60px;
   align-items: center;
   border-radius: 28px;
   border: 2px solid rgba(252, 209, 22, 0.35);
@@ -106,7 +122,7 @@
 }
 
 .mag-edito-box::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50px;
   right: -50px;
@@ -117,83 +133,123 @@
   pointer-events: none;
 }
 
-.mag-edito-left { text-align: center; }
+.mag-edito-left {
+  text-align: center;
+}
 .mag-edito-img {
-  width: 180px; height: 240px;
+  width: 180px;
+  height: 240px;
   border-radius: 90px;
-  border: 5px solid #fcd116; object-fit: cover;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  border: 5px solid #fcd116;
+  object-fit: cover;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
 }
 
-.edito-text { font-size: 1.2rem; line-height: 1.75; text-align: justify; hyphens: auto; }
+.edito-text {
+  font-size: 1.2rem;
+  line-height: 1.75;
+  text-align: justify;
+  hyphens: auto;
+}
 
 /* ARTICLES - ALTERNANCE AUTO */
-.mag-articles-list { display: flex; flex-direction: column; gap: 80px; }
+.mag-articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
 .mag-article-row {
-  display: grid; grid-template-columns: 1fr 1.2fr;
-  gap: 50px; align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 50px;
+  align-items: center;
 }
 
 /* Inversion automatique via RTL/LTR */
-.mag-article-row:nth-child(even) { direction: rtl; }
-.mag-article-row:nth-child(even) > * { direction: ltr; }
+.mag-article-row:nth-child(even) {
+  direction: rtl;
+}
+.mag-article-row:nth-child(even) > * {
+  direction: ltr;
+}
 
 .mag-article-img-box {
-  width: 100%; 
+  width: 100%;
   height: 350px; /* Taille fixe pour éviter l'invasion */
-  border-radius: 20px; 
+  border-radius: 20px;
   overflow: hidden;
-  cursor: pointer; 
-  background: rgba(255,255,255,0.1);
-  display: flex; 
-  align-items: center; 
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
   justify-content: center;
   position: relative;
-  border: 2px dashed rgba(255,255,255,0.2);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
 }
-.mag-article-img-box img { width: 100%; height: 100%; object-fit: cover; }
+.mag-article-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 /* STYLE DE BASE : GLASSMORPHE PROFESSIONNEL */
-.editor-toolbar .v2-btn-icon,
-.v2-btn.v2-btn-green,
-.mag-action-btn,
-.ai-helper-btn,
-.tool-btn-close,
-.mag-btn-news,
-.btn-delete {
-  background: rgba(0, 0, 0, 0.3) !important; /* Plus transparent */
-  backdrop-filter: blur(10px) !important; /* Flou légèrement augmenté pour compenser */
-  -webkit-backdrop-filter: blur(10px) !important;
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+.editor-toolbar .v2-btn-icon {
+  background: #f0f0f0 !important; /* Fond cercle gris neutre */
+  backdrop-filter: none !important; /* Suppression du flou */
+  -webkit-backdrop-filter: none !important;
+  color: #333 !important; /* Couleur de texte par défaut pour les boutons */
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: none !important; /* Suppression de l'ombre par défaut */
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 50px; /* Assurer la taille */
+  height: 50px; /* Assurer la taille */
+  border-radius: 50%; /* Assurer la forme cercle */
 }
 
 /* Hover effects pour tous sauf Gemini */
-.editor-toolbar .v2-btn-icon:hover,
-.v2-btn.v2-btn-green:hover,
-.mag-action-btn:hover,
-.tool-btn-close:hover,
-.mag-btn-news:hover,
-.btn-delete:hover {
-  background: rgba(0, 0, 0, 0.5) !important; /* Plus transparent au survol aussi */
-  transform: translateY(-2px) scale(1.05);
-  border-color: var(--color-green) !important;
+.editor-toolbar .v2-btn-icon:hover {
+  background: #e0e0e0 !important; /* Gris légèrement plus foncé au survol */
+  transform: translateY(0) scale(1); /* Annuler toute transformation sur le bouton lui-même */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Petite ombre portée au survol */
+  border-color: rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Ajustements spécifiques */
-.editor-toolbar .v2-btn-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+/* Couleurs des icônes pastel */
+.editor-toolbar .v2-btn-icon svg {
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+  color: #666; /* Couleur par défaut pour les icônes non spécifiées */
 }
 
-.v2-btn.v2-btn-green, .mag-action-btn, .ai-helper-btn, .mag-btn-news, .tool-btn-close {
+.editor-toolbar .save-btn svg {
+  color: #2a9d8f;
+} /* Vert pastel */
+.editor-toolbar .ai-text-btn svg {
+  color: #4a90e2;
+} /* Bleu pastel */
+.editor-toolbar .photo-btn svg {
+  color: #10b981;
+} /* Vert d'eau / émeraude pastel */
+.editor-toolbar .ai-gen-img-btn svg {
+  color: #8b5cf6;
+} /* Violet pastel */
+
+/* Hover effects pour les icônes SVG à l'intérieur des boutons */
+.editor-toolbar .v2-btn-icon:hover svg {
+  transform: scale(1.1); /* Léger agrandissement de l'icône */
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3)); /* Petite ombre portée */
+}
+
+.v2-btn.v2-btn-green,
+.mag-action-btn,
+.ai-helper-btn,
+.mag-btn-news,
+.tool-btn-close {
   padding: 12px 24px;
   border-radius: 30px;
   font-weight: 600;
@@ -205,6 +261,21 @@
   height: 40px;
   border-radius: 50%;
   color: #ff4d4d !important;
+  background: rgba(0, 0, 0, 0.3) !important; /* Plus transparent */
+  backdrop-filter: blur(10px) !important; /* Flou légèrement augmenté pour compenser */
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-delete:hover {
+  background: rgba(0, 0, 0, 0.5) !important; /* Plus transparent au survol aussi */
+  transform: translateY(-2px) scale(1.05);
+  border-color: var(--color-green) !important;
 }
 
 /* BOUTON GEMINI AI ULTRA-PRO */
@@ -219,13 +290,13 @@
   color: white !important;
   box-shadow: 0 8px 20px rgba(155, 114, 203, 0.4) !important;
   gap: 12px !important;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .ai-helper-btn svg {
   width: 28px; /* Logo encore plus gros */
   height: 28px;
-  filter: drop-shadow(0 0 5px rgba(255,255,255,0.8));
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
 }
 
 .ai-helper-btn:hover {
@@ -235,50 +306,140 @@
 }
 
 @keyframes aurora {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* BOUTONS D'ACTION (STYLE PRO TRANSPARENT) */
 .mag-action-btn {
   position: relative;
   z-index: 20;
+  background: rgba(0, 0, 0, 0.3) !important; /* Plus transparent */
+  backdrop-filter: blur(10px) !important; /* Flou légèrement augmenté pour compenser */
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mag-action-btn:hover {
+  background: rgba(0, 0, 0, 0.5) !important; /* Plus transparent au survol aussi */
+  transform: translateY(-2px) scale(1.05);
+  border-color: var(--color-green) !important;
 }
 
 /* Fix pour bouton dans bannière et image article */
-.mag-header-banner .mag-action-btn { position: absolute; z-index: 50; }
-.mag-article-img-box .mag-action-btn { position: absolute; z-index: 50; }
+.mag-header-banner .mag-action-btn {
+  position: absolute;
+  z-index: 50;
+}
+.mag-article-img-box .mag-action-btn {
+  position: absolute;
+  z-index: 50;
+}
 
-.mag-article-text { font-size: 1.25rem; line-height: 1.7; text-align: justify; hyphens: auto; }
-.block-actions { display: flex; gap: 15px; margin-top: 25px; align-items: center; }
+.mag-article-text {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  text-align: justify;
+  hyphens: auto;
+}
+.block-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  align-items: center;
+}
 
 /* BOITE A OUTILS TEXTE */
-.rich-text-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.btn-tool-rich {
-  background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1);
-  padding: 10px; border-radius: 10px; cursor: pointer; font-weight: 800;
+.rich-text-tools {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
-.btn-tool-rich:hover, .btn-tool-rich.active { background: #333; color: white; }
+.btn-tool-rich {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 800;
+}
+.btn-tool-rich:hover,
+.btn-tool-rich.active {
+  background: #333;
+  color: white;
+}
 
-.tool-group label { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: #555; }
-.tool-select-v2 { padding: 12px; border-radius: 12px; border: none; width: 100%; font-weight: 600; }
-.tool-color-picker { width: 100%; height: 50px; border: none; border-radius: 12px; cursor: pointer; }
-.tool-btn-close { background: #333; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+.tool-group label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #555;
+}
+.tool-select-v2 {
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  width: 100%;
+  font-weight: 600;
+}
+.tool-color-picker {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.tool-btn-close {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.3) !important; /* Plus transparent */
+  backdrop-filter: blur(10px) !important; /* Flou légèrement augmenté pour compenser */
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tool-btn-close:hover {
+  background: rgba(0, 0, 0, 0.5) !important; /* Plus transparent au survol aussi */
+  transform: translateY(-2px) scale(1.05);
+  border-color: var(--color-green) !important;
+}
 
 /* FOOTER VERT INSTITUTIONNEL AVEC ACCENT D'OR */
-.mag-footer-v2 { 
-  background: linear-gradient(135deg, #004d3b 0%, #007a5e 100%); 
+.mag-footer-v2 {
+  background: linear-gradient(135deg, #004d3b 0%, #007a5e 100%);
   border-top: 4px solid #fcd116;
-  padding: 80px 40px; 
-  text-align: center; 
-  margin-top: 100px; 
+  padding: 80px 40px;
+  text-align: center;
+  margin-top: 100px;
 }
 
-.mag-footer-logo { 
-  width: 90px; 
-  margin-bottom: 30px; 
-  filter: brightness(0) invert(1); 
+.mag-footer-logo {
+  width: 90px;
+  margin-bottom: 30px;
+  filter: brightness(0) invert(1);
 }
 
 .mag-footer-v2 p {
@@ -294,19 +455,23 @@
   flex-wrap: wrap;
 }
 
-.mag-btn-news { 
+.mag-btn-news {
   background: #007a5e !important; /* Retour au vert */
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  color: white !important; 
-  padding: 14px 28px !important; 
-  border-radius: 12px !important; 
-  border: none !important; 
-  font-weight: 700 !important; 
+  color: white !important;
+  padding: 14px 28px !important;
+  border-radius: 12px !important;
+  border: none !important;
+  font-weight: 700 !important;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mag-btn-news:hover {
@@ -315,22 +480,174 @@
 }
 
 /* EDITABLE AREA */
-.editable-area:focus { outline: 3px solid #fcd116; border-radius: 8px; }
+.editable-area:focus {
+  outline: 3px solid #fcd116;
+  border-radius: 8px;
+}
 
 /* PREVIEW MODE */
-.preview-mode .editor-toolbar, .preview-mode .sidebar-toolbox { display: none; }
-.preview-mode .newsletter-editor-layout { padding-top: 0; }
+.preview-mode .editor-toolbar,
+.preview-mode .sidebar-toolbox {
+  display: none;
+}
+.preview-mode .newsletter-editor-layout {
+  padding-top: 0;
+}
 
 /* FIX MOBILE TOOLS */
-.btn-mobile-tools { display: none !important; }
+.btn-mobile-tools {
+  display: none !important;
+}
+
+/* Style des modales (overlay plein écran) */
+.gemini-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2500; /* Assurez-vous qu'il est au-dessus de tout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gemini-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+}
+
+.gemini-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.gemini-modal-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gemini-modal-header h2 svg {
+  width: 25px;
+  height: 25px;
+  color: #4285f4; /* Couleur pour le logo Gemini */
+}
+
+.gemini-modal .close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s ease;
+}
+
+.gemini-modal .close-btn:hover {
+  color: #333;
+}
+
+.gemini-modal-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.gemini-textarea-prompt,
+.gemini-textarea-generated {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.gemini-textarea-prompt {
+  background: #fdfdfd;
+}
+
+.gemini-textarea-generated {
+  background: #f5f5f5;
+  color: #555;
+  margin-top: 20px;
+}
+
+.gemini-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.v2-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.v2-btn-green {
+  background-color: #2a9d8f;
+  color: white;
+}
+
+.v2-btn-green:hover {
+  background-color: #217a6e;
+}
+
+.v2-btn-blue {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.v2-btn-blue:hover {
+  background-color: #3a7bbd;
+}
+
+.v2-btn:not(.v2-btn-green):not(.v2-btn-blue) {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.v2-btn:not(.v2-btn-green):not(.v2-btn-blue):hover {
+  background-color: #e0e0e0;
+}
+
+/* Styles pour le spinner si besoin dans la modale */
+.hand-spinner-small {
+  margin-left: 10px;
+  vertical-align: middle;
+}
 
 /* RESPONSIVE DESIGN */
 @media (max-width: 1200px) {
-  .newsletter-editor-layout { 
-    padding-top: 100px; 
-    padding-bottom: 120px; 
+  .newsletter-editor-layout {
+    padding-top: 100px;
+    padding-bottom: 120px;
   }
-  
+
   .editor-toolbar {
     top: auto;
     bottom: 0;
@@ -342,10 +659,14 @@
     border-radius: 30px 30px 0 0;
     z-index: 3000;
   }
-  
-  .toolbar-separator { display: none; }
-  .btn-mobile-tools { display: flex !important; }
-  
+
+  .toolbar-separator {
+    display: none;
+  }
+  .btn-mobile-tools {
+    display: flex !important;
+  }
+
   .sidebar-toolbox {
     right: 0;
     top: auto;
@@ -355,10 +676,10 @@
     max-height: 70vh;
     transform: translateY(120%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 -15px 40px rgba(0,0,0,0.15);
+    box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.15);
     visibility: hidden;
   }
-  
+
   .sidebar-toolbox.mobile-open {
     transform: translateY(0);
     visibility: visible;
@@ -366,60 +687,60 @@
 }
 
 @media (max-width: 768px) {
-  .editor-container { 
-    margin: 20px 10px; 
+  .editor-container {
+    margin: 20px 10px;
   }
-  
-  .mag-content-padding { 
-    padding: 30px 20px; 
+
+  .mag-content-padding {
+    padding: 30px 20px;
   }
-  
-  .mag-main-title { 
-    font-size: 2rem; 
+
+  .mag-main-title {
+    font-size: 2rem;
   }
-  
+
   .mag-edito-box {
     grid-template-columns: 1fr;
     padding: 30px 20px;
     gap: 30px;
   }
-  
-  .mag-edito-img { 
-    width: 150px; 
-    height: 150px; 
+
+  .mag-edito-img {
+    width: 150px;
+    height: 150px;
   }
-  
-  .mag-article-row { 
-    grid-template-columns: 1fr; 
-    gap: 30px; 
+
+  .mag-article-row {
+    grid-template-columns: 1fr;
+    gap: 30px;
   }
-  
-  .mag-article-row:nth-child(even) { 
-    direction: ltr; 
+
+  .mag-article-row:nth-child(even) {
+    direction: ltr;
   }
-  
-  .mag-article-img-box { 
-    height: 250px; 
+
+  .mag-article-img-box {
+    height: 250px;
   }
-  
-  .mag-article-text { 
-    font-size: 1.1rem; 
+
+  .mag-article-text {
+    font-size: 1.1rem;
   }
-  
-  .block-actions { 
-    flex-wrap: wrap; 
-    justify-content: center; 
+
+  .block-actions {
+    flex-wrap: wrap;
+    justify-content: center;
   }
-  
-  .mag-footer-v2 { 
-    padding: 40px 20px; 
+
+  .mag-footer-v2 {
+    padding: 40px 20px;
   }
-  
-  .mag-footer-btns { 
-    flex-direction: column; 
+
+  .mag-footer-btns {
+    flex-direction: column;
     width: 100%;
   }
-  
+
   .mag-footer-btns button {
     width: 100%;
   }
