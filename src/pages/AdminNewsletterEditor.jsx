@@ -46,10 +46,11 @@ const AdminNewsletterEditor = () => {
   // New states for image search
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState([]); // Tableau vide au départ !
   const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(null);
 
-  // Initialisation des résultats de recherche avec un terme par défaut au chargement de la modale
+  // SUPPRIMER : Initialisation des résultats de recherche avec un terme par défaut au chargement de la modale
+  /*
   useEffect(() => {
     if (showSearchImageModal) {
       const defaultQuery = 'association';
@@ -62,6 +63,7 @@ const AdminNewsletterEditor = () => {
       setSearchQuery(defaultQuery); // Pré-remplir le champ de recherche
     }
   }, [showSearchImageModal]);
+  */
 
   // SVG Gemini Logo
   const GeminiLogo = () => (
@@ -283,7 +285,7 @@ const AdminNewsletterEditor = () => {
     const block = data.blocks.find(b => b.id === blockId);
     if (block) {
       setGeminiPrompt(block.text[currentLang] || ''); // Pre-fill with block content
-      setCurrentBlockIdForGemini(blockId); // Store the block ID for potential future use (e.g., applying generated text)
+      setCurrentBlockIdForGemini(blockId); // Store the block ID for potential future use (e.e., applying generated text)
     } else {
       setGeminiPrompt(''); // Clear prompt if no block is associated
       setCurrentBlockIdForGemini(null);
@@ -303,12 +305,23 @@ const AdminNewsletterEditor = () => {
     setGeneratedImageUrl(null); // Clear previous image
 
     setTimeout(() => {
-      // Simulate API call success
-      setGeneratedImageUrl('https://via.placeholder.com/400x300?text=' + encodeURIComponent(imagePrompt));
-      setIsGeneratingImage(false);
+      let imageUrl;
+      const lowerCasePrompt = imagePrompt.toLowerCase();
+
+      if (lowerCasePrompt.includes('solidarité') || lowerCasePrompt.includes('solidarity')) {
+        imageUrl = 'https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?w=300&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+      } else if (lowerCasePrompt.includes('enfants') || lowerCasePrompt.includes('children')) {
+        imageUrl = 'https://images.unsplash.com/photo-1511216335778-7cb8f49fa7a3?w=300&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+      } else {
+        // Image par défaut si aucun mot-clé spécifique n'est trouvé
+        imageUrl = 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=300&auto=format&fit=crop';
+      }
+
+      setGeneratedImageUrl(imageUrl);
+                setIsGeneratingImage(false);
       toast.success("Image générée avec succès ! (Mock)");
     }, 2000);
-  };
+};
 
   const handleInsertGeneratedImage = () => {
     if (generatedImageUrl) {
@@ -331,22 +344,33 @@ const AdminNewsletterEditor = () => {
     }
   };
 
-  // Mock function for searching photos
+  // Modifié pour utiliser LoremFlickr et 6 images dynamiquement et gérer le cas de recherche vide
   const handleSearchPhotos = () => {
-    const query = searchQuery.trim() || 'association'; // Terme par défaut si vide
-    setIsSearching(true);
-    setSearchResults([]);
-    setSelectedPhotoUrl(null);
+    const query = searchQuery.trim();
 
-    setTimeout(() => {
-      const dynamicResults = Array.from({ length: 6 }, (_, index) =>
-        `https://loremflickr.com/500/350/${encodeURIComponent(query)}?lock=${index + 1}`
-      );
-      setSearchResults(dynamicResults);
+    if (!query) {
+      toast.warning("Veuillez saisir un mot-clé pour rechercher des images.");
+      setSearchResults([]); // Assurez-vous que les résultats sont vides si la recherche est vide
       setIsSearching(false);
-      toast.success(`Recherche de photos pour "${query}" terminée !`);
-    }, 1500);
-  };
+      return;
+    }
+
+    setIsSearching(true);
+                setSearchResults([]);
+                setSelectedPhotoUrl(null);
+
+    // Formater la requête pour remplacer les espaces par des virgules pour LoremFlickr
+    const formattedQuery = query.replace(/\s+/g, ',');
+
+    // Générer un tableau de 6 URLs d'images via LoremFlickr
+    const newResults = Array.from({ length: 6 }, (_, i) =>
+      `https://loremflickr.com/500/350/${encodeURIComponent(formattedQuery)}?lock=${i + 1}`
+  );
+
+    setSearchResults(newResults);
+    setIsSearching(false);
+    toast.success(`Recherche de photos pour "${query}" terminée !`);
+};
 
   const handleInsertSelectedPhoto = () => {
     if (selectedPhotoUrl) {
@@ -466,7 +490,12 @@ const AdminNewsletterEditor = () => {
                           <path d="M4 14.899A7 7 0 0 1 15.707 5h1.793a5 5 0 0 1 0 10h-1.5M9 20l3-3 3 3"/>
                         </svg>
                       </button>
-          <button className="v2-btn-icon photo-btn" onClick={() => setShowSearchImageModal(true)} title="Rechercher une photo">
+          <button className="v2-btn-icon photo-btn" onClick={() => {
+            setShowSearchImageModal(true);
+            setSearchQuery('');         // Reset the search query
+            setSearchResults([]);       // Clear previous search results
+            setSelectedPhotoUrl(null);  // Clear any selected photo
+          }} title="Rechercher une photo">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                           <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -787,7 +816,13 @@ const AdminNewsletterEditor = () => {
 
               {isSearching && <HandSpinner fullPage={false} small={true} style={{ marginTop: '20px' }} />}
 
-              {!isSearching && searchResults.length > 0 && (
+              {!isSearching && searchResults.length === 0 && ( // Condition modifiée
+                <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
+                  Tape un mot-clé ci-dessus puis clique sur RECHERCHER pour afficher des images.
+                </p>
+              )}
+
+              {!isSearching && searchResults.length > 0 && ( // Condition pour afficher la grille si résultats
                 <div className="image-gallery">
                   {searchResults.map((url, index) => (
                     <div
@@ -796,16 +831,25 @@ const AdminNewsletterEditor = () => {
                       onClick={() => setSelectedPhotoUrl(url)}
                       title="Cliquer pour sélectionner"
                     >
-                      <img src={url} alt={`Résultat ${index + 1}`} />
+                      <img
+                        src={url}
+                        alt={`Résultat ${index + 1}`}
+                        onError={(e) => {
+                          e.target.onerror = null; // Empêche la boucle infinie d'erreur
+                          e.target.src = 'https://placehold.co/500x350/cccccc/cccccc?text=Image non disponible';
+                        }}
+                      />
                       {selectedPhotoUrl === url && <FontAwesomeIcon icon={faCheckCircle} className="selection-icon" />}
-                    </div>
+    </div>
                   ))}
-              </div>
-              )}
-
+          </div>
+      )}
+              {/* Le message "Aucun résultat trouvé" n'est plus nécessaire ici car géré par le message initial ou le fait que searchResults.length reste 0 */}
+              {/*
               {!isSearching && searchResults.length === 0 && searchQuery.trim() !== '' && (
                 <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>Aucun résultat trouvé pour "{searchQuery}".</p>
               )}
+              */}
 
               <div className="gemini-modal-actions" style={{ marginTop: '30px' }}>
                 <button
@@ -828,7 +872,7 @@ const AdminNewsletterEditor = () => {
                 >
                   Insérer dans la newsletter
                 </button>
-    </div>
+              </div>
             </div>
           </div>
         </div>
@@ -846,7 +890,7 @@ const AdminNewsletterEditor = () => {
                 setIsGeneratingImage(false);
                 setGeneratedImageUrl(null);
               }} title="Fermer la modale">&times;</button>
-            </div>
+    </div>
             <div className="gemini-modal-body">
               <textarea
                 className="gemini-textarea-prompt"
@@ -867,10 +911,27 @@ const AdminNewsletterEditor = () => {
               </button>
               {isGeneratingImage && <HandSpinner fullPage={false} small={true} style={{ marginTop: '15px' }} />}
 
-              {generatedImageUrl && (
+              {!isGeneratingImage && generatedImageUrl ? (
                 <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                  <img src={generatedImageUrl} alt="Image générée" style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} />
+                  <img
+                    src={generatedImageUrl}
+                    alt="Image générée par IA"
+                    style={{
+                      maxWidth: '150px',
+                      height: '150px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                      border: '1px solid #ddd'
+                    }}
+                  />
                 </div>
+              ) : (
+                !isGeneratingImage && (
+                  <div style={{ marginTop: '20px', textAlign: 'center', color: '#666', fontSize: '0.9rem' }}>
+                    Une fois générée, l'image apparaîtra ici.
+                  </div>
+                )
               )}
 
               <div className="gemini-modal-actions" style={{ marginTop: '30px' }}>
