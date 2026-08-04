@@ -36,36 +36,12 @@ const AdminNewsletterEditor = () => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [currentBlockIdForGemini, setCurrentBlockIdForGemini] = useState(null); // New state to track block context
 
-  // New states for other AI/Media modals
-  const [showSearchImageModal, setShowSearchImageModal] = useState(false);
-  // SUPPRIMER : on retire setShowGenerateImageModal et tout ce qui s'y rapporte.
-  // const [showGenerateImageModal, setShowGenerateImageModal] = useState(false);
-  // const [imagePrompt, setImagePrompt] = useState(''); // New state for image generation prompt
-  // const [isGeneratingImage, setIsGeneratingImage] = useState(false); // New state for image generation loading
-  // const [generatedImageUrl, setGeneratedImageUrl] = useState(null); // New state for generated image URL
-  // const [imageGenerationError, setImageGenerationError] = useState(null); // New state for error handling
-
   // New states for image search
+  const [showSearchImageModal, setShowSearchImageModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]); // Tableau vide au départ !
   const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(null);
-
-  // SUPPRIMER : Initialisation des résultats de recherche avec un terme par défaut au chargement de la modale
-  /*
-  useEffect(() => {
-    if (showSearchImageModal) {
-      const defaultQuery = '';
-      // Générer dynamiquement 6 URLs d'images pour le terme par défaut
-      const initialResults = Array.from({ length: 6 }, (_, index) =>
-        `https://loremflickr.com/500/350/${encodeURIComponent(defaultQuery)}?lock=${index + 1}`
-      );
-      setSearchResults(initialResults);
-      setSelectedPhotoUrl(null); // S'assurer qu'aucune image n'est sélectionnée par défaut
-      setSearchQuery(defaultQuery); // Pré-remplir le champ de recherche
-    }
-  }, [showSearchImageModal]);
-  */
 
   // SVG Gemini Logo
   const GeminiLogo = () => (
@@ -297,47 +273,6 @@ const AdminNewsletterEditor = () => {
     setCopySuccess(false); // Reset copy success state
   };
 
-  // SUPPRIMER : on retire handleGenerateImage et handleInsertGeneratedImage
-  /*
-  const handleGenerateImage = () => {
-    if (!imagePrompt.trim()) {
-      toast.warning("Veuillez saisir une description pour générer l'image.");
-      return;
-    }
-
-    setIsGeneratingImage(true);
-    setGeneratedImageUrl(null); // Clear previous image
-    setImageGenerationError(null); // Clear previous error
-
-      toast.info("L'IA réfléchit et dessine...");
-
-    const encodedPrompt = encodeURIComponent(imagePrompt.trim() || 'illustration');
-    const newUrl = `https://pollinations.ai/p/${encodedPrompt}?width=600&height=400&seed=${Date.now()}`;
-
-      setGeneratedImageUrl(newUrl);
-  };
-
-  const handleInsertGeneratedImage = () => {
-    if (generatedImageUrl) {
-      const newBlock = {
-        id: Date.now(),
-        type: 'article',
-        image: generatedImageUrl,
-        text: { fr: 'Image générée par IA.', en: 'AI generated image.' },
-        styles: { fontSize: '1.25rem', color: 'white' }
-      };
-      setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
-      toast.success("Image insérée dans la newsletter !");
-      setShowGenerateImageModal(false); // Close modal after inserting
-      setImagePrompt(''); // Reset prompt
-      setGeneratedImageUrl(null); // Reset generated image
-      setImageGenerationError(null); // Reset error
-    } else {
-      toast.error("Aucune image générée à insérer.");
-    }
-  };
-  */
-
   // Modifié pour utiliser LoremFlickr et 6 images dynamiquement et gérer le cas de recherche vide
   const handleSearchPhotos = () => {
     const query = searchQuery.trim();
@@ -496,15 +431,6 @@ const AdminNewsletterEditor = () => {
                           <polyline points="21 15 16 10 5 21"></polyline>
                         </svg>
               </button>
-          {/* SUPPRIMER : on retire le bouton de génération d'image par IA
-          <button className="v2-btn-icon ai-gen-img-btn" onClick={() => setShowGenerateImageModal(true)} title="Générer une image avec l'IA">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <path d="M5.2 14.2c-2.3-2.3-2.3-6.1 0-8.4s6.1-2.3 8.4 0"></path>
-                          <circle cx="14" cy="10" r="2"></circle>
-                        </svg>
-                </button>
-          */}
 
           {/* BOUTON MOBILE POUR OUVRIR LES OUTILS */}
           <button className="v2-btn-icon btn-mobile-tools" onClick={() => setShowMobileTools(!showMobileTools)} title="Outils de style">
@@ -812,13 +738,13 @@ const AdminNewsletterEditor = () => {
 
               {isSearching && <HandSpinner fullPage={false} small={true} style={{ marginTop: '20px' }} />}
 
-              {!isSearching && searchResults.length === 0 && ( // Condition modifiée
+              {!isSearching && searchResults.length === 0 && (
                 <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
                   Tape un mot-clé ci-dessus puis clique sur RECHERCHER pour afficher des images.
                 </p>
               )}
 
-              {!isSearching && searchResults.length > 0 && ( // Condition pour afficher la grille si résultats
+              {!isSearching && searchResults.length > 0 && (
                 <div className="image-gallery">
                   {searchResults.map((url, index) => (
                     <div
@@ -840,13 +766,6 @@ const AdminNewsletterEditor = () => {
                   ))}
           </div>
       )}
-              {/* Le message "Aucun résultat trouvé" n'est plus nécessaire ici car géré par le message initial ou le fait que searchResults.length reste 0 */}
-              {/*
-              {!isSearching && searchResults.length === 0 && searchQuery.trim() !== '' && (
-                <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>Aucun résultat trouvé pour "{searchQuery}".</p>
-              )}
-              */}
-
               <div className="gemini-modal-actions" style={{ marginTop: '30px' }}>
                 <button
                   className="v2-btn"
@@ -873,115 +792,6 @@ const AdminNewsletterEditor = () => {
           </div>
         </div>
       )}
-
-      {/* SUPPRIMER : on retire la modale de génération d'image par IA
-      {showGenerateImageModal && (
-        <div className="gemini-modal-overlay">
-          <div className="gemini-modal">
-            <div className="gemini-modal-header">
-              <h2>Génération d'images par IA</h2>
-              <button className="close-btn" onClick={() => {
-                setShowGenerateImageModal(false);
-                setImagePrompt('');
-                setIsGeneratingImage(false);
-                setGeneratedImageUrl(null);
-                setImageGenerationError(null); // Reset error on modal close
-              }} title="Fermer la modale">&times;</button>
-    </div>
-            <div className="gemini-modal-body">
-              <textarea
-                className="gemini-textarea-prompt"
-                placeholder="Décris l'image que tu souhaites générer..."
-                value={imagePrompt}
-                onChange={(e) => setImagePrompt(e.target.value)}
-                rows="4"
-                title="Description de l'image à générer"
-              ></textarea>
-              <button
-                className="v2-btn v2-btn-green"
-                onClick={handleGenerateImage}
-                disabled={isGeneratingImage || imagePrompt.trim() === ''}
-                style={{ marginTop: '15px' }}
-                title="Lancer la génération d'image"
-              >
-                {isGeneratingImage ? 'Génération en cours...' : 'Générer l\'image'}
-              </button>
-
-              {isGeneratingImage && (
-                <div style={{ marginTop: '20px', textAlign: 'center', color: '#fcd116' }}>
-                  <HandSpinner fullPage={false} small={true} />
-                  <p>L'IA réfléchit et dessine...</p>
-                </div>
-              )}
-
-              {generatedImageUrl && (
-                <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                  <img
-                    src={generatedImageUrl}
-                    alt="Image générée par IA"
-                    className="rounded"
-                    onLoad={() => {
-                    setIsGeneratingImage(false);
-                      toast.success("Image générée avec succès !");
-                  }}
-                    onError={() => {
-                      setIsGeneratingImage(false);
-                      setImageGenerationError("Impossible de charger l'image. Essayez des mots-clés plus simples.");
-                      toast.error("Impossible de générer l'image. Essayez des mots plus simples.");
-                    }}
-                    style={{
-                      display: isGeneratingImage ? 'none' : 'block', // Cache l'image pendant le chargement
-                      maxWidth: '100%', // S'assurer que l'image est responsive dans la modale
-                      height: 'auto', // Maintenir les proportions
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                      border: '1px solid #ddd'
-                    }}
-                  />
-                </div>
-              )}
-
-              {!isGeneratingImage && !generatedImageUrl && imageGenerationError && (
-                <div style={{ marginTop: '20px', textAlign: 'center', color: 'red' }}>
-                  <p>Erreur: {imageGenerationError}</p>
-                  <p>Veuillez réessayer ou ajuster votre description.</p>
-            </div>
-              )}
-
-              {!isGeneratingImage && !generatedImageUrl && !imageGenerationError && (
-                <div style={{ marginTop: '20px', textAlign: 'center', color: '#666', fontSize: '0.9rem' }}>
-                  Une fois générée, l'image apparaîtra ici.
-        </div>
-      )}
-
-              <div className="gemini-modal-actions" style={{ marginTop: '30px' }}>
-                <button
-                  className="v2-btn"
-                  onClick={() => {
-                    setShowGenerateImageModal(false);
-                    setImagePrompt('');
-                    setIsGeneratingImage(false);
-                    setGeneratedImageUrl(null);
-                    setImageGenerationError(null);
-                  }}
-                  title="Annuler la génération d'image"
-                >
-                  Annuler
-                </button>
-                <button
-                  className="v2-btn v2-btn-blue"
-                  onClick={handleInsertGeneratedImage}
-                  disabled={!generatedImageUrl}
-                  title="Insérer l'image dans la newsletter"
-                >
-                  Insérer dans la newsletter
-                </button>
-    </div>
-            </div>
-          </div>
-        </div>
-      )}
-      */}
     </div>
   );
 };
