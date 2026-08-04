@@ -38,10 +38,12 @@ const AdminNewsletterEditor = () => {
 
   // New states for other AI/Media modals
   const [showSearchImageModal, setShowSearchImageModal] = useState(false);
-  const [showGenerateImageModal, setShowGenerateImageModal] = useState(false);
-  const [imagePrompt, setImagePrompt] = useState(''); // New state for image generation prompt
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false); // New state for image generation loading
-  const [generatedImageUrl, setGeneratedImageUrl] = useState(null); // New state for generated image URL
+  // SUPPRIMER : on retire setShowGenerateImageModal et tout ce qui s'y rapporte.
+  // const [showGenerateImageModal, setShowGenerateImageModal] = useState(false);
+  // const [imagePrompt, setImagePrompt] = useState(''); // New state for image generation prompt
+  // const [isGeneratingImage, setIsGeneratingImage] = useState(false); // New state for image generation loading
+  // const [generatedImageUrl, setGeneratedImageUrl] = useState(null); // New state for generated image URL
+  // const [imageGenerationError, setImageGenerationError] = useState(null); // New state for error handling
 
   // New states for image search
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,7 +55,7 @@ const AdminNewsletterEditor = () => {
   /*
   useEffect(() => {
     if (showSearchImageModal) {
-      const defaultQuery = 'association';
+      const defaultQuery = '';
       // Générer dynamiquement 6 URLs d'images pour le terme par défaut
       const initialResults = Array.from({ length: 6 }, (_, index) =>
         `https://loremflickr.com/500/350/${encodeURIComponent(defaultQuery)}?lock=${index + 1}`
@@ -295,38 +297,28 @@ const AdminNewsletterEditor = () => {
     setCopySuccess(false); // Reset copy success state
   };
 
-  // Mock function for image generation
+  // SUPPRIMER : on retire handleGenerateImage et handleInsertGeneratedImage
+  /*
   const handleGenerateImage = () => {
     if (!imagePrompt.trim()) {
       toast.warning("Veuillez saisir une description pour générer l'image.");
       return;
     }
+
     setIsGeneratingImage(true);
     setGeneratedImageUrl(null); // Clear previous image
+    setImageGenerationError(null); // Clear previous error
 
-    setTimeout(() => {
-      let imageUrl;
-      const lowerCasePrompt = imagePrompt.toLowerCase();
+      toast.info("L'IA réfléchit et dessine...");
 
-      if (lowerCasePrompt.includes('solidarité') || lowerCasePrompt.includes('solidarity')) {
-        imageUrl = 'https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?w=300&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
-      } else if (lowerCasePrompt.includes('enfants') || lowerCasePrompt.includes('children')) {
-        imageUrl = 'https://images.unsplash.com/photo-1511216335778-7cb8f49fa7a3?w=300&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
-      } else {
-        // Image par défaut si aucun mot-clé spécifique n'est trouvé
-        imageUrl = 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=300&auto=format&fit=crop';
-      }
+    const encodedPrompt = encodeURIComponent(imagePrompt.trim() || 'illustration');
+    const newUrl = `https://pollinations.ai/p/${encodedPrompt}?width=600&height=400&seed=${Date.now()}`;
 
-      setGeneratedImageUrl(imageUrl);
-                setIsGeneratingImage(false);
-      toast.success("Image générée avec succès ! (Mock)");
-    }, 2000);
-};
+      setGeneratedImageUrl(newUrl);
+  };
 
   const handleInsertGeneratedImage = () => {
     if (generatedImageUrl) {
-      // Logic to insert the image into the newsletter.
-      // For now, let's assume we want to add it as a new block.
       const newBlock = {
         id: Date.now(),
         type: 'article',
@@ -339,10 +331,12 @@ const AdminNewsletterEditor = () => {
       setShowGenerateImageModal(false); // Close modal after inserting
       setImagePrompt(''); // Reset prompt
       setGeneratedImageUrl(null); // Reset generated image
+      setImageGenerationError(null); // Reset error
     } else {
       toast.error("Aucune image générée à insérer.");
     }
   };
+  */
 
   // Modifié pour utiliser LoremFlickr et 6 images dynamiquement et gérer le cas de recherche vide
   const handleSearchPhotos = () => {
@@ -502,6 +496,7 @@ const AdminNewsletterEditor = () => {
                           <polyline points="21 15 16 10 5 21"></polyline>
                         </svg>
               </button>
+          {/* SUPPRIMER : on retire le bouton de génération d'image par IA
           <button className="v2-btn-icon ai-gen-img-btn" onClick={() => setShowGenerateImageModal(true)} title="Générer une image avec l'IA">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <circle cx="12" cy="12" r="10"></circle>
@@ -509,6 +504,7 @@ const AdminNewsletterEditor = () => {
                           <circle cx="14" cy="10" r="2"></circle>
                         </svg>
                 </button>
+          */}
 
           {/* BOUTON MOBILE POUR OUVRIR LES OUTILS */}
           <button className="v2-btn-icon btn-mobile-tools" onClick={() => setShowMobileTools(!showMobileTools)} title="Outils de style">
@@ -520,14 +516,14 @@ const AdminNewsletterEditor = () => {
       {/* BOUTON ÉDITION (SI PREVIEW) */}
       {isPreview && (
         <button
-          className="v2-btn v2-btn-green"
+                className="v2-btn v2-btn-green"
           style={{ position: 'fixed', top: '110px', left: '20px', zIndex: 3000 }}
           onClick={() => setIsPreview(false)}
           title="Retour à l'édition"
-        >
+              >
           <FontAwesomeIcon icon={faEyeSlash} /> Retour à l'édition
-                    </button>
-                  )}
+              </button>
+              )}
 
       <div className="editor-container">
 
@@ -539,7 +535,7 @@ const AdminNewsletterEditor = () => {
               <FontAwesomeIcon icon={faImage} /> Changer la bannière
                       </button>
                   )}
-    </div>
+                </div>
 
         <div className="mag-content-padding">
           <h1
@@ -547,7 +543,7 @@ const AdminNewsletterEditor = () => {
             contentEditable={!isPreview}
             suppressContentEditableWarning={true}
             onBlur={(e) => handleTextChange('title', e.target.innerText)}
-          >
+                >
             {data.title[currentLang]}
           </h1>
 
@@ -565,7 +561,7 @@ const AdminNewsletterEditor = () => {
                 />
                 {!isPreview && <div className="img-mini-btn"><FontAwesomeIcon icon={faPlusCircle} /></div>}
             </div>
-            </div>
+    </div>
             <div className="mag-edito-right">
               <div
                 className="editable-area edito-text"
@@ -574,13 +570,13 @@ const AdminNewsletterEditor = () => {
                 onBlur={(e) => handleTextChange('edito', e.target.innerText)}
               >
                 {data.edito[currentLang]}
-          </div>
+        </div>
       {!isPreview && (
                  <button className="mag-action-btn" style={{ marginTop: '20px', background: 'rgba(255,255,255,0.2)' }} onClick={() => execCommand('insertText', ' ')} title="Ajouter du texte">
                    <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
                  </button>
-              )}
-            </div>
+      )}
+    </div>
           </section>
 
           {/* BLOCS ARTICLES */}
@@ -836,7 +832,7 @@ const AdminNewsletterEditor = () => {
                         alt={`Résultat ${index + 1}`}
                         onError={(e) => {
                           e.target.onerror = null; // Empêche la boucle infinie d'erreur
-                          e.target.src = 'https://placehold.co/500x350/cccccc/cccccc?text=Image non disponible';
+                          e.target.src = 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=600&auto=format&fit=crop';
                         }}
                       />
                       {selectedPhotoUrl === url && <FontAwesomeIcon icon={faCheckCircle} className="selection-icon" />}
@@ -878,7 +874,7 @@ const AdminNewsletterEditor = () => {
         </div>
       )}
 
-      {/* Placeholder for Generate Image Modal */}
+      {/* SUPPRIMER : on retire la modale de génération d'image par IA
       {showGenerateImageModal && (
         <div className="gemini-modal-overlay">
           <div className="gemini-modal">
@@ -889,6 +885,7 @@ const AdminNewsletterEditor = () => {
                 setImagePrompt('');
                 setIsGeneratingImage(false);
                 setGeneratedImageUrl(null);
+                setImageGenerationError(null); // Reset error on modal close
               }} title="Fermer la modale">&times;</button>
     </div>
             <div className="gemini-modal-body">
@@ -909,30 +906,53 @@ const AdminNewsletterEditor = () => {
               >
                 {isGeneratingImage ? 'Génération en cours...' : 'Générer l\'image'}
               </button>
-              {isGeneratingImage && <HandSpinner fullPage={false} small={true} style={{ marginTop: '15px' }} />}
 
-              {!isGeneratingImage && generatedImageUrl ? (
+              {isGeneratingImage && (
+                <div style={{ marginTop: '20px', textAlign: 'center', color: '#fcd116' }}>
+                  <HandSpinner fullPage={false} small={true} />
+                  <p>L'IA réfléchit et dessine...</p>
+                </div>
+              )}
+
+              {generatedImageUrl && (
                 <div style={{ marginTop: '20px', textAlign: 'center' }}>
                   <img
                     src={generatedImageUrl}
                     alt="Image générée par IA"
+                    className="rounded"
+                    onLoad={() => {
+                    setIsGeneratingImage(false);
+                      toast.success("Image générée avec succès !");
+                  }}
+                    onError={() => {
+                      setIsGeneratingImage(false);
+                      setImageGenerationError("Impossible de charger l'image. Essayez des mots-clés plus simples.");
+                      toast.error("Impossible de générer l'image. Essayez des mots plus simples.");
+                    }}
                     style={{
-                      maxWidth: '150px',
-                      height: '150px',
-                      objectFit: 'cover',
+                      display: isGeneratingImage ? 'none' : 'block', // Cache l'image pendant le chargement
+                      maxWidth: '100%', // S'assurer que l'image est responsive dans la modale
+                      height: 'auto', // Maintenir les proportions
                       borderRadius: '8px',
                       boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
                       border: '1px solid #ddd'
                     }}
                   />
                 </div>
-              ) : (
-                !isGeneratingImage && (
-                  <div style={{ marginTop: '20px', textAlign: 'center', color: '#666', fontSize: '0.9rem' }}>
-                    Une fois générée, l'image apparaîtra ici.
-                  </div>
-                )
               )}
+
+              {!isGeneratingImage && !generatedImageUrl && imageGenerationError && (
+                <div style={{ marginTop: '20px', textAlign: 'center', color: 'red' }}>
+                  <p>Erreur: {imageGenerationError}</p>
+                  <p>Veuillez réessayer ou ajuster votre description.</p>
+            </div>
+              )}
+
+              {!isGeneratingImage && !generatedImageUrl && !imageGenerationError && (
+                <div style={{ marginTop: '20px', textAlign: 'center', color: '#666', fontSize: '0.9rem' }}>
+                  Une fois générée, l'image apparaîtra ici.
+        </div>
+      )}
 
               <div className="gemini-modal-actions" style={{ marginTop: '30px' }}>
                 <button
@@ -942,6 +962,7 @@ const AdminNewsletterEditor = () => {
                     setImagePrompt('');
                     setIsGeneratingImage(false);
                     setGeneratedImageUrl(null);
+                    setImageGenerationError(null);
                   }}
                   title="Annuler la génération d'image"
                 >
@@ -955,16 +976,15 @@ const AdminNewsletterEditor = () => {
                 >
                   Insérer dans la newsletter
                 </button>
-              </div>
+    </div>
             </div>
           </div>
         </div>
       )}
-
+      */}
     </div>
   );
 };
 
 export default AdminNewsletterEditor;
-
 
