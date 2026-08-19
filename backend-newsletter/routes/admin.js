@@ -1,109 +1,443 @@
-import express from "express";
-import { hash as _hash, compare as _compare } from "bcrypt";
-import jwt from "jsonwebtoken";
-import Admin from "../models/Admin.js";
-import Donation from "../models/Donation.js";
-import verifyAdmin from "../middlewares/verifyAdmin.js";
-import { validateDonation } from "../middlewares/validation.js";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt, faNewspaper, faKey, faLock, faUserEdit } from "@fortawesome/free-solid-svg-icons";
+import "../styles/AdminV2.css";
+import PasswordField from "../components/PasswordField";
+import confetti from "canvas-confetti";
+import { useTranslation } from "react-i18next";
+import { adminService } from "../api/services";
+import { toast } from "react-toastify";
+import Navbar from "../components/Navbar";
 
-const { sign } = jwt;
-const router = express.Router();
+function evaluatePasswordStrength(password) {
+  const len = password.length;
+  const hasUpper = /[A-Z]/.test(password);
+  const hasLower = /[a-z]/.test(password);
+  const hasDigit = /[0-9]/.test(password);
+  const hasSpecial = /[^A-Za-z0-9]/.test(password);
 
-// 🔐 Route pour créer un compte administrateur
-router.post("/register", async (req, res) => {
-  try {
-    const { identifiant, motDePasse } = req.body;
+  if (len < 8) return "faible";
+  if (len > 10 && hasUpper && hasLower && hasDigit && hasSpecial) return "fort";
+  return "moyen";
+}
 
-    const adminExistant = await Admin.findOne({ where: { identifiant } });
-    if (adminExistant) {
-      return res.status(400).json({ error: "Identifiant déjà utilisé" });
+export default function Admin() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const [identifiant, setIdentifiant] = useState("");
+  const [motDePasse, setMotDePasse] = useState("");
+  const [confirmationMotDePasse, setConfirmationMotDePasse] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const [nomDonateur, setNomDonateur] = useState("");
+  const [emailDonateur, setEmailDonateur] = useState("");
+  const [montant, setMontant] = useState("");
+  const [commentaires, setCommentaires] = useState("");
+  const [source, setSource] = useState("");
+  const [sourcePrecise, setSourcePrecise] = useState("");
+  const [dons, setDons] = useState([]);
+    const [donASupprimer, setDonASupprimer] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showChangeCredentialsModal, setShowChangeCredentialsModal] = useState(false);
+    const [changeCredentials, setChangeCredentials] = useState({
+    nouvelIdentifiant: "",
+    ancienMotDePasse: "",
+    nouveauMotDePasse: "",
+    confirmationNouveauMotDePasse: "",
+  });
+
+    const handleChangeCredentialsSubmit = async (e) => {
+    e.preventDefault();
+
+    // Vérifier que l'ancien mot de passe est fourni
+    if (!changeCredentials.ancienMotDePasse) {
+      toast.error("L'ancien mot de passe est obligatoire");
+      return;
     }
 
-    const hash = await _hash(motDePasse, 10);
-
-    await Admin.create({
-      identifiant,
-      motDePasse: hash,
-    });
-
-    res.status(201).json({ message: "Administrateur créé avec succès" });
-  } catch (err) {
-    console.error("Erreur création admin :", err);
-    res.status(500).json({ error: "Erreur serveur" });
-  }
-});
-
-// 🔑 Route de connexion administrateur
-router.post("/login", async (req, res) => {
-  try {
-    const { identifiant, motDePasse } = req.body;
-
-    const admin = await Admin.findOne({ where: { identifiant } });
-    if (!admin) {
-      return res.status(401).json({ error: "Identifiant incorrect" });
+    // Vérifier qu'au moins un champ (identifiant OU mot de passe) est rempli
+    if (!changeCredentials.nouvelIdentifiant && !changeCredentials.nouveauMotDePasse) {
+      toast.error("Au moins un champ (identifiant ou mot de passe) doit être renseigné");
+      return;
     }
 
-    const isValid = await _compare(motDePasse, admin.motDePasse);
-    if (!isValid) {
-      return res.status(401).json({ error: "Mot de passe incorrect" });
+    // Vérifier que les deux nouveaux mots de passe correspondent si un nouveau mot de passe est fourni
+    if (changeCredentials.nouveauMotDePasse && changeCredentials.nouveauMotDePasse !== changeCredentials.confirmationNouveauMotDePasse) {
+      toast.error("Les mots de passe ne correspondent pas");
+      return;
     }
 
-    const secret = process.env.JWT_SECRET || "uC6$Rs26ZHdaPTX";
-    const token = sign(
-      { id: admin.id, identifiant: admin.identifiant },
-      secret,
-      { expiresIn: "7d" }
-    );
+        try {
+      await adminService.changeCredentials({
+        ancienMotDePasse: changeCredentials.ancienMotDePasse,
+        nouvelIdentifiant: changeCredentials.nouvelIdentifiant || undefined,
+        nouveauMotDePasse: changeCredentials.nouveauMotDePasse || undefined,
+      });
 
-    res.json({ token });
-  } catch (err) {
-    console.error("Erreur de connexion admin :", err);
-    res.status(500).json({ error: "Erreur serveur" });
-  }
-});
+      toast.success("Identifiants mis à jour avec succès !");
+      setShowChangeCredentialsModal(false);
+        ancienMotDePasse: "",
+        nouveauMotDePasse: "",
+        confirmationNouveauMotDePasse: "",
+      });
 
-// ➕ Route pour ajouter un don manuel
-router.post("/manual-donation", verifyAdmin, validateDonation, async (req, res) => {
-  try {
-    const { nomDonateur, montant, message, source } = req.body;
 
-    await Donation.create({
+
+                } catch (err) {
+          console.error("ERREUR RETOURNÉE PAR LE SERVEUR :", err.response?.data);
+          const msg = err.response?.data?.message || err.response?.data?.error || (err.response?.data ? JSON.stringify(err.response.data) : err.message);
+          toast.error(msg);
+        }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("adminToken");
+    // .replace() écrase l'entrée actuelle dans l'historique : impossible de revenir en arrière
+    window.location.replace("/");
+  };
+
+  useEffect(() => {
+    if (motDePasse.length >= 1) {
+      setPasswordStrength(evaluatePasswordStrength(motDePasse));
+    } else {
+      setPasswordStrength("");
+    }
+  }, [motDePasse]);
+
+  const fetchDons = async () => {
+    try {
+      const res = await adminService.getDons();
+      setDons(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Erreur récupération dons :", err);
+      setDons([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchDons();
+    // SÉCURITÉ MAXIMALE : On vide le token uniquement si on quitte la page admin
+    // On vérifie le pathname pour ne pas déconnecter lors d'un changement de langue
+    return () => {
+      if (!window.location.pathname.includes("/admin")) {
+        sessionStorage.removeItem("adminToken");
+      }
+    };
+  }, []);
+
+  const handleAdminSubmit = async (e) => {
+    e.preventDefault();
+    if (motDePasse !== confirmationMotDePasse) {
+      toast.error(t("admin.messages.passwordsNoMatch"));
+      return;
+    }
+    try {
+      await adminService.register({ identifiant, motDePasse });
+      setShowSuccessModal(true);
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      setIdentifiant("");
+      setMotDePasse("");
+      setConfirmationMotDePasse("");
+    } catch (err) {
+      toast.error(err.message || t("admin.messages.networkError"));
+    }
+  };
+
+  const handleManualDonation = async (e) => {
+    e.preventDefault();
+    const data = {
       nomDonateur,
-      montant,
-      commentaires: message, // On mappe message vers commentaires
-      source,
-    });
-
-    res.status(201).json({ message: "Don manuel ajouté avec succès" });
-  } catch (err) {
-    console.error("Erreur ajout don manuel :", err);
-    res.status(500).json({ error: "Erreur serveur" });
-  }
-});
-
-// 🔒 Route protégée : accès aux dons
-router.get("/dons", verifyAdmin, async (req, res) => {
-  try {
-    const dons = await Donation.findAll({ order: [['date', 'DESC']] });
-    res.json(dons);
-  } catch (err) {
-    console.error("Erreur récupération dons :", err);
-    res.status(500).json({ error: "Erreur serveur" });
-  }
-});
-
-// 🔥 Route DELETE pour supprimer un don (protégée)
-router.delete("/dons/:id", verifyAdmin, async (req, res) => {
-  try {
-    const deleted = await Donation.destroy({ where: { id: req.params.id } });
-    if (!deleted) {
-      return res.status(404).json({ error: "Don introuvable" });
+      email: emailDonateur,
+      montant: parseFloat(montant),
+      commentaires,
+      source: source === "Autres (préciser)" ? sourcePrecise : source,
+    };
+    try {
+      await adminService.addManualDonation(data);
+      toast.success(t("admin.messages.donAdded"));
+      setNomDonateur("");
+      setEmailDonateur("");
+      setMontant("");
+      setCommentaires("");
+      setSource("");
+      setSourcePrecise("");
+      fetchDons();
+    } catch (err) {
+      toast.error(err.message || t("admin.messages.networkError"));
     }
-    res.status(204).send();
-  } catch (err) {
-    console.error("Erreur suppression:", err);
-    res.status(500).json({ error: "Erreur serveur" });
-  }
-});
+  };
 
-export default router;
+  const handleSupprimerDon = async () => {
+    if (!donASupprimer) return;
+    const id = donASupprimer._id || donASupprimer.id;
+    try {
+      await adminService.deleteDon(id);
+      toast.success(t("admin.messages.donDeleted"));
+      fetchDons();
+    } catch (err) {
+      toast.error(err.message || t("admin.messages.networkError"));
+    } finally {
+      setDonASupprimer(null);
+      setShowConfirmModal(false);
+    }
+  };
+
+  // FONCTION EXPORT CSV
+  const exportToCSV = () => {
+    if (dons.length === 0) {
+      toast.info("Aucun don à exporter.");
+      return;
+    }
+
+    const headers = ["Donateur", "Montant (€)", "Source", "Date", "Commentaires"];
+    const rows = dons.map(don => [
+      don.nomDonateur,
+      don.montant,
+      don.source,
+      new Date(don.date).toLocaleDateString(),
+      don.commentaires || ""
+    ]);
+
+    const csvContent = [
+      headers.join(";"), // Séparateur point-virgule pour Excel FR
+      ...rows.map(row => row.map(val => `"${val}"`).join(";"))
+    ].join("\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `dons_mama_esther_${new Date().getFullYear()}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Fichier CSV généré !");
+  };
+
+  return (
+    <div className="v2-layout">
+      <Navbar hideDonate={true} />
+      
+      <main className="admin-v2-container">
+        <div className="v2-container">
+                    <h1>
+            <FontAwesomeIcon icon={faUsersCog} style={{marginRight: "20px", color: "var(--color-green)"}} />
+            {t("admin.dashboard.title")}
+          </h1>
+
+          <div style={{display: "flex", justifyContent: "center", marginBottom: "30px"}}>
+            <button
+              className="v2-btn v2-btn-green"
+              style={{
+                padding: "14px 28px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                borderRadius: "9999px",
+                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                cursor: "pointer",
+                border: "none",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.15)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"; }}
+              onClick={() => setShowChangeCredentialsModal(true)}
+            >
+              <FontAwesomeIcon icon={faKey} style={{ marginRight: "10px" }} />
+              🔑 Modifier mes identifiants
+            </button>
+          </div>
+
+          <div className="admin-v2-grid">
+            <div className="admin-v2-card">
+              <h2>{t("admin.dashboard.addAdminTitle")}</h2>
+              <form onSubmit={handleAdminSubmit} className="admin-v2-form">
+                <input type="text" className="admin-v2-input" placeholder={t("admin.forms.idPlaceholder")} value={identifiant} onChange={(e) => setIdentifiant(e.target.value)} required />
+                <PasswordField value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} label={t("admin.forms.password")} placeholder={t("admin.forms.passwordPlaceholder")} required />
+                {passwordStrength && (
+                  <p className={`password-strength-v2 strength-${passwordStrength}`}>
+                    {t(`admin.messages.strength${passwordStrength.charAt(0).toUpperCase() + passwordStrength.slice(1)}`)}
+                  </p>
+                )}
+                <PasswordField value={confirmationMotDePasse} onChange={(e) => setConfirmationMotDePasse(e.target.value)} label={t("admin.forms.confirmPassword")} placeholder={t("admin.forms.passwordPlaceholder")} required />
+                <button type="submit" className="v2-btn v2-btn-primary">
+                  <FontAwesomeIcon icon={faPlusCircle} style={{marginRight: "10px"}} />
+                  {t("admin.forms.submitCreate")}
+                </button>
+              </form>
+            </div>
+
+            <div className="admin-v2-card">
+              <h2>
+                <FontAwesomeIcon icon={faCoins} style={{marginRight: "15px", color: "var(--color-yellow)"}} />
+                {t("admin.dashboard.addDonationTitle")}
+              </h2>
+              <form onSubmit={handleManualDonation} className="admin-v2-form">
+                <input type="text" className="admin-v2-input" placeholder={t("admin.forms.donatorName")} value={nomDonateur} onChange={(e) => setNomDonateur(e.target.value)} required />
+                <input type="email" className="admin-v2-input" placeholder="Email du donateur (pour remerciement)" value={emailDonateur} onChange={(e) => setEmailDonateur(e.target.value)} />
+                <input type="number" className="admin-v2-input" placeholder={t("admin.forms.amount")} value={montant} onChange={(e) => setMontant(e.target.value)} required />
+                <select className="admin-v2-input" value={source} onChange={(e) => setSource(e.target.value)} required>
+                  <option value="">{t("admin.forms.source")}</option>
+                  <option value="Chèque">{t("admin.forms.sourceCheque")}</option>
+                  <option value="Virement">{t("admin.forms.sourceTransfer")}</option>
+                  <option value="Espèces">{t("admin.forms.sourceCash")}</option>
+                  <option value="Autres (préciser)">{t("admin.forms.sourceOther")}</option>
+                </select>
+                {source === "Autres (préciser)" && (
+                  <input type="text" className="admin-v2-input" placeholder={t("admin.forms.sourceOtherPlaceholder")} value={sourcePrecise} onChange={(e) => setSourcePrecise(e.target.value)} required />
+                )}
+                <textarea className="admin-v2-input" style={{minHeight: "100px"}} placeholder={t("admin.forms.comments")} value={commentaires} onChange={(e) => setCommentaires(e.target.value)} />
+                <button type="submit" className="v2-btn v2-btn-primary">{t("admin.forms.submitAddDon")}</button>
+              </form>
+            </div>
+          </div>
+
+          <div className="admin-v2-list-section">
+            <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px", flexWrap: "wrap", gap: "20px"}}>
+              <h2 style={{margin: 0}}>{t("admin.dashboard.donationListTitle")}</h2>
+              <button className="v2-btn v2-btn-outline-green" style={{padding: "10px 20px", fontSize: "0.9rem"}} onClick={exportToCSV}>
+                <FontAwesomeIcon icon={faFileExcel} style={{marginRight: "10px"}} />
+                Exporter en Excel (CSV)
+              </button>
+            </div>
+            
+            <div className="admin-v2-table-wrapper">
+              <table className="admin-v2-table">
+                <thead>
+                  <tr>
+                    <th>{t("admin.table.name")}</th>
+                    <th>{t("admin.table.amount")}</th>
+                    <th>{t("admin.table.source")}</th>
+                    <th>{t("admin.table.date")}</th>
+                    <th>{t("admin.table.action")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dons.map((don) => (
+                    <tr key={don._id || don.id}>
+                      <td style={{fontWeight: "700", color: "var(--color-dark)"}}>{don.nomDonateur}</td>
+                      <td style={{color: "var(--color-green)", fontWeight: "800"}}>{don.montant} €</td>
+                      <td>{don.source}</td>
+                      <td>{new Date(don.date).toLocaleDateString()}</td>
+                      <td>
+                        <div className="admin-v2-actions">
+                          <button className="admin-v2-btn-icon delete" onClick={() => { setDonASupprimer(don); setShowConfirmModal(true); }}>
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {dons.length === 0 && (
+                    <tr>
+                      <td colSpan="5" style={{textAlign: 'center', padding: '60px', opacity: 0.5}}>{t("admin.dashboard.noDonations")}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="admin-v2-grid" style={{ marginTop: '40px' }}>
+            <div className="admin-v2-card" style={{ cursor: 'pointer', border: '2px solid var(--color-green)', transition: 'transform 0.3s' }} onClick={() => navigate('/admin/newsletter/new')}>
+              <h2 style={{ textAlign: 'center' }}>
+                <FontAwesomeIcon icon={faNewspaper} style={{ marginRight: '15px' }} />
+                {t("admin.newsletters.title")}
+              </h2>
+              <p style={{ textAlign: 'center', opacity: 0.7 }}>Cliquez ici pour créer, modifier ou supprimer vos newsletters dans un éditeur visuel moderne.</p>
+              <button className="v2-btn v2-btn-green" style={{ width: '100%', marginTop: '20px' }}>
+                <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: '10px' }} />
+                {t("admin.newsletters.createBtn")}
+              </button>
+            </div>
+          </div>
+
+          <div style={{marginTop: "60px", textAlign: "center"}}>
+            <button onClick={handleLogout} className="v2-btn v2-btn-red">
+              <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: "10px" }} />
+              {t("admin.dashboard.logout")}
+            </button>
+          </div>
+        </div>
+      </main>
+
+      {/* MODALES */}
+      {showSuccessModal && (
+        <div className="v2-modal-overlay">
+          <div className="v2-modal">
+            <h2 style={{color: "var(--color-green)"}}>{t("admin.modals.successTitle")}</h2>
+            <p>{t("admin.modals.successText")}</p>
+            <div style={{marginTop: "30px"}}>
+              <button className="v2-btn v2-btn-primary" onClick={() => setShowSuccessModal(false)}>{t("admin.modals.close")}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+            {showConfirmModal && (
+        <div className="v2-modal-overlay">
+          <div className="v2-modal">
+            <h2 style={{color: "var(--color-red)"}}>{t("admin.modals.confirmDeleteTitle")}</h2>
+            <p>{t("admin.modals.confirmDeleteText")}</p>
+            <div className="v2-modal-buttons" style={{marginTop: "30px", display: "flex", gap: "20px", justifyContent: "center"}}>
+              <button className="v2-btn v2-btn-outline-green" onClick={() => setShowConfirmModal(false)}>{t("admin.modals.cancel")}</button>
+              <button className="v2-btn v2-btn-red" onClick={handleSupprimerDon}>{t("admin.modals.confirm")}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showChangeCredentialsModal && (
+        <div className="v2-modal-overlay" style={{backdropFilter: "blur(4px)", backgroundColor: "rgba(0,0,0,0.5)"}}>
+          <div className="v2-modal" style={{maxWidth: "450px", borderRadius: "20px", padding: "30px"}}>
+            <h2 style={{color: "var(--color-green)", textAlign: "center", marginBottom: "20px"}}>
+              <FontAwesomeIcon icon={faUserEdit} style={{marginRight: "10px"}} />
+              Modifier mes identifiants
+            </h2>
+                        <form onSubmit={handleChangeCredentialsSubmit} className="admin-v2-form">
+              <label style={{display: "block", marginBottom: "5px", fontWeight: "600", color: "var(--color-dark)"}}>Nouvel identifiant / Email</label>
+              <input
+                type="text"
+                className="admin-v2-input"
+                placeholder="Nouvel identifiant (optionnel)"
+                value={changeCredentials.nouvelIdentifiant}
+                onChange={(e) => setChangeCredentials({...changeCredentials, nouvelIdentifiant: e.target.value})}
+              />
+              <label style={{display: "block", marginBottom: "5px", fontWeight: "600", color: "var(--color-dark)"}}>Ancien mot de passe (Requis)</label>
+              <PasswordField
+                value={changeCredentials.ancienMotDePasse}
+                onChange={(e) => setChangeCredentials({...changeCredentials, ancienMotDePasse: e.target.value})}
+                placeholder="Ancien mot de passe"
+                required
+              />
+              <label style={{display: "block", marginBottom: "5px", fontWeight: "600", color: "var(--color-dark)"}}>Nouveau mot de passe</label>
+              <PasswordField
+                value={changeCredentials.nouveauMotDePasse}
+                onChange={(e) => setChangeCredentials({...changeCredentials, nouveauMotDePasse: e.target.value})}
+                placeholder="Nouveau mot de passe (optionnel)"
+              />
+              <label style={{display: "block", marginBottom: "5px", fontWeight: "600", color: "var(--color-dark)"}}>Confirmer le nouveau mot de passe</label>
+              <PasswordField
+                value={changeCredentials.confirmationNouveauMotDePasse}
+                onChange={(e) => setChangeCredentials({...changeCredentials, confirmationNouveauMotDePasse: e.target.value})}
+                placeholder="Confirmer le nouveau mot de passe"
+              />
+              <div style={{display: "flex", gap: "15px", marginTop: "20px"}}>
+                <button type="submit" className="v2-btn v2-btn-green" style={{flex: 1}}>
+                  <FontAwesomeIcon icon={faKey} style={{marginRight: "8px"}} />
+                  Mettre à jour
+                </button>
+                <button type="button" className="v2-btn v2-btn-outline-green" style={{flex: 1}} onClick={() => setShowChangeCredentialsModal(false)}>
+                  {t("admin.modals.cancel")}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

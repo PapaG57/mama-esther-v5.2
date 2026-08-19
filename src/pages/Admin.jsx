@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt, faNewspaper } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt, faNewspaper, faKey, faLock, faUserEdit } from "@fortawesome/free-solid-svg-icons";
 import "../styles/AdminV2.css";
 import PasswordField from "../components/PasswordField";
 import confetti from "canvas-confetti";
@@ -39,8 +39,57 @@ export default function Admin() {
   const [source, setSource] = useState("");
   const [sourcePrecise, setSourcePrecise] = useState("");
   const [dons, setDons] = useState([]);
-  const [donASupprimer, setDonASupprimer] = useState(null);
+    const [donASupprimer, setDonASupprimer] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showChangeCredentialsModal, setShowChangeCredentialsModal] = useState(false);
+    const [changeCredentials, setChangeCredentials] = useState({
+    nouvelIdentifiant: "",
+    ancienMotDePasse: "",
+    nouveauMotDePasse: "",
+    confirmationNouveauMotDePasse: "",
+  });
+
+    const handleChangeCredentialsSubmit = async (e) => {
+    e.preventDefault();
+
+    // Vérifier que l'ancien mot de passe est fourni
+    if (!changeCredentials.ancienMotDePasse) {
+      toast.error("L'ancien mot de passe est obligatoire");
+      return;
+    }
+
+    // Vérifier qu'au moins un champ (identifiant OU mot de passe) est rempli
+    if (!changeCredentials.nouvelIdentifiant && !changeCredentials.nouveauMotDePasse) {
+      toast.error("Au moins un champ (identifiant ou mot de passe) doit être renseigné");
+      return;
+    }
+
+    // Vérifier que les deux nouveaux mots de passe correspondent si un nouveau mot de passe est fourni
+    if (changeCredentials.nouveauMotDePasse && changeCredentials.nouveauMotDePasse !== changeCredentials.confirmationNouveauMotDePasse) {
+      toast.error("Les mots de passe ne correspondent pas");
+      return;
+    }
+
+        try {
+      await adminService.changeCredentials({
+        ancienMotDePasse: changeCredentials.ancienMotDePasse,
+        nouvelIdentifiant: changeCredentials.nouvelIdentifiant || undefined,
+        nouveauMotDePasse: changeCredentials.nouveauMotDePasse || undefined,
+      });
+
+      toast.success("Identifiants mis à jour avec succès !");
+      setShowChangeCredentialsModal(false);
+            setChangeCredentials({
+        nouvelIdentifiant: "",
+        ancienMotDePasse: "",
+        nouveauMotDePasse: "",
+        confirmationNouveauMotDePasse: "",
+      });
+        } catch (err) {
+      const msg = err.response?.data?.message || err.response?.data?.error || err.message || "Erreur lors de la mise à jour des identifiants";
+      toast.error(msg);
+    }
+  };
 
   const handleLogout = () => {
     sessionStorage.removeItem("adminToken");
@@ -173,10 +222,32 @@ export default function Admin() {
       
       <main className="admin-v2-container">
         <div className="v2-container">
-          <h1>
+                    <h1>
             <FontAwesomeIcon icon={faUsersCog} style={{marginRight: "20px", color: "var(--color-green)"}} />
             {t("admin.dashboard.title")}
           </h1>
+
+          <div style={{display: "flex", justifyContent: "center", marginBottom: "30px"}}>
+            <button
+              className="v2-btn v2-btn-green"
+              style={{
+                padding: "14px 28px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                borderRadius: "9999px",
+                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                cursor: "pointer",
+                border: "none",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.15)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"; }}
+              onClick={() => setShowChangeCredentialsModal(true)}
+            >
+              <FontAwesomeIcon icon={faKey} style={{ marginRight: "10px" }} />
+              🔑 Modifier mes identifiants
+            </button>
+          </div>
 
           <div className="admin-v2-grid">
             <div className="admin-v2-card">
@@ -304,7 +375,7 @@ export default function Admin() {
         </div>
       )}
 
-      {showConfirmModal && (
+            {showConfirmModal && (
         <div className="v2-modal-overlay">
           <div className="v2-modal">
             <h2 style={{color: "var(--color-red)"}}>{t("admin.modals.confirmDeleteTitle")}</h2>
@@ -313,6 +384,55 @@ export default function Admin() {
               <button className="v2-btn v2-btn-outline-green" onClick={() => setShowConfirmModal(false)}>{t("admin.modals.cancel")}</button>
               <button className="v2-btn v2-btn-red" onClick={handleSupprimerDon}>{t("admin.modals.confirm")}</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showChangeCredentialsModal && (
+        <div className="v2-modal-overlay" style={{backdropFilter: "blur(4px)", backgroundColor: "rgba(0,0,0,0.5)"}}>
+          <div className="v2-modal" style={{maxWidth: "450px", borderRadius: "20px", padding: "30px"}}>
+            <h2 style={{color: "var(--color-green)", textAlign: "center", marginBottom: "20px"}}>
+              <FontAwesomeIcon icon={faUserEdit} style={{marginRight: "10px"}} />
+              Modifier mes identifiants
+            </h2>
+                        <form onSubmit={handleChangeCredentialsSubmit} className="admin-v2-form">
+              <label style={{display: "block", marginBottom: "5px", fontWeight: "600", color: "var(--color-dark)"}}>Nouvel identifiant / Email</label>
+              <input
+                type="text"
+                className="admin-v2-input"
+                placeholder="Nouvel identifiant (optionnel)"
+                value={changeCredentials.nouvelIdentifiant}
+                onChange={(e) => setChangeCredentials({...changeCredentials, nouvelIdentifiant: e.target.value})}
+              />
+              <label style={{display: "block", marginBottom: "5px", fontWeight: "600", color: "var(--color-dark)"}}>Ancien mot de passe (Requis)</label>
+              <PasswordField
+                value={changeCredentials.ancienMotDePasse}
+                onChange={(e) => setChangeCredentials({...changeCredentials, ancienMotDePasse: e.target.value})}
+                placeholder="Ancien mot de passe"
+                required
+              />
+              <label style={{display: "block", marginBottom: "5px", fontWeight: "600", color: "var(--color-dark)"}}>Nouveau mot de passe</label>
+              <PasswordField
+                value={changeCredentials.nouveauMotDePasse}
+                onChange={(e) => setChangeCredentials({...changeCredentials, nouveauMotDePasse: e.target.value})}
+                placeholder="Nouveau mot de passe (optionnel)"
+              />
+              <label style={{display: "block", marginBottom: "5px", fontWeight: "600", color: "var(--color-dark)"}}>Confirmer le nouveau mot de passe</label>
+              <PasswordField
+                value={changeCredentials.confirmationNouveauMotDePasse}
+                onChange={(e) => setChangeCredentials({...changeCredentials, confirmationNouveauMotDePasse: e.target.value})}
+                placeholder="Confirmer le nouveau mot de passe"
+              />
+              <div style={{display: "flex", gap: "15px", marginTop: "20px"}}>
+                <button type="submit" className="v2-btn v2-btn-green" style={{flex: 1}}>
+                  <FontAwesomeIcon icon={faKey} style={{marginRight: "8px"}} />
+                  Mettre à jour
+                </button>
+                <button type="button" className="v2-btn v2-btn-outline-green" style={{flex: 1}} onClick={() => setShowChangeCredentialsModal(false)}>
+                  {t("admin.modals.cancel")}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
