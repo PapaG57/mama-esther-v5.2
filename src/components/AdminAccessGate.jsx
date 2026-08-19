@@ -6,7 +6,7 @@ export default function AdminAccessGate({ children }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   
-  // VÃ©rification IMMEDIATE au rendu (sessionStorage est plus volatile)
+  // Vérification si un token admin existe (même si ce n'est pas "valid-admin-token" pour le dev)
   const token = sessionStorage.getItem("adminToken");
   const isAuthorized = !!token;
 
@@ -22,9 +22,9 @@ export default function AdminAccessGate({ children }) {
           </p>
           <button 
             className="v2-btn v2-btn-primary" 
-            onClick={() => {
-              // On force un reload vers l'accueil pour s'assurer de sortir du cache
-              window.location.href = "/";
+                        onClick={() => {
+              // Retour propre vers l'accueil en utilisant le routeur
+              navigate("/");
             }}
           >
             {t("admin.accessGate.back")}
@@ -36,3 +36,5 @@ export default function AdminAccessGate({ children }) {
 
   return children;
 }
+
+

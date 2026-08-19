@@ -6,6 +6,7 @@ export const adminService = {
   getDons: () => apiClient.get("/admin/dons"),
   deleteDon: (id) => apiClient.delete(`/admin/dons/${id}`),
   addManualDonation: (data) => apiClient.post("/donations/manual", data),
+  changeCredentials: (data) => apiClient.put("/admin/change-credentials", data),
 };
 
 export const donationService = {
@@ -18,7 +19,7 @@ export const donationService = {
 export const newsletterService = {
   subscribe: (email) => apiClient.post("/subscribe", { email }),
   unsubscribe: (email) => apiClient.post("/unsubscribe", { email }),
-  
+
   // Nouveaux services dynamiques
   getAll: () => apiClient.get("/newsletters"),
   getById: (id) => apiClient.get(`/newsletters/${id}`),
@@ -27,12 +28,14 @@ export const newsletterService = {
   delete: (id) => apiClient.delete(`/newsletters/${id}`),
   broadcast: (id) => apiClient.post(`/newsletters/${id}/broadcast`),
   aiGenerate: (prompt, action) => apiClient.post("/newsletters/ai-generate", { prompt, action }),
-  uploadPdf: (id, formData) => apiClient.post(`/newsletters/${id}/upload-pdf`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }),
-  uploadImage: (formData) => apiClient.post("/upload-image", formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }),
+  uploadPdf: (id, formData) =>
+    apiClient.post(`/newsletters/${id}/upload-pdf`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  uploadImage: (formData) =>
+    apiClient.post("/upload-image", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 };
 
 export const contactService = {

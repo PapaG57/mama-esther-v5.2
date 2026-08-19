@@ -33,30 +33,28 @@ function Footer() {
     setMotDePasse("");
   };
 
-  const handleAdminLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    const handleAdminLogin = async (e) => {
+      e.preventDefault();
+      console.log("➡️ Soumission du formulaire admin...");
 
-    try {
-      // Petit délai pour admirer le spinner
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const res = await adminService.login({ identifiant, motDePasse });
+      try {
+        const res = await adminService.login({ identifiant, motDePasse });
+        const token = res.data?.token || res.token;
 
-      if (res.data && res.data.token) {
-        sessionStorage.setItem("adminToken", res.data.token);
-        navigate("/admin");
-        setShowAdminModal(false);
-      } else {
-        alert("Identifiants incorrects");
+        if (token) {
+          localStorage.removeItem("adminToken"); // Nettoyer l'ancien token localStorage
+          sessionStorage.setItem("adminToken", token);
+          navigate("/admin");
+          setShowAdminModal(false);
+        } else {
+          alert("Identifiants incorrects : token non reçu");
+        }
+      } catch (err) {
+        console.error("❌ Erreur API Login:", err);
+        alert("Erreur de connexion : " + (err.message || "Veuillez réessayer"));
+        // Pas de redirection en cas d'erreur
       }
-    } catch (err) {
-      console.error("Erreur de connexion admin :", err);
-      alert(err.message || "Erreur de connexion");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
   return (
     <footer className="footer">
@@ -258,3 +256,5 @@ function Footer() {
 }
 
 export default Footer;
+
+
