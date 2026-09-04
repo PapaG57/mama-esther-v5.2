@@ -456,11 +456,11 @@
   },
   "v2": {
     "maintenance": {
-    "title": "🚧 Améliorations en cours",
-    "text": "Nous mettons actuellement à jour certaines fonctionnalités du site pour mieux vous servir. Le formulaire de contact et l'inscription newsletter peuvent être temporairement indisponibles. Merci de votre patience ! 💚",
-    "close": "Compris !"
-  },
-  "common": {
+      "title": "🚧 Améliorations en cours",
+      "text": "Nous mettons actuellement à jour certaines fonctionnalités du site pour mieux vous servir. Le formulaire de contact et l'inscription newsletter peuvent être temporairement indisponibles. Merci de votre patience ! 💚",
+      "close": "Compris !"
+    },
+    "common": {
       "learnMore": "En savoir plus",
       "readMore": "Continuer la lecture",
       "back": "Retour",
@@ -618,7 +618,7 @@
       "impact": {
         "nutrition": {
           "title": "Nutrition",
-          "desc": "15€ offre des repas équilibrés à un enfant pendant un mois."
+          "desc": "60€ offre des repas équilibrés à un enfant pendant un mois."
         },
         "education": {
           "title": "Éducation",
@@ -626,7 +626,7 @@
         },
         "health": {
           "title": "Santé",
-          "desc": "100€ permet de couvrir les soins médicaux d'urgence pour l'orphelinat."
+          "desc": "100€ par enfant couvre les consultations de prévention (examens médicaux et médicaments)."
         }
       }
     },
