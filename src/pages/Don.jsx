@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../styles/DonV2.css";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faShieldAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faShieldAlt, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 const DonV2 = () => {
   const { t } = useTranslation();
@@ -35,8 +35,12 @@ const DonV2 = () => {
       <section className="don-v2-hero">
         <div className="v2-container">
           <div className="don-v2-hero-content">
-            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>{t("v2.don.heroSubtitle")}</span>
-            <h1 className="v2-title" style={{color: "white"}}>{t("v2.don.heroTitle")}</h1>
+            <span className="v2-subtitle" style={{ color: "var(--color-yellow)" }}>
+              {t("v2.don.heroSubtitle")}
+            </span>
+            <h1 className="v2-title" style={{ color: "white" }}>
+              {t("v2.don.heroTitle")}
+            </h1>
           </div>
         </div>
       </section>
@@ -102,6 +106,43 @@ const DonV2 = () => {
                   >
                     {t("navbar.contact")}
                   </button>
+                </div>
+
+                {/* ENCART AVERTISSEMENT CHÈQUES */}
+                <div 
+                  className="cheque-warning-box"
+                  style={{
+                    backgroundColor: "#fff5f5",
+                    border: "1px solid #feb2b2",
+                    borderRadius: "12px",
+                    padding: "16px",
+                    marginTop: "20px",
+                    marginBottom: "15px",
+                    textAlign: "left"
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", color: "#c53030" }}>
+                    <FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: "1.1rem" }} />
+                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "bold", color: "#9b2c2c" }}>
+                      Paiement par chèque non accepté
+                    </h4>
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "#4a5568", lineHeight: "1.4" }}>
+                    Bien que la démarche soit généreuse, les chèques génèrent des frais, du temps administratif et des risques de fraude importants pour notre association. Merci de privilégier le <strong>paiement en ligne sécurisé par Carte Bancaire</strong> (via HelloAsso).
+                  </p>
+                  <p style={{ marginTop: "8px", marginBottom: 0, fontSize: "0.85rem", color: "#4a5568", lineHeight: "1.4" }}>
+                    Si vous éprouvez des difficultés à régler par carte bancaire et pour que nous cherchions une solution ensemble, n'hésitez pas à{" "}
+                    <Link 
+                      to="/contact" 
+                      style={{ 
+                        color: "var(--color-green, #10b981)", 
+                        fontWeight: "bold", 
+                        textDecoration: "underline" 
+                      }}
+                    >
+                      nous contacter
+                    </Link>.
+                  </p>
                 </div>
                 
                 <p className="form-footer">{t("v2.don.formFooter")}</p>
