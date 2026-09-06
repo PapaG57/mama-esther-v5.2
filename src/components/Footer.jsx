@@ -27,34 +27,38 @@ function Footer() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const currentYear = new Date().getFullYear();
+
   const handleCloseAdminModal = () => {
     setShowAdminModal(false);
     setIdentifiant("");
     setMotDePasse("");
   };
 
-    const handleAdminLogin = async (e) => {
-      e.preventDefault();
-      console.log("➡️ Soumission du formulaire admin...");
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    console.log("➡️ Soumission du formulaire admin...");
+    setLoading(true);
 
-      try {
-        const res = await adminService.login({ identifiant, motDePasse });
-        const token = res.data?.token || res.token;
+    try {
+      const res = await adminService.login({ identifiant, motDePasse });
+      const token = res.data?.token || res.token;
 
-        if (token) {
-          localStorage.removeItem("adminToken"); // Nettoyer l'ancien token localStorage
-          sessionStorage.setItem("adminToken", token);
-          navigate("/admin");
-          setShowAdminModal(false);
-        } else {
-          alert("Identifiants incorrects : token non reçu");
-        }
-      } catch (err) {
-        console.error("❌ Erreur API Login:", err);
-        alert("Erreur de connexion : " + (err.message || "Veuillez réessayer"));
-        // Pas de redirection en cas d'erreur
+      if (token) {
+        localStorage.removeItem("adminToken");
+        sessionStorage.setItem("adminToken", token);
+        navigate("/admin");
+        setShowAdminModal(false);
+      } else {
+        alert("Identifiants incorrects : token non reçu");
       }
-    };
+    } catch (err) {
+      console.error("❌ Erreur API Login:", err);
+      alert("Erreur de connexion : " + (err.message || "Veuillez réessayer"));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <footer className="footer">
@@ -73,9 +77,7 @@ function Footer() {
                 />
               ))}
             </div>
-            <p className="slogan">
-              {t("footer.slogan")}
-            </p>
+            <p className="slogan">{t("footer.slogan")}</p>
             <div className="social-icons">
               <FontAwesomeIcon icon={faFacebookF} className="social-icon" />
               <FontAwesomeIcon icon={faWhatsapp} className="social-icon" />
@@ -96,10 +98,14 @@ function Footer() {
                 <Link to="/sponsors">{t("footer.serviceSponsor")}</Link>
               </li>
               <li>
-                <Link to="/collecte-fonds-materiels">{t("footer.serviceFundraising")}</Link>
+                <Link to="/collecte-fonds-materiels">
+                  {t("footer.serviceFundraising")}
+                </Link>
               </li>
               <li>
-                <Link to="/volontariat-emploi">{t("footer.serviceVolunteer")}</Link>
+                <Link to="/volontariat-emploi">
+                  {t("footer.serviceVolunteer")}
+                </Link>
               </li>
               <li>
                 <Link to="/mentions-legales">{t("footer.serviceLegal")}</Link>
@@ -147,7 +153,7 @@ function Footer() {
           </div>
         </div>
 
-        {/* Flags */}
+        {/* Drapeaux */}
         <div className="flag-container">
           <p>{t("footer.actionCountries")}</p>
           <div className="flag-icons">
@@ -193,7 +199,7 @@ function Footer() {
         {/* Copyright */}
         <div className="footer-bottom">
           <p>
-            {t("footer.copyright", { year: new Date().getFullYear() })}
+            © 2024 - {currentYear} Mama Esther. Tous droits réservés | Créé par FG Développement
             <a
               href="https://www.fgdeveloppement.com/"
               target="_blank"
@@ -256,5 +262,3 @@ function Footer() {
 }
 
 export default Footer;
-
-
