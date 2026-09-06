@@ -29,9 +29,7 @@ const ContactV2 = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Petit délai pour admirer le spinner
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise(resolve => setTimeout(resolve, 1200));
       await contactService.sendMessage(formData);
       toast.success(t("contact.form.successTitle"));
       setFormData({ name: "", email: "", subject: "", message: "" });
@@ -51,8 +49,12 @@ const ContactV2 = () => {
       <section className="contact-v2-hero">
         <div className="v2-container">
           <div className="contact-v2-hero-content">
-            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>{t("v2.contact.heroSubtitle")}</span>
-            <h1 className="v2-title" style={{color: "white"}}>{t("v2.contact.heroTitle")}</h1>
+            <span className="v2-subtitle" style={{ color: "var(--color-yellow)" }}>
+              {t("v2.contact.heroSubtitle")}
+            </span>
+            <h1 className="v2-title" style={{ color: "white" }}>
+              {t("v2.contact.heroTitle")}
+            </h1>
           </div>
         </div>
       </section>
@@ -96,10 +98,10 @@ const ContactV2 = () => {
               <div className="contact-socials">
                 <h4>{t("v2.contact.followUs")}</h4>
                 <div className="social-links">
-                  <a href="#"><FontAwesomeIcon icon={faFacebookF} /></a>
-                  <a href="#"><FontAwesomeIcon icon={faWhatsapp} /></a>
-                  <a href="#"><FontAwesomeIcon icon={faLinkedin} /></a>
-                  <a href="#"><FontAwesomeIcon icon={faInstagram} /></a>
+                  <a href="#!" aria-label="Facebook"><FontAwesomeIcon icon={faFacebookF} /></a>
+                  <a href="#!" aria-label="WhatsApp"><FontAwesomeIcon icon={faWhatsapp} /></a>
+                  <a href="#!" aria-label="LinkedIn"><FontAwesomeIcon icon={faLinkedin} /></a>
+                  <a href="#!" aria-label="Instagram"><FontAwesomeIcon icon={faInstagram} /></a>
                 </div>
               </div>
             </div>
@@ -164,7 +166,7 @@ const ContactV2 = () => {
         </div>
       </section>
 
-      {/* MAP PLACEHOLDER / TERRAIN */}
+      {/* TERRAIN ET IMPACT */}
       <section className="contact-v2-map">
         <div className="v2-container">
           <div className="map-card">
@@ -173,7 +175,28 @@ const ContactV2 = () => {
               <p>{t("v2.contact.impactText")}</p>
             </div>
             <div className="map-visual">
-               <img src="/assets/flags/CM.svg" alt="Cameroun" style={{width: '100px', opacity: 0.2}} />
+              <div className="flag-card-wrapper"
+                style={{
+                  backgroundColor: "#ffffff",
+                  padding: "12px 20px",
+                  borderRadius: "16px",
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <img 
+                  src="/assets/flags/CM.svg" 
+                  alt="Cameroun" 
+                  style={{ 
+                    width: "90px", 
+                    height: "auto", 
+                    display: "block",
+                    filter: "drop-shadow(0 2px 5px rgba(0,0,0,0.2))"
+                  }} 
+                />
+              </div>
             </div>
           </div>
         </div>
