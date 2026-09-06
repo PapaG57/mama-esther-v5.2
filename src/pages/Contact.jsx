@@ -81,7 +81,7 @@ const ContactV2 = () => {
                   <div className="method-icon"><FontAwesomeIcon icon={faPhone} /></div>
                   <div className="method-text">
                     <h4>{t("contact.phoneTitle")}</h4>
-                    <p>+33 06 86 74 29 11</p>
+                    <p>+33 06 45 65 65 17 ou +33 06 86 74 29 11</p>
                   </div>
                 </div>
                 <div className="method-item">
