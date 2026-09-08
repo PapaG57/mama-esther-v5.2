@@ -127,17 +127,37 @@ const DonV2 = () => {
                       Paiement par chèque non accepté
                     </h4>
                   </div>
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "#4a5568", lineHeight: "1.4" }}>
-                    Bien que la démarche soit généreuse, les chèques génèrent des frais, du temps administratif et des risques de fraude importants pour notre association. Merci de privilégier le <strong>paiement en ligne sécurisé par Carte Bancaire</strong> (via HelloAsso).
+
+                  <p style={{ 
+                    margin: 0, 
+                    fontFamily: "'Google Sans Code', 'Fira Code', 'Roboto Mono', monospace", 
+                    fontStyle: "italic", 
+                    fontWeight: 400,
+                    fontSize: "12px", 
+                    color: "#4a5568", 
+                    lineHeight: "24px" 
+                  }}>
+                    Bien que la démarche soit généreuse, les chèques génèrent des frais, du temps administratif et des risques de fraude importants pour notre association. Par avance, merci de privilégier le <strong style={{ fontStyle: "normal" }}>paiement en ligne sécurisé par Carte Bancaire</strong> (via HelloAsso).
                   </p>
-                  <p style={{ marginTop: "8px", marginBottom: 0, fontSize: "0.85rem", color: "#4a5568", lineHeight: "1.4" }}>
-                    Si vous éprouvez des difficultés à régler par carte bancaire et pour que nous cherchions une solution ensemble, n'hésitez pas à{" "}
+
+                  <p style={{ 
+                    marginTop: "8px", 
+                    marginBottom: 0, 
+                    fontFamily: "'Google Sans Code', 'Fira Code', 'Roboto Mono', monospace", 
+                    fontStyle: "italic", 
+                    fontWeight: 400,
+                    fontSize: "12px", 
+                    color: "#4a5568", 
+                    lineHeight: "24px" 
+                  }}>
+                    Si vous éprouvez des difficultés à régler par carte bancaire, n'hésitez pas à{" "}
                     <Link 
                       to="/contact" 
                       style={{ 
                         color: "var(--color-green, #10b981)", 
                         fontWeight: "bold", 
-                        textDecoration: "underline" 
+                        textDecoration: "underline",
+                        fontStyle: "italic"
                       }}
                     >
                       nous contacter
