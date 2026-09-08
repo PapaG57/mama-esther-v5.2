@@ -90,18 +90,60 @@ const DonV2 = () => {
             <div className="don-form-side">
               <div className="don-form-card">
                 <h3>{t("v2.don.makeDonation")}</h3>
-                <p className="form-instruction">{t("v2.don.formInstruction")}</p>
                 
-                <div className="placeholder-btns">
+                <div 
+                  className="placeholder-btns" 
+                  style={{ 
+                    display: "flex", 
+                    flexDirection: "column", 
+                    alignItems: "center", 
+                    gap: "12px", 
+                    marginTop: "20px",
+                    width: "100%"
+                  }}
+                >
                   <button 
                     className="v2-btn v2-btn-primary" 
+                    style={{ width: "100%", textAlign: "center" }}
                     onClick={() => window.open('https://www.helloasso.com/associations/association-mama-esther/formulaires/1/widget', '_blank')}
                   >
                     {t("v2.don.donateViaHelloAsso")}
                   </button>
+
+                  {/* BADGE MODERNE DE RÉASSURANCE */}
+                  <div 
+                    style={{ 
+                      display: "flex", 
+                      alignItems: "center", 
+                      justifyContent: "center", 
+                      gap: "6px", 
+                      backgroundColor: "#ecfdf5", 
+                      border: "1px solid #a7f3d0", 
+                      borderRadius: "20px", 
+                      padding: "6px 14px", 
+                      margin: "2px 0",
+                      boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
+                      width: "100%"
+                    }}
+                  >
+                    <span style={{ fontSize: "0.85rem" }}>🔒</span>
+                    <p 
+                      style={{ 
+                        margin: 0, 
+                        textAlign: "center", 
+                        fontSize: "0.78rem",
+                        fontWeight: "500",
+                        color: "#065f46",
+                        lineHeight: "1.2"
+                      }}
+                    >
+                      Vous allez être redirigé vers notre partenaire de paiement sécurisé.
+                    </p>
+                  </div>
                   
                   <button 
                     className="v2-btn v2-btn-outline-green" 
+                    style={{ width: "100%", textAlign: "center" }}
                     onClick={() => navigate('/contact')}
                   >
                     {t("navbar.contact")}
@@ -123,7 +165,13 @@ const DonV2 = () => {
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", color: "#c53030" }}>
                     <FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: "1.1rem" }} />
-                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "bold", color: "#9b2c2c" }}>
+                    <h4 style={{ 
+                      margin: 0, 
+                      fontFamily: "'Google Sans Code', 'Fira Code', 'Roboto Mono', monospace", 
+                      fontSize: "1rem", 
+                      fontWeight: "bold", 
+                      color: "#9b2c2c" 
+                    }}>
                       Paiement par chèque non accepté
                     </h4>
                   </div>
@@ -135,9 +183,9 @@ const DonV2 = () => {
                     fontWeight: 400,
                     fontSize: "12px", 
                     color: "#4a5568", 
-                    lineHeight: "24px" 
+                    lineHeight: "20px" 
                   }}>
-                    Bien que la démarche soit généreuse, les chèques génèrent des frais, du temps administratif et des risques de fraude importants pour notre association. Par avance, merci de privilégier le <strong style={{ fontStyle: "normal" }}>paiement en ligne sécurisé par Carte Bancaire</strong> (via HelloAsso).
+                    Bien que la démarche soit généreuse, les chèques génèrent des frais, du temps administratif et des risques de fraude importants pour notre association. Merci de privilégier le <strong style={{ fontStyle: "normal" }}>paiement en ligne sécurisé par Carte Bancaire</strong> (via HelloAsso).
                   </p>
 
                   <p style={{ 
@@ -148,7 +196,7 @@ const DonV2 = () => {
                     fontWeight: 400,
                     fontSize: "12px", 
                     color: "#4a5568", 
-                    lineHeight: "24px" 
+                    lineHeight: "20px" 
                   }}>
                     Si vous éprouvez des difficultés à régler par carte bancaire, n'hésitez pas à{" "}
                     <Link 
@@ -164,8 +212,6 @@ const DonV2 = () => {
                     </Link>.
                   </p>
                 </div>
-                
-                <p className="form-footer">{t("v2.don.formFooter")}</p>
               </div>
             </div>
 
