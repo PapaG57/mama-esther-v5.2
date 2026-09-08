@@ -1,6 +1,7 @@
 import express from "express";
 import Donation from "../models/Donation.js";
 import logger from "../utils/logger.js";
+import { sendDonConfirmationEmail, sendAdminNotificationEmail } from "../utils/send-email.js";
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.post("/webhook", async (req, res) => {
 
     // On ne traite que les commandes (Order) ou les paiements (Payment)
     if ((eventType === "Order" || eventType === "Payment") && data) {
-      // 1. Extraction du montant en centimes (gestion du format objet de l'API V5)
+      // 1. Extraction du montant en centimes
       let montantCents = 0;
       if (typeof data.amount === "number") {
         montantCents = data.amount;
@@ -31,15 +32,15 @@ router.post("/webhook", async (req, res) => {
 
       const montantEuro = montantCents / 100;
 
-      // 2. Extraction robuste des infos du donateur
+      // 2. Extraction des infos du donateur
       const payer = data.payer || {};
-      const email = payer.email || data.email || "anonyme@helloasso.com";
+      const email = payer.email || data.email || null;
       const firstName = payer.firstName || "";
       const lastName = payer.lastName || "Donateur";
 
       const nomDonateur = `${firstName} ${lastName}`.trim() || "Donateur HelloAsso";
 
-      // 3. Enregistrement si le montant est valide
+      // 3. Enregistrement en base de données
       if (montantEuro > 0) {
         const nouveauDon = await Donation.create({
           nomDonateur: nomDonateur,
@@ -50,13 +51,20 @@ router.post("/webhook", async (req, res) => {
           date: new Date(),
         });
 
-        logger.info(`✅ Don HelloAsso de ${montantEuro}€ enregistré avec succès pour ${nomDonateur}`);
+        // 📧 4. Envoi du mail de remerciement au donateur
+        if (email) {
+          await sendDonConfirmationEmail(email, montantEuro).catch((err) => logger.error("❌ Échec envoi email confirmation HelloAsso :", err));
+        }
+
+        // 📧 5. Envoi de l'alerte à l'administrateur
+        await sendAdminNotificationEmail(email || "Anonyme HelloAsso", montantEuro).catch((err) => logger.error("❌ Échec envoi notification admin HelloAsso :", err));
+
+        logger.info(`✅ Don HelloAsso de ${montantEuro}€ enregistré + e-mails envoyés pour ${nomDonateur}`);
       } else {
-        logger.warn("⚠️ Webhook reçu mais montant égal à 0 ou non extrait correctement.");
+        logger.warn("⚠️ Webhook reçu mais montant égal à 0 ou invalide.");
       }
     }
 
-    // Réponse 200 obligatoire pour HelloAsso
     res.status(200).send("OK");
   } catch (error) {
     logger.error("❌ Erreur lors du traitement du Webhook HelloAsso :", error);
@@ -64,7 +72,7 @@ router.post("/webhook", async (req, res) => {
   }
 });
 
-// Route de simulation (tests manuels)
+// Route de simulation avec envoi de mail
 router.post("/helloasso-simulation", async (req, res) => {
   const amount = req.body.amount || req.body.montant;
   const email = req.body.email;
@@ -84,7 +92,13 @@ router.post("/helloasso-simulation", async (req, res) => {
       date: new Date(),
     });
 
-    res.status(201).json({ message: "Don HelloAsso simulé enregistré ✅", don: nouveauDon });
+    if (email) {
+      await sendDonConfirmationEmail(email, amount).catch((err) => console.error("❌ Échec envoi email confirmation simulation :", err));
+    }
+
+    await sendAdminNotificationEmail(email, amount).catch((err) => console.error("❌ Échec envoi notification admin simulation :", err));
+
+    res.status(201).json({ message: "Don HelloAsso simulé enregistré et e-mails envoyés ✅", don: nouveauDon });
   } catch (error) {
     console.error("Erreur simulation HelloAsso :", error);
     res.status(500).json({ message: "Erreur serveur", erreur: error.message });
