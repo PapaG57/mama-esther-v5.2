@@ -1,6 +1,7 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -8,40 +9,32 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const createTransporter = () => {
-  const port = Number(process.env.EMAIL_PORT) || 587;
-  const isSecure = port === 465;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const user = process.env.EMAIL_SENDER ? process.env.EMAIL_SENDER.trim().replace(/^["']|["']$/g, '') : "";
-  const pass = process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.trim().replace(/^["']|["']$/g, '') : "";
-  const host = process.env.EMAIL_HOST ? process.env.EMAIL_HOST.trim().replace(/^["']|["']$/g, '') : "";
-
-  return nodemailer.createTransport({
-    host: host,
-    port: port,
-    secure: isSecure,
-    auth: {
-      user: user,
-      pass: pass,
-    },
-    authMethod: 'LOGIN',
-    debug: true,
-    logger: true,
-    tls: {
-      rejectUnauthorized: false,
-      minVersion: 'TLSv1.2'
-    },
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
-  });
+// Utilitaire pour charger les images locales en pièces jointes avec CID
+const getAssetAttachment = (filename, cid) => {
+  const filePath = path.join(__dirname, "..", "assets", filename);
+  if (fs.existsSync(filePath)) {
+    return {
+      filename,
+      content: fs.readFileSync(filePath),
+      content_id: cid,
+    };
+  }
+  return null;
 };
 
 // 1. CONFIRMATION NEWSLETTER (Bilingue + Photo)
 async function sendConfirmationEmail(email) {
-  const transporter = createTransporter();
   try {
-    await transporter.sendMail({
-      from: `"Mama Esther" <${process.env.EMAIL_SENDER}>`,
+    const attachments = [
+      getAssetAttachment("banniere.png", "banniereHeader"),
+      getAssetAttachment("photoMama.jpg", "photoIntro"),
+      getAssetAttachment("logoMama.png", "logoFooter"),
+    ].filter(Boolean);
+
+    const { data, error } = await resend.emails.send({
+      from: `Mama Esther <florent.gerard@mamaesther.org>`,
       to: email,
       subject: "✅ Confirmation d'inscription / Subscription Confirmation",
       html: `
@@ -70,13 +63,11 @@ async function sendConfirmationEmail(email) {
           <p style="font-size:0.85rem; color:#555;">Association Mama Esther – Ensemble pour le bien / Together for good 💚</p>
         </div>
       `,
-      attachments: [
-        { filename: "banniere.png", path: path.join(__dirname, "..", "assets", "banniere.png"), cid: "banniereHeader" },
-        { filename: "photoMama.jpg", path: path.join(__dirname, "..", "assets", "photoMama.jpg"), cid: "photoIntro" },
-        { filename: "logoMama.png", path: path.join(__dirname, "..", "assets", "logoMama.png"), cid: "logoFooter" },
-      ],
+      attachments,
     });
-    console.log("✉️ Mail de confirmation newsletter envoyé !");
+
+    if (error) throw error;
+    console.log("✉️ Mail de confirmation newsletter envoyé ! ID:", data.id);
   } catch (err) {
     console.error("❌ Envoi mail confirmation newsletter échoué :", err);
   }
@@ -84,10 +75,11 @@ async function sendConfirmationEmail(email) {
 
 // 2. CONFIRMATION CONTACT (Pour le visiteur)
 async function sendContactConfirmationEmail(name, email) {
-  const transporter = createTransporter();
   try {
-    await transporter.sendMail({
-      from: `"Mama Esther" <${process.env.EMAIL_SENDER}>`,
+    const attachments = [getAssetAttachment("logoMama.png", "logoFooter")].filter(Boolean);
+
+    const { data, error } = await resend.emails.send({
+      from: `Mama Esther <florent.gerard@mamaesther.org>`,
       to: email,
       subject: "✅ Nous avons bien reçu votre message",
       html: `
@@ -99,11 +91,11 @@ async function sendContactConfirmationEmail(name, email) {
           <img src="cid:logoFooter" alt="Logo Mama Esther" style="max-width:80px;" />
         </div>
       `,
-      attachments: [
-        { filename: "logoMama.png", path: path.join(__dirname, "..", "assets", "logoMama.png"), cid: "logoFooter" },
-      ],
+      attachments,
     });
-    console.log("✉️ Mail de confirmation contact envoyé au visiteur !");
+
+    if (error) throw error;
+    console.log("✉️ Mail de confirmation contact envoyé au visiteur ! ID:", data.id);
   } catch (err) {
     console.error("❌ Échec envoi confirmation contact :", err);
   }
@@ -111,11 +103,12 @@ async function sendContactConfirmationEmail(name, email) {
 
 // 3. NOTIFICATION CONTACT (Pour l'admin)
 async function sendContactAdminNotificationEmail({ name, email, subject, message }) {
-  const transporter = createTransporter();
   try {
-    await transporter.sendMail({
-      from: `"Mama Esther Contact" <${process.env.EMAIL_SENDER}>`,
-      to: process.env.ADMIN_EMAIL || process.env.EMAIL_SENDER,
+    const adminAddress = process.env.ADMIN_EMAIL || "florent.gerard@mamaesther.org";
+
+    const { data, error } = await resend.emails.send({
+      from: `Mama Esther Contact <florent.gerard@mamaesther.org>`,
+      to: [adminAddress],
       subject: `📬 Nouveau message de ${name} : ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius:10px;">
@@ -130,7 +123,9 @@ async function sendContactAdminNotificationEmail({ name, email, subject, message
         </div>
       `,
     });
-    console.log("✉️ Notification contact envoyée à l'admin !");
+
+    if (error) throw error;
+    console.log("✉️ Notification contact envoyée à l'admin ! ID:", data.id);
   } catch (err) {
     console.error("❌ Échec notification admin contact :", err);
   }
@@ -138,10 +133,11 @@ async function sendContactAdminNotificationEmail({ name, email, subject, message
 
 // 4. MERCI POUR LE DON (Pour le donateur)
 async function sendDonConfirmationEmail(email, amount) {
-  const transporter = createTransporter();
   try {
-    await transporter.sendMail({
-      from: `"Association Mama Esther" <${process.env.EMAIL_SENDER}>`,
+    const attachments = [getAssetAttachment("banniere.png", "banniereHeader"), getAssetAttachment("logoMama.png", "logoFooter")].filter(Boolean);
+
+    const { data, error } = await resend.emails.send({
+      from: `Association Mama Esther <florent.gerard@mamaesther.org>`,
       to: email,
       subject: "Merci pour votre don 💚 / Thank you for your donation",
       html: `
@@ -158,12 +154,11 @@ async function sendDonConfirmationEmail(email, amount) {
           <p style="font-size:0.85rem; color:#555;">Association Mama Esther – Ensemble pour le bien 💚</p>
         </div>
       `,
-      attachments: [
-        { filename: "banniere.png", path: path.join(__dirname, "..", "assets", "banniere.png"), cid: "banniereHeader" },
-        { filename: "logoMama.png", path: path.join(__dirname, "..", "assets", "logoMama.png"), cid: "logoFooter" },
-      ],
+      attachments,
     });
-    console.log("✉️ Mail de remerciement don envoyé !");
+
+    if (error) throw error;
+    console.log("✉️ Mail de remerciement don envoyé ! ID:", data.id);
   } catch (err) {
     console.error("❌ Échec envoi remerciement don :", err);
   }
@@ -171,11 +166,12 @@ async function sendDonConfirmationEmail(email, amount) {
 
 // 5. NOTIFICATION DON (Pour l'admin)
 async function sendAdminNotificationEmail(email, amount) {
-  const transporter = createTransporter();
   try {
-    await transporter.sendMail({
-      from: `"Système Mama Esther" <${process.env.EMAIL_SENDER}>`,
-      to: process.env.ADMIN_EMAIL || process.env.EMAIL_SENDER,
+    const adminAddress = process.env.ADMIN_EMAIL || "florent.gerard@mamaesther.org";
+
+    const { data, error } = await resend.emails.send({
+      from: `Système Mama Esther <florent.gerard@mamaesther.org>`,
+      to: [adminAddress],
       subject: "📥 Nouveau don reçu",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
@@ -186,7 +182,9 @@ async function sendAdminNotificationEmail(email, amount) {
         </div>
       `,
     });
-    console.log("✉️ Notification don envoyée à l'admin !");
+
+    if (error) throw error;
+    console.log("✉️ Notification don envoyée à l'admin ! ID:", data.id);
   } catch (err) {
     console.error("❌ Échec notification admin don :", err);
   }
@@ -194,15 +192,17 @@ async function sendAdminNotificationEmail(email, amount) {
 
 // 6. DÉSINCRIPTION
 async function sendUnsubscribeEmail(email) {
-  const transporter = createTransporter();
   try {
-    await transporter.sendMail({
-      from: `"Mama Esther" <${process.env.EMAIL_SENDER}>`,
+    const attachments = [getAssetAttachment("logoMama.png", "logoFooter")].filter(Boolean);
+
+    await resend.emails.send({
+      from: `Mama Esther <florent.gerard@mamaesther.org>`,
       to: email,
       subject: "Désinscription confirmée",
       html: `<div style="text-align: center; font-family: Arial;"><h2>Désinscription réussie 💚</h2><p>Nous sommes désolés de vous voir partir.</p><img src="cid:logoFooter" alt="Logo" style="max-width:80px;" /></div>`,
-      attachments: [{ filename: "logoMama.png", path: path.join(__dirname, "..", "assets", "logoMama.png"), cid: "logoFooter" }],
+      attachments,
     });
+    console.log("✉️ Mail de désinscription envoyé !");
   } catch (err) {
     console.error("❌ Échec désinscription :", err);
   }
@@ -210,11 +210,12 @@ async function sendUnsubscribeEmail(email) {
 
 // 7. NEWSLETTER BROADCAST
 async function sendNewsletterToSubscriber(email, newsletter) {
-  const transporter = createTransporter();
   const unsubscribeLink = `https://mamaesther.org/unsubscribe?email=${encodeURIComponent(email)}`;
   try {
-    await transporter.sendMail({
-      from: `"Mama Esther Newsletter" <${process.env.EMAIL_SENDER}>`,
+    const attachments = [getAssetAttachment("logoMama.png", "logoFooter")].filter(Boolean);
+
+    await resend.emails.send({
+      from: `Mama Esther Newsletter <florent.gerard@mamaesther.org>`,
       to: email,
       subject: `📰 Mama Esther : ${newsletter.title.fr}`,
       html: `
@@ -232,7 +233,7 @@ async function sendNewsletterToSubscriber(email, newsletter) {
           </div>
         </div>
       `,
-      attachments: [{ filename: "logoMama.png", path: path.join(__dirname, "..", "assets", "logoMama.png"), cid: "logoFooter" }],
+      attachments,
     });
   } catch (err) {
     console.error(`❌ Échec newsletter broadcast pour ${email} :`, err);
@@ -241,11 +242,12 @@ async function sendNewsletterToSubscriber(email, newsletter) {
 
 // 8. ALERTE ERREUR
 async function sendErrorAlertEmail(error) {
-  const transporter = createTransporter();
   try {
-    await transporter.sendMail({
-      from: `"Alerte Système" <${process.env.EMAIL_SENDER}>`,
-      to: process.env.ADMIN_EMAIL || process.env.EMAIL_SENDER,
+    const adminAddress = process.env.ADMIN_EMAIL || "florent.gerard@mamaesther.org";
+
+    await resend.emails.send({
+      from: `Alerte Système <florent.gerard@mamaesther.org>`,
+      to: [adminAddress],
       subject: "🚨 Erreur critique",
       html: `<h2>Erreur survenue</h2><p>${error.message}</p><pre>${error.stack}</pre>`,
     });
