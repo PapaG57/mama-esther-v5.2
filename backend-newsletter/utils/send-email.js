@@ -34,7 +34,7 @@ async function sendConfirmationEmail(email) {
     ].filter(Boolean);
 
     const { data, error } = await resend.emails.send({
-      from: `Mama Esther <florent.gerard@mamaesther.org>`,
+      from: `Mama Esther <onboarding@resend.dev>`,
       to: email,
       subject: "✅ Confirmation d'inscription / Subscription Confirmation",
       html: `
@@ -79,7 +79,7 @@ async function sendContactConfirmationEmail(name, email) {
     const attachments = [getAssetAttachment("logoMama.png", "logoFooter")].filter(Boolean);
 
     const { data, error } = await resend.emails.send({
-      from: `Mama Esther <florent.gerard@mamaesther.org>`,
+      from: `Mama Esther <onboarding@resend.dev>`,
       to: email,
       subject: "✅ Nous avons bien reçu votre message",
       html: `
@@ -107,7 +107,7 @@ async function sendContactAdminNotificationEmail({ name, email, subject, message
     const adminAddress = process.env.ADMIN_EMAIL || "florent.gerard@mamaesther.org";
 
     const { data, error } = await resend.emails.send({
-      from: `Mama Esther Contact <florent.gerard@mamaesther.org>`,
+      from: `Mama Esther Contact <onboarding@resend.dev>`,
       to: [adminAddress],
       subject: `📬 Nouveau message de ${name} : ${subject}`,
       html: `
@@ -137,7 +137,7 @@ async function sendDonConfirmationEmail(email, amount) {
     const attachments = [getAssetAttachment("banniere.png", "banniereHeader"), getAssetAttachment("logoMama.png", "logoFooter")].filter(Boolean);
 
     const { data, error } = await resend.emails.send({
-      from: `Association Mama Esther <florent.gerard@mamaesther.org>`,
+      from: `Association Mama Esther <onboarding@resend.dev>`,
       to: email,
       subject: "Merci pour votre don 💚 / Thank you for your donation",
       html: `
@@ -170,7 +170,7 @@ async function sendAdminNotificationEmail(email, amount) {
     const adminAddress = process.env.ADMIN_EMAIL || "florent.gerard@mamaesther.org";
 
     const { data, error } = await resend.emails.send({
-      from: `Système Mama Esther <florent.gerard@mamaesther.org>`,
+      from: `Système Mama Esther <onboarding@resend.dev>`,
       to: [adminAddress],
       subject: "📥 Nouveau don reçu",
       html: `
@@ -196,7 +196,7 @@ async function sendUnsubscribeEmail(email) {
     const attachments = [getAssetAttachment("logoMama.png", "logoFooter")].filter(Boolean);
 
     await resend.emails.send({
-      from: `Mama Esther <florent.gerard@mamaesther.org>`,
+      from: `Mama Esther <onboarding@resend.dev>`,
       to: email,
       subject: "Désinscription confirmée",
       html: `<div style="text-align: center; font-family: Arial;"><h2>Désinscription réussie 💚</h2><p>Nous sommes désolés de vous voir partir.</p><img src="cid:logoFooter" alt="Logo" style="max-width:80px;" /></div>`,
@@ -215,7 +215,7 @@ async function sendNewsletterToSubscriber(email, newsletter) {
     const attachments = [getAssetAttachment("logoMama.png", "logoFooter")].filter(Boolean);
 
     await resend.emails.send({
-      from: `Mama Esther Newsletter <florent.gerard@mamaesther.org>`,
+      from: `Mama Esther Newsletter <onboarding@resend.dev>`,
       to: email,
       subject: `📰 Mama Esther : ${newsletter.title.fr}`,
       html: `
@@ -246,7 +246,7 @@ async function sendErrorAlertEmail(error) {
     const adminAddress = process.env.ADMIN_EMAIL || "florent.gerard@mamaesther.org";
 
     await resend.emails.send({
-      from: `Alerte Système <florent.gerard@mamaesther.org>`,
+      from: `Alerte Système <onboarding@resend.dev>`,
       to: [adminAddress],
       subject: "🚨 Erreur critique",
       html: `<h2>Erreur survenue</h2><p>${error.message}</p><pre>${error.stack}</pre>`,
