@@ -363,47 +363,152 @@
     max-width: 900px !important;
     margin: 0 auto !important;
   }
+} /* ==========================================================
+   GRILLE GLOBALE (Alignement haut parfait + Centrage latéral garanti)
+   ================================================---------- */
+.sponsor-content-layout {
+  display: grid;
+  /* 2 colonnes : la gauche prend max 820px, la droite prend TOUT l'espace restant */
+  grid-template-columns: minmax(0, 820px) 1fr;
+  align-items: start; /* Aligne rigoureusement le haut des 2 colonnes */
+  max-width: 1250px;
+  margin: 40px auto 60px;
+  padding: 0 20px;
+  gap: 20px; /* Évite que ça se touche sur les petits écrans */
+  box-sizing: border-box;
 }
 
-/* RESPONSIVE TABLETTE / MOBILE */
-@media (max-width: 992px) {
+/* COLONNE GAUCHE */
+.sponsor-main-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 60px; /* Gère l'espacement entre tes sections ici, sans margin parasites */
+  width: 100%;
+  margin-top: 0;
+}
+
+/* On nettoie les padding/margins inutiles des sections pour ne pas fausser le haut */
+.sponsor-v2-manifesto,
+.sponsor-v2-benefits,
+.sponsor-v2-types,
+.sponsor-v2-cta {
+  padding: 0;
+  margin: 0;
+}
+
+.manifesto-card {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 60px;
+  background: var(--color-light);
+  border-radius: var(--radius-xl);
+  border-left: 8px solid var(--color-green);
+  margin-top: 0 !important; /* Force l'alignement strict avec l'aside */
+}
+
+/* ASIDE (COLONNE DROITE) */
+.sponsor-sidebar {
+  position: sticky;
+  top: 100px;
+  display: flex;
+  justify-content: center; /* Centre la boîte dans TOUT l'espace de droite */
+  width: 100%;
+  margin-top: 0;
+}
+
+.sponsor-sidebar-box {
+  width: 260px; /* Largeur strictement fixe de l'encadré */
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 25px 20px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.sponsor-logos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.sponsor-logo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-light);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  height: 75px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sponsor-logo-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-green);
+}
+
+.sponsor-logo-item img {
+  max-width: 100%;
+  max-height: 45px;
+  object-fit: contain;
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ================================================---------- */
+
+/* TABLETTE LARGE */
+@media (max-width: 1100px) {
   .sponsor-content-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 260px; /* L'aside ne se centre plus, il se cale à droite */
     gap: 30px;
   }
   .sponsor-sidebar {
-    grid-column: 1;
-    position: static;
+    justify-content: flex-end;
   }
+}
+
+/* TABLETTE ET MOBILE */
+@media (max-width: 992px) {
+  .sponsor-content-layout {
+    grid-template-columns: 1fr; /* On passe sur 1 seule colonne */
+    gap: 40px;
+  }
+
+  .sponsor-sidebar {
+    position: static;
+    justify-content: center;
+  }
+
+  .sponsor-sidebar-box {
+    width: 100%;
+    max-width: 500px; /* Évite que ça prenne 100% de la page sur mobile */
+  }
+
   .sponsor-logos-list {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
   }
+
   .sponsor-logo-item {
-    width: calc(50% - 10px);
+    width: calc(33.333% - 10px); /* 3 logos par ligne sur tablette */
   }
 }
 
-/* RESPONSIVE PETITS ÉCRANS */
+/* PETITS ÉCRANS */
 @media (max-width: 768px) {
-  .sponsor-v2-hero {
-    height: auto;
-    padding: 150px 0 80px;
-  }
-  .types-white-box {
-    padding: 40px 20px;
-  }
-  .cta-content h2 {
-    font-size: 2.2rem;
-  }
-  .sponsor-cta-card {
-    padding: 40px 20px;
+  .sponsor-logo-item {
+    width: calc(50% - 10px); /* 2 logos par ligne sur mobile */
   }
 
-  .manifesto-content p,
-  .benefit-card p {
-    hyphens: auto;
-    -webkit-hyphens: auto;
+  .manifesto-card {
+    padding: 30px 20px;
   }
 }

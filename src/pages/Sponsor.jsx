@@ -4,7 +4,13 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHandshake, faChartLine, faCertificate, faBoxOpen, faUsers, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { 
+  faHandshake, 
+  faChartLine, 
+  faBoxOpen, 
+  faUsers, 
+  faEnvelope 
+} from "@fortawesome/free-solid-svg-icons";
 
 const SponsorV2 = () => {
   const { t } = useTranslation();
@@ -22,13 +28,6 @@ const SponsorV2 = () => {
       title: t("v2.sponsor.benefits.impactTitle"),
       desc: t("v2.sponsor.benefits.impactDesc")
     },
-    /* Masqué temporairement en attente de confirmation juridique
-    {
-      icon: faCertificate,
-      title: t("v2.sponsor.benefits.taxTitle"),
-      desc: t("v2.sponsor.benefits.taxDesc")
-    },
-    */
     {
       icon: faHandshake,
       title: t("v2.sponsor.benefits.imageTitle"),
@@ -58,12 +57,16 @@ const SponsorV2 = () => {
     <div className="v2-layout">
       <Navbar hideDonate={true} />
       
-      {/* 1. HERO SPONSOR (Plein écran en haut) */}
+      {/* 1. HERO SPONSOR */}
       <section className="sponsor-v2-hero">
         <div className="v2-container">
           <div className="sponsor-v2-hero-content">
-            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>{t("v2.sponsor.heroSubtitle")}</span>
-            <h1 className="v2-title" style={{color: "white"}}>{t("v2.sponsor.heroTitle")}</h1>
+            <span className="v2-subtitle" style={{color: "var(--color-yellow)"}}>
+              {t("v2.sponsor.heroSubtitle")}
+            </span>
+            <h1 className="v2-title" style={{color: "white"}}>
+              {t("v2.sponsor.heroTitle")}
+            </h1>
             <p className="sponsor-hero-text">
               {t("v2.sponsor.heroText")}
             </p>
@@ -75,13 +78,11 @@ const SponsorV2 = () => {
         </div>
       </section>
 
-      {/* CONTENEUR GLOBAL : Colonne principale à gauche + Aside sticky à droite */}
+      {/* CONTENEUR GLOBAL */}
       <div className="v2-container sponsor-content-layout">
         
-        {/* COLONNE DE GAUCHE : TOUTES LES SECTIONS */}
+        {/* COLONNE DE GAUCHE */}
         <div className="sponsor-main-sections">
-
-          {/* 1bis. MANIFESTE ÉMOTIONNEL */}
           <section className="sponsor-v2-manifesto">
             <div className="manifesto-card">
               <div className="manifesto-content">
@@ -111,13 +112,11 @@ const SponsorV2 = () => {
             </div>
           </section>
 
-          {/* 2. POURQUOI NOUS SOUTENIR ? */}
           <section className="sponsor-v2-benefits">
             <div className="v2-section-header">
               <span className="v2-subtitle">{t("v2.sponsor.benefits.subtitle")}</span>
               <h2 className="v2-title">{t("v2.sponsor.benefits.title")}</h2>
             </div>
-            
             <div className="benefits-grid">
               {benefits.map((item, index) => (
                 <div className="benefit-card" key={index}>
@@ -131,14 +130,12 @@ const SponsorV2 = () => {
             </div>
           </section>
 
-          {/* 3. TYPES DE PARTENARIATS */}
           <section className="sponsor-v2-types">
             <div className="types-white-box">
               <div className="v2-section-header">
                 <h2 className="v2-title">{t("v2.sponsor.types.title")}</h2>
                 <p>{t("v2.sponsor.types.text")}</p>
               </div>
-              
               <div className="types-grid">
                 {types.map((type, index) => (
                   <div className="type-item" key={index}>
@@ -155,7 +152,6 @@ const SponsorV2 = () => {
             </div>
           </section>
 
-          {/* 4. CTA FINAL */}
           <section className="sponsor-v2-cta">
             <div className="sponsor-cta-card">
               <div className="cta-content">
@@ -168,10 +164,9 @@ const SponsorV2 = () => {
               </div>
             </div>
           </section>
-
         </div>
 
-        {/* ASIDE DES PARTENAIRES : COMMENCE EN HAUT ET SUIT LE SCROLL */}
+        {/* ASIDE (COLONNE DE DROITE) */}
         <aside className="sponsor-sidebar">
           <div className="sponsor-sidebar-box">
             <h3>Nos Partenaires</h3>
