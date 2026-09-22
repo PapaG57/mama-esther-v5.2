@@ -52,7 +52,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// 2. GET : Récupérer tous les dons (triés par date)
+// 2. GET : Récupérer tous les dons
 router.get("/", async (req, res) => {
   try {
     const dons = await Donation.findAll({
@@ -69,7 +69,8 @@ router.get("/", async (req, res) => {
 router.get("/count", async (req, res) => {
   try {
     const total = (await Donation.sum("montant")) || 0;
-    return res.status(200).json(total);
+    // Format objet JSON pour le front-end
+    return res.status(200).json({ total, count: total, totalGlobal: total });
   } catch (error) {
     console.error("Erreur count :", error);
     return res.status(500).json({ error: error.message });
@@ -92,7 +93,7 @@ router.get("/annee", async (req, res) => {
         },
       })) || 0;
 
-    return res.status(200).json(totalAnnee);
+    return res.status(200).json({ total: totalAnnee, totalAnnee });
   } catch (error) {
     console.error("Erreur annee :", error);
     return res.status(500).json({ error: error.message });
@@ -115,7 +116,7 @@ router.get("/mois", async (req, res) => {
         },
       })) || 0;
 
-    return res.status(200).json(totalMois);
+    return res.status(200).json({ total: totalMois, totalMois });
   } catch (error) {
     console.error("Erreur mois :", error);
     return res.status(500).json({ error: error.message });
@@ -126,7 +127,7 @@ router.get("/mois", async (req, res) => {
 router.get("/donors/count", async (req, res) => {
   try {
     const count = await Donation.count();
-    return res.status(200).json(count);
+    return res.status(200).json({ count, totalDonors: count });
   } catch (error) {
     console.error("Erreur donors/count :", error);
     return res.status(500).json({ error: error.message });
