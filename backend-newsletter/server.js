@@ -10,7 +10,6 @@ import sequelize from "./config/database.js";
 import subscriptionRouter from "./routes/Subscription.js";
 import contactRouter from "./routes/Contact.js";
 import unsubscribeRouter from "./routes/unsubscribe.js";
-import donRouter from "./routes/Don.js";
 import donationRoutes from "./routes/Donations.js";
 import helloassoRoutes from "./routes/helloasso.js";
 import adminRoutes from "./routes/admin.js";
@@ -50,13 +49,7 @@ app.post("/api/upload-image", upload.single("image"), (req, res) => {
 });
 
 // 1. 🛡️ SECURITY & CORS
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5000",
-  "https://mamaesther.org",
-  "https://www.mamaesther.org",
-  "https://mama-esther-v5-2.vercel.app"
-];
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5000", "https://mamaesther.org", "https://www.mamaesther.org", "https://mama-esther-v5-2.vercel.app"];
 
 app.use(
   cors({
@@ -69,14 +62,14 @@ app.use(
       }
     },
     credentials: true,
-  })
+  }),
 );
 
 app.use(helmet());
 
 // 2. 📦 PARSERS
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
 // 4. 🚦 RATE LIMITING
 const limiter = rateLimit({
@@ -93,13 +86,13 @@ app.get("/api/health", async (req, res) => {
       status: "ok",
       uptime: process.uptime(),
       db: "connected",
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     res.status(500).json({
       status: "degraded",
       db: "disconnected",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -110,7 +103,6 @@ app.use("/api", limiter);
 app.use("/api/subscribe", subscriptionRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/unsubscribe", unsubscribeRouter);
-app.use("/api/don", donRouter);
 app.use("/api/donations", donationRoutes);
 app.use("/api/helloasso", helloassoRoutes);
 app.use("/api/admin", adminRoutes);
@@ -123,13 +115,14 @@ app.get("/", (req, res) => {
 app.use((err, req, res, next) => {
   logger.error("❌ Erreur serveur :", { message: err.message, stack: err.stack });
   if (process.env.NODE_ENV === "production") {
-    sendErrorAlertEmail(err).catch(e => logger.error("Échec envoi alerte mail", e));
+    sendErrorAlertEmail(err).catch((e) => logger.error("Échec envoi alerte mail", e));
   }
   res.status(500).json({ error: "Erreur interne du serveur" });
 });
 
 logger.info("🧪 Tentative de connexion à PostgreSQL...");
-sequelize.sync({ alter: true }) // Synchronise les modèles avec la base
+sequelize
+  .sync({ alter: true }) // Synchronise les modèles avec la base
   .then(() => {
     logger.info("✅ Connexion PostgreSQL OK & Tables synchronisées");
     const PORT = process.env.PORT || 5000;
