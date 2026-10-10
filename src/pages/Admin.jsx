@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt, faNewspaper, faKey, faLock, faUserEdit } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt, faNewspaper, faKey, faUserEdit } from "@fortawesome/free-solid-svg-icons";
 import "../styles/AdminV2.css";
 import PasswordField from "../components/PasswordField";
 import confetti from "canvas-confetti";
