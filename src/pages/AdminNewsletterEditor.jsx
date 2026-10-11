@@ -270,9 +270,10 @@ const AdminNewsletterEditor = () => {
     setSearchResults([]);
     setSelectedPhotoUrl(null);
 
-    const formattedQuery = query.replace(/\s+/g, ',');
+    // Utilisation d'Unsplash Source avec mots-clés dynamiques et fiables
+    const encoded = encodeURIComponent(query);
     const newResults = Array.from({ length: 6 }, (_, i) =>
-      `https://loremflickr.com/500/350/${encodeURIComponent(formattedQuery)}?lock=${i + 1}`
+      `https://picsum.photos/seed/${encoded}${i + 1}/500/350`
     );
 
     setSearchResults(newResults);
@@ -426,7 +427,7 @@ const AdminNewsletterEditor = () => {
         <div className="mag-header-banner" title="Image de couverture">
           <img src={editingImageTarget === 'banner' && tempImageUrl ? tempImageUrl : data.bannerImage} alt="Bannière" />
           {!isPreview && (
-            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, display: 'flex', gap: '10px' }}>
+            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
               {editingImageTarget !== 'banner' ? (
                 <button className="mag-action-btn" onClick={() => openImageSourceModal('banner')} title="Changer la bannière">
                   <FontAwesomeIcon icon={faImage} /> Changer la bannière
@@ -465,13 +466,13 @@ const AdminNewsletterEditor = () => {
                 <img src={editingImageTarget === 'president' && tempImageUrl ? tempImageUrl : data.presidentImage} alt="Avatar" className="mag-edito-img" />
               </div>
               {!isPreview && (
-                <div style={{ marginTop: '12px' }}>
+                <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center', width: '100%' }}>
                   {editingImageTarget !== 'president' ? (
-                    <button className="mag-action-btn" onClick={() => openImageSourceModal('president')} style={{ fontSize: '0.85rem', padding: '6px 12px' }}>
+                    <button className="mag-action-btn" onClick={() => openImageSourceModal('president')} style={{ fontSize: '0.85rem', padding: '6px 12px', whiteSpace: 'nowrap' }}>
                       <FontAwesomeIcon icon={faImage} /> Changer l'image
                     </button>
                   ) : (
-                    <div style={{ display: 'flex', gap: '6px' }}>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
                       <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleValidateLocalImage}>
                         Enregistrer 💾
                       </button>
@@ -551,7 +552,7 @@ const AdminNewsletterEditor = () => {
 
               return (
                 <div key={block.id} className="mag-article-row">
-                  <div className="mag-article-img-box" title="Image de l'article">
+                  <div className="mag-article-img-box" title="Image de l'article" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', overflow: 'hidden' }}>
                     {activeImg ? (
                       <img src={activeImg} alt="Article" />
                     ) : (
@@ -561,13 +562,13 @@ const AdminNewsletterEditor = () => {
                       </div>
                     )}
                     {!isPreview && (
-                      <div style={{ marginTop: '10px' }}>
+                      <div style={{ marginTop: '10px', width: '100%', display: 'flex', justifyContent: 'center' }}>
                         {!isEditingThisBlockImage ? (
-                          <button className="mag-action-btn" onClick={() => openImageSourceModal(block.id)} title="Ajouter une image">
-                            <FontAwesomeIcon icon={faImage} /> Ajouter une image
+                          <button className="mag-action-btn" onClick={() => openImageSourceModal(block.id)} title="Ajouter ou changer l'image" style={{ whiteSpace: 'nowrap' }}>
+                            <FontAwesomeIcon icon={faImage} /> {block.image ? "Changer l'image" : "Ajouter une image"}
                           </button>
                         ) : (
-                          <div style={{ display: 'flex', gap: '6px' }}>
+                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
                             <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.85rem', padding: '5px 8px' }} onClick={handleValidateLocalImage}>
                               Enregistrer 💾
                             </button>
@@ -592,7 +593,7 @@ const AdminNewsletterEditor = () => {
                       {block.text[currentLang]}
                     </div>
                     {!isPreview && (
-                      <div className="block-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <div className="block-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                         {!isEditingThisBlock ? (
                           <button 
                             className="mag-action-btn" 
