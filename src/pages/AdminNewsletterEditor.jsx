@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faArrowLeft, faSave, faEye, faEyeSlash, 
-  faImage, faPlusCircle, faRobot, faTrash,
+  faImage, faPlusCircle, faCheck, faTrash,
   faTextHeight, faPalette, faFillDrip, faCheckCircle,
   faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
@@ -20,13 +20,16 @@ const AdminNewsletterEditor = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
-  // On utilise la langue de i18next pour déterminer quelle version on édite
   const currentLang = i18n.language.split('-')[0] === 'en' ? 'en' : 'fr';
   
   const [activeBlockId, setActiveBlockId] = useState(null);
   const [showMobileTools, setShowMobileTools] = useState(false);
   const fileInputRef = useRef(null);
   const [uploadTarget, setUploadTarget] = useState(null);
+
+  // États pour afficher/masquer dynamiquement les boutons Enregistrer sous les zones
+  const [isEditingEdito, setIsEditingEdito] = useState(false);
+  const [editingBlockId, setEditingBlockId] = useState(null);
 
   // Gemini Modal States
   const [showGeminiModal, setShowGeminiModal] = useState(false);
@@ -36,14 +39,13 @@ const AdminNewsletterEditor = () => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [currentBlockIdForGemini, setCurrentBlockIdForGemini] = useState(null);
 
-  // New states for image search
+  // Image Search States
   const [showSearchImageModal, setShowSearchImageModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(null);
 
-  // SVG Gemini Logo
   const GeminiLogo = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
       <path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" fill="currentColor"/>
@@ -51,19 +53,12 @@ const AdminNewsletterEditor = () => {
     </svg>
   );
 
-  // État initial (Outil réutilisable)
   const [data, setData] = useState({
-    title: {
-      fr: "NEWSLETTER #",
-      en: "NEWSLETTER #"
-    },
+    title: { fr: "NEWSLETTER #", en: "NEWSLETTER #" },
     date: new Date().toISOString().split('T')[0],
     bannerImage: '/assets/covers/banner-news.webp',
     presidentImage: '/assets/mentions/president-mama.webp',
-    edito: {
-      fr: "Votre édito ici...",
-      en: "Your editorial here..."
-    },
+    edito: { fr: "Votre édito ici...", en: "Your editorial here..." },
     blocks: [
       {
         id: Date.now(),
@@ -73,23 +68,17 @@ const AdminNewsletterEditor = () => {
         styles: { fontSize: '1.25rem', color: 'white' }
       }
     ],
-    tags: {
-      fr: [],
-      en: []
-    },
+    tags: { fr: [], en: [] },
     pdfPath: '',
     isPublished: false
   });
 
-  // Outils Word
   const execCommand = (command, value = null) => {
     document.execCommand(command, false, value);
   };
 
   useEffect(() => {
-    if (id) {
-      fetchNewsletter();
-    }
+    if (id) fetchNewsletter();
   }, [id]);
 
   const fetchNewsletter = async () => {
@@ -149,6 +138,16 @@ const AdminNewsletterEditor = () => {
     }
   };
 
+  // Validation locale (ne sauvegarde pas en BDD, ne génère aucun PDF)
+  const handleValidateLocalText = (target) => {
+    if (target === 'edito') {
+      setIsEditingEdito(false);
+    } else {
+      setEditingBlockId(null);
+    }
+    toast.success("Texte ajouté avec succès ! 🎉");
+  };
+
   const handleStyleChange = (blockId, styleKey, value) => {
     setData(prev => ({
       ...prev,
@@ -167,8 +166,9 @@ const AdminNewsletterEditor = () => {
     setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
   };
 
-  const deleteBlock = (id) => {
-    setData(prev => ({ ...prev, blocks: prev.blocks.filter(b => b.id !== id) }));
+  const deleteBlock = (blockId) => {
+    setData(prev => ({ ...prev, blocks: prev.blocks.filter(b => b.id !== blockId) }));
+    if (editingBlockId === blockId) setEditingBlockId(null);
   };
 
   const handleImageUpload = async (e) => {
@@ -192,7 +192,7 @@ const AdminNewsletterEditor = () => {
           blocks: prev.blocks.map(b => b.id === uploadTarget ? { ...b, image: imageUrl } : b)
         }));
       }
-      toast.success("Image mise à jour !");
+      toast.success("Image ajoutée avec succès ! 🖼️");
     } catch (err) {
       toast.error("Échec de l'upload.");
     }
@@ -247,7 +247,6 @@ const AdminNewsletterEditor = () => {
 
   const handleSearchPhotos = () => {
     const query = searchQuery.trim();
-
     if (!query) {
       toast.warning("Veuillez saisir un mot-clé pour rechercher des images.");
       setSearchResults([]);
@@ -260,7 +259,6 @@ const AdminNewsletterEditor = () => {
     setSelectedPhotoUrl(null);
 
     const formattedQuery = query.replace(/\s+/g, ',');
-
     const newResults = Array.from({ length: 6 }, (_, i) =>
       `https://loremflickr.com/500/350/${encodeURIComponent(formattedQuery)}?lock=${i + 1}`
     );
@@ -280,7 +278,7 @@ const AdminNewsletterEditor = () => {
         styles: { fontSize: '1.25rem', color: 'white' }
       };
       setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
-      toast.success("Photo insérée dans la newsletter !");
+      toast.success("Image ajoutée avec succès ! 🖼️");
       setShowSearchImageModal(false);
       setSearchQuery('');
       setSearchResults([]);
@@ -290,6 +288,7 @@ const AdminNewsletterEditor = () => {
     }
   };
 
+  // Sauvegarde FINALE en BDD + génération du PDF (appelée UNIQUEMENT via la disquette de gauche)
   const handleSave = async () => {
     try {
       const formatted = {
@@ -313,14 +312,16 @@ const AdminNewsletterEditor = () => {
 
       if (id) {
         await newsletterService.update(id, formatted);
-        toast.success("Newsletter mise à jour avec succès !");
       } else {
         await newsletterService.create(formatted);
-        toast.success("Newsletter créée avec succès !");
       }
-      navigate('/admin');
+      
+      toast.success("Newsletter enregistrée avec succès ! 💾");
+
+      setIsEditingEdito(false);
+      setEditingBlockId(null);
     } catch (err) {
-      toast.error("Erreur lors de l'enregistrement : " + (err.message || "Serveur injoignable"));
+      toast.error("Erreur d'enregistrement : " + (err.message || "Serveur injoignable"));
     }
   };
 
@@ -366,7 +367,7 @@ const AdminNewsletterEditor = () => {
             <FontAwesomeIcon icon={faEye} />
           </button>
 
-          <button className="v2-btn-icon save-btn" onClick={handleSave} title="Enregistrer la newsletter">
+          <button className="v2-btn-icon save-btn" onClick={handleSave} title="Enregistrer la newsletter (Sauvegarde BDD)">
             <FontAwesomeIcon icon={faSave} />
           </button>
 
@@ -455,93 +456,125 @@ const AdminNewsletterEditor = () => {
                 className="editable-area edito-text"
                 contentEditable={!isPreview}
                 suppressContentEditableWarning={true}
+                onFocus={() => setIsEditingEdito(true)}
                 onBlur={(e) => handleTextChange('edito', e.target.innerText)}
               >
                 {data.edito[currentLang]}
               </div>
               {!isPreview && (
-                <button 
-                  className="mag-action-btn" 
-                  style={{ marginTop: '20px', background: 'rgba(255,255,255,0.2)', cursor: 'pointer' }} 
-                  onClick={() => {
-                    const editoArea = document.querySelector('.edito-text');
-                    if (editoArea) {
-                      editoArea.focus();
-                      const range = document.createRange();
-                      const sel = window.getSelection();
-                      range.selectNodeContents(editoArea);
-                      range.collapse(false);
-                      sel.removeAllRanges();
-                      sel.addRange(range);
-                    }
-                  }} 
-                  title="Ajouter du texte"
-                >
-                  <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
-                </button>
+                <div style={{ marginTop: '20px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  {!isEditingEdito ? (
+                    <button 
+                      className="mag-action-btn" 
+                      style={{ background: 'rgba(255,255,255,0.2)', cursor: 'pointer' }} 
+                      onClick={() => {
+                        setIsEditingEdito(true);
+                        const editoArea = document.querySelector('.edito-text');
+                        if (editoArea) {
+                          editoArea.focus();
+                          const range = document.createRange();
+                          const sel = window.getSelection();
+                          range.selectNodeContents(editoArea);
+                          range.collapse(false);
+                          sel.removeAllRanges();
+                          sel.addRange(range);
+                        }
+                      }} 
+                      title="Ajouter du texte"
+                    >
+                      <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
+                    </button>
+                  ) : (
+                    <button 
+                      className="mag-action-btn" 
+                      style={{ background: '#007a5e', color: '#ffffff', border: '1px solid #fcd116', cursor: 'pointer' }} 
+                      onClick={() => handleValidateLocalText('edito')}
+                      title="Valider la saisie"
+                    >
+                      <FontAwesomeIcon icon={faSave} /> Enregistrer 💾
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </section>
 
           {/* BLOCS ARTICLES */}
           <div className="mag-articles-list">
-            {data.blocks.map((block) => (
-              <div key={block.id} className="mag-article-row">
-                <div className="mag-article-img-box" title="Image de l'article">
-                  {block.image ? (
-                    <img src={block.image} alt="Article" />
-                  ) : (
-                    <div className="add-img-placeholder">
-                      <FontAwesomeIcon icon={faImage} size="3x" color="rgba(255,255,255,0.3)" />
-                      <span>Aucune image</span>
-                    </div>
-                  )}
-                  {!isPreview && (
-                    <button className="mag-action-btn" onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }} title="Ajouter une image">
-                      <FontAwesomeIcon icon={faImage} /> Ajouter une image
-                    </button>
-                  )}
-                </div>
-                <div className="mag-article-right" style={block.styles}>
-                  <div
-                    id={`block-text-${block.id}`}
-                    className="mag-article-text editable-area"
-                    contentEditable={!isPreview}
-                    suppressContentEditableWarning={true}
-                    onBlur={(e) => handleTextChange('text', e.target.innerText, block.id)}
-                    onClick={() => { setActiveBlockId(block.id); setShowMobileTools(true); }}
-                  >
-                    {block.text[currentLang]}
+            {data.blocks.map((block) => {
+              const isEditingThisBlock = editingBlockId === block.id;
+
+              return (
+                <div key={block.id} className="mag-article-row">
+                  <div className="mag-article-img-box" title="Image de l'article">
+                    {block.image ? (
+                      <img src={block.image} alt="Article" />
+                    ) : (
+                      <div className="add-img-placeholder">
+                        <FontAwesomeIcon icon={faImage} size="3x" color="rgba(255,255,255,0.3)" />
+                        <span>Aucune image</span>
+                      </div>
+                    )}
+                    {!isPreview && (
+                      <button className="mag-action-btn" onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }} title="Ajouter une image">
+                        <FontAwesomeIcon icon={faImage} /> Ajouter une image
+                      </button>
+                    )}
                   </div>
-                  {!isPreview && (
-                    <div className="block-actions">
-                      <button 
-                        className="mag-action-btn" 
-                        style={{ background: 'rgba(255,255,255,0.1)', margin: 0, cursor: 'pointer' }} 
-                        onClick={() => {
-                          const blockTextDiv = document.getElementById(`block-text-${block.id}`);
-                          if (blockTextDiv) {
-                            blockTextDiv.focus();
-                            const range = document.createRange();
-                            const sel = window.getSelection();
-                            range.selectNodeContents(blockTextDiv);
-                            range.collapse(false);
-                            sel.removeAllRanges();
-                            sel.addRange(range);
-                          }
-                        }} 
-                        title="Ajouter du texte"
-                      >
-                        <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
-                      </button>
-                      <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer ce bloc">
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
+                  <div className="mag-article-right" style={block.styles}>
+                    <div
+                      id={`block-text-${block.id}`}
+                      className="mag-article-text editable-area"
+                      contentEditable={!isPreview}
+                      suppressContentEditableWarning={true}
+                      onFocus={() => setEditingBlockId(block.id)}
+                      onBlur={(e) => handleTextChange('text', e.target.innerText, block.id)}
+                      onClick={() => { setActiveBlockId(block.id); setShowMobileTools(true); }}
+                    >
+                      {block.text[currentLang]}
                     </div>
-                  )}
+                    {!isPreview && (
+                      <div className="block-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        {!isEditingThisBlock ? (
+                          <button 
+                            className="mag-action-btn" 
+                            style={{ background: 'rgba(255,255,255,0.1)', margin: 0, cursor: 'pointer' }} 
+                            onClick={() => {
+                              setEditingBlockId(block.id);
+                              const blockTextDiv = document.getElementById(`block-text-${block.id}`);
+                              if (blockTextDiv) {
+                                blockTextDiv.focus();
+                                const range = document.createRange();
+                                const sel = window.getSelection();
+                                range.selectNodeContents(blockTextDiv);
+                                range.collapse(false);
+                                sel.removeAllRanges();
+                                sel.addRange(range);
+                              }
+                            }} 
+                            title="Ajouter du texte"
+                          >
+                            <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
+                          </button>
+                        ) : (
+                          <button 
+                            className="mag-action-btn" 
+                            style={{ background: '#007a5e', color: '#ffffff', border: '1px solid #fcd116', margin: 0, cursor: 'pointer' }} 
+                            onClick={() => handleValidateLocalText(block.id)}
+                            title="Valider la saisie"
+                          >
+                            <FontAwesomeIcon icon={faSave} /> Enregistrer 💾
+                          </button>
+                        )}
+                        <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer ce bloc">
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {!isPreview && (
