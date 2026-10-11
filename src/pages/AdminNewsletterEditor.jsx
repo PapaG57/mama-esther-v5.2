@@ -6,7 +6,7 @@ import {
   faArrowLeft, faSave, faEye, faEyeSlash, 
   faImage, faPlusCircle, faTrash, faTimes,
   faTextHeight, faPalette, faFillDrip, faCheckCircle,
-  faPaperPlane
+  faPaperPlane, faGlobe, faDesktop
 } from '@fortawesome/free-solid-svg-icons';
 import { newsletterService } from '../api/services';
 import { toast } from 'react-toastify';
@@ -27,9 +27,16 @@ const AdminNewsletterEditor = () => {
   const fileInputRef = useRef(null);
   const [uploadTarget, setUploadTarget] = useState(null);
 
-  // États d'édition locale
+  // États d'édition locale (Textes)
   const [isEditingEdito, setIsEditingEdito] = useState(false);
   const [editingBlockId, setEditingBlockId] = useState(null);
+
+  // États d'édition locale (Images)
+  const [editingImageTarget, setEditingImageTarget] = useState(null);
+  const [tempImageUrl, setTempImageUrl] = useState(null);
+
+  // Modale Choix Source Image (PC / Internet)
+  const [showSourceImageModal, setShowSourceImageModal] = useState(false);
 
   // Gemini Modal States
   const [showGeminiModal, setShowGeminiModal] = useState(false);
@@ -137,7 +144,7 @@ const AdminNewsletterEditor = () => {
     }
   };
 
-  // Validation locale avec alerte pour étourdis ! 🙈
+  // Validation locale du texte avec alerte anti-étourderie
   const handleValidateLocalText = (target) => {
     let contentToCheck = "";
     const placeholders = ["votre édito ici...", "your editorial here...", "votre texte d'article ici...", "your article text here..."];
@@ -164,13 +171,66 @@ const AdminNewsletterEditor = () => {
     toast.success("Texte ajouté avec succès ! 🎉");
   };
 
-  // Annulation de la saisie
-  const handleCancelLocalEdit = (target) => {
+  // Annulation locale du texte
+  const handleCancelLocalText = (target) => {
     if (target === 'edito') {
       setIsEditingEdito(false);
     } else {
       setEditingBlockId(null);
     }
+    toast.info("Saisie annulée ❌");
+  };
+
+  // Ouverture du choix source image
+  const openImageSourceModal = (target) => {
+    setUploadTarget(target);
+    setShowSourceImageModal(true);
+  };
+
+  // Upload PC ou sélection Internet (Mode Local Temporaire)
+  const handleImageSelectedTemp = async (imageUrl, file = null) => {
+    let finalUrl = imageUrl;
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+        const res = await newsletterService.uploadImage(formData);
+        finalUrl = res.data.url;
+      } catch (err) {
+        finalUrl = URL.createObjectURL(file);
+      }
+    }
+
+    setTempImageUrl(finalUrl);
+    setEditingImageTarget(uploadTarget);
+    setShowSourceImageModal(false);
+    setShowSearchImageModal(false);
+  };
+
+  // Validation locale de l'image
+  const handleValidateLocalImage = () => {
+    if (!tempImageUrl) return;
+
+    if (editingImageTarget === 'banner') {
+      setData(prev => ({ ...prev, bannerImage: tempImageUrl }));
+    } else if (editingImageTarget === 'president') {
+      setData(prev => ({ ...prev, presidentImage: tempImageUrl }));
+    } else {
+      setData(prev => ({
+        ...prev,
+        blocks: prev.blocks.map(b => b.id === editingImageTarget ? { ...b, image: tempImageUrl } : b)
+      }));
+    }
+
+    toast.success("Image ajoutée avec succès ! 🖼️");
+    setEditingImageTarget(null);
+    setTempImageUrl(null);
+  };
+
+  // Annulation locale de l'image
+  const handleCancelLocalImage = () => {
+    setEditingImageTarget(null);
+    setTempImageUrl(null);
     toast.info("Saisie annulée ❌");
   };
 
@@ -197,80 +257,6 @@ const AdminNewsletterEditor = () => {
     if (editingBlockId === blockId) setEditingBlockId(null);
   };
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      toast.info("Upload de l'image...");
-      const res = await newsletterService.uploadImage(formData);
-      const imageUrl = res.data.url;
-
-      if (uploadTarget === 'banner') {
-        setData(prev => ({ ...prev, bannerImage: imageUrl }));
-      } else if (uploadTarget === 'president') {
-        setData(prev => ({ ...prev, presidentImage: imageUrl }));
-      } else {
-        setData(prev => ({
-          ...prev,
-          blocks: prev.blocks.map(b => b.id === uploadTarget ? { ...b, image: imageUrl } : b)
-        }));
-      }
-      toast.success("Image ajoutée avec succès ! 🖼️");
-    } catch (err) {
-      toast.error("Échec de l'upload.");
-    }
-  };
-
-  const handleGenerateInModal = async () => {
-    if (!geminiPrompt.trim()) {
-      toast.warning("Veuillez saisir un prompt pour générer du texte.");
-      return;
-    }
-
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (!apiKey) {
-      toast.error("Clé API Gemini non configurée dans le fichier .env (VITE_GEMINI_API_KEY).");
-      return;
-    }
-
-    setGeminiLoading(true);
-    setGeminiGeneratedText('');
-    try {
-      toast.info("L'IA Gemini rédige votre contenu...");
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: geminiPrompt }] }],
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || "Erreur lors de l'appel à l'API Gemini.");
-      }
-
-      const resData = await response.json();
-      const generatedContent = resData.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (generatedContent) {
-        setGeminiGeneratedText(generatedContent);
-        toast.success("Contenu généré par l'IA avec succès !");
-      } else {
-        toast.warning("L'IA n'a pas généré de contenu. Veuillez réessayer ou ajuster le prompt.");
-      }
-    } catch (err) {
-      console.error("Erreur lors de la génération IA dans la modale:", err);
-      toast.error("Erreur IA : " + (err.message || "Connexion impossible"));
-    } finally {
-      setGeminiLoading(false);
-    }
-  };
-
   const handleSearchPhotos = () => {
     const query = searchQuery.trim();
     if (!query) {
@@ -292,26 +278,6 @@ const AdminNewsletterEditor = () => {
     setSearchResults(newResults);
     setIsSearching(false);
     toast.success(`Recherche de photos pour "${query}" terminée !`);
-  };
-
-  const handleInsertSelectedPhoto = () => {
-    if (selectedPhotoUrl) {
-      const newBlock = {
-        id: Date.now(),
-        type: 'article',
-        image: selectedPhotoUrl,
-        text: { fr: 'Image recherchée.', en: 'Searched image.' },
-        styles: { fontSize: '1.25rem', color: 'white' }
-      };
-      setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
-      toast.success("Image ajoutée avec succès ! 🖼️");
-      setShowSearchImageModal(false);
-      setSearchQuery('');
-      setSearchResults([]);
-      setSelectedPhotoUrl(null);
-    } else {
-      toast.error("Veuillez sélectionner une photo à insérer.");
-    }
   };
 
   // Sauvegarde globale BDD
@@ -346,6 +312,7 @@ const AdminNewsletterEditor = () => {
 
       setIsEditingEdito(false);
       setEditingBlockId(null);
+      setEditingImageTarget(null);
     } catch (err) {
       toast.error("Erreur d'enregistrement : " + (err.message || "Serveur injoignable"));
     }
@@ -378,7 +345,16 @@ const AdminNewsletterEditor = () => {
     <div className={`newsletter-editor-layout ${isPreview ? 'preview-mode' : ''}`}>
       <Navbar hideDonate={true} />
 
-      <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImageUpload} />
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        style={{ display: 'none' }} 
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file) handleImageSelectedTemp(null, file);
+        }} 
+        accept="image/*" 
+      />
 
       {/* BARRE LATÉRALE GAUCHE */}
       {!isPreview && (
@@ -419,7 +395,7 @@ const AdminNewsletterEditor = () => {
             setSearchQuery('');
             setSearchResults([]);
             setSelectedPhotoUrl(null);
-          }} title="Rechercher une photo">
+          }} title="Rechercher une photo sur Internet">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -448,11 +424,24 @@ const AdminNewsletterEditor = () => {
       <div className="editor-container">
         {/* BANNIÈRE HEADER */}
         <div className="mag-header-banner" title="Image de couverture">
-          <img src={data.bannerImage} alt="Bannière" />
+          <img src={editingImageTarget === 'banner' && tempImageUrl ? tempImageUrl : data.bannerImage} alt="Bannière" />
           {!isPreview && (
-            <button className="mag-action-btn" onClick={() => { setUploadTarget('banner'); fileInputRef.current.click(); }} title="Changer la bannière">
-              <FontAwesomeIcon icon={faImage} /> Changer la bannière
-            </button>
+            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, display: 'flex', gap: '10px' }}>
+              {editingImageTarget !== 'banner' ? (
+                <button className="mag-action-btn" onClick={() => openImageSourceModal('banner')} title="Changer la bannière">
+                  <FontAwesomeIcon icon={faImage} /> Changer la bannière
+                </button>
+              ) : (
+                <>
+                  <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', border: '1px solid #fcd116' }} onClick={handleValidateLocalImage}>
+                    <FontAwesomeIcon icon={faSave} /> Enregistrer 💾
+                  </button>
+                  <button className="mag-action-btn" style={{ background: 'rgba(220, 53, 69, 0.9)', color: '#fff' }} onClick={handleCancelLocalImage}>
+                    <FontAwesomeIcon icon={faTimes} /> Annuler ❌
+                  </button>
+                </>
+              )}
+            </div>
           )}
         </div>
 
@@ -468,15 +457,33 @@ const AdminNewsletterEditor = () => {
 
           {/* EDITO SECTION */}
           <section className="mag-edito-box">
-            <div className="mag-edito-left">
+            <div className="mag-edito-left" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <h3 style={{ color: '#fcd116', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.95rem', fontWeight: '800', letterSpacing: '1px' }}>
                 {currentLang === 'fr' ? "Le mot de la Présidente" : "A word from the President"}
               </h3>
-              <div className="president-img-wrapper" onClick={() => { setUploadTarget('president'); fileInputRef.current.click(); }} title="Changer l'image de la Présidente">
-                <img src={data.presidentImage} alt="Avatar" className="mag-edito-img" />
-                {!isPreview && <div className="img-mini-btn"><FontAwesomeIcon icon={faPlusCircle} /></div>}
+              <div className="president-img-wrapper" title="Image de la Présidente">
+                <img src={editingImageTarget === 'president' && tempImageUrl ? tempImageUrl : data.presidentImage} alt="Avatar" className="mag-edito-img" />
               </div>
+              {!isPreview && (
+                <div style={{ marginTop: '12px' }}>
+                  {editingImageTarget !== 'president' ? (
+                    <button className="mag-action-btn" onClick={() => openImageSourceModal('president')} style={{ fontSize: '0.85rem', padding: '6px 12px' }}>
+                      <FontAwesomeIcon icon={faImage} /> Changer l'image
+                    </button>
+                  ) : (
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleValidateLocalImage}>
+                        Enregistrer 💾
+                      </button>
+                      <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleCancelLocalImage}>
+                        Annuler ❌
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
+
             <div className="mag-edito-right">
               <div
                 className="editable-area edito-text"
@@ -523,7 +530,7 @@ const AdminNewsletterEditor = () => {
                       <button 
                         className="mag-action-btn" 
                         style={{ background: 'rgba(220, 53, 69, 0.8)', color: '#ffffff', cursor: 'pointer' }} 
-                        onClick={() => handleCancelLocalEdit('edito')}
+                        onClick={() => handleCancelLocalText('edito')}
                         title="Annuler la saisie"
                       >
                         <FontAwesomeIcon icon={faTimes} /> Annuler ❌
@@ -539,12 +546,14 @@ const AdminNewsletterEditor = () => {
           <div className="mag-articles-list">
             {data.blocks.map((block) => {
               const isEditingThisBlock = editingBlockId === block.id;
+              const isEditingThisBlockImage = editingImageTarget === block.id;
+              const activeImg = isEditingThisBlockImage && tempImageUrl ? tempImageUrl : block.image;
 
               return (
                 <div key={block.id} className="mag-article-row">
                   <div className="mag-article-img-box" title="Image de l'article">
-                    {block.image ? (
-                      <img src={block.image} alt="Article" />
+                    {activeImg ? (
+                      <img src={activeImg} alt="Article" />
                     ) : (
                       <div className="add-img-placeholder">
                         <FontAwesomeIcon icon={faImage} size="3x" color="rgba(255,255,255,0.3)" />
@@ -552,9 +561,22 @@ const AdminNewsletterEditor = () => {
                       </div>
                     )}
                     {!isPreview && (
-                      <button className="mag-action-btn" onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }} title="Ajouter une image">
-                        <FontAwesomeIcon icon={faImage} /> Ajouter une image
-                      </button>
+                      <div style={{ marginTop: '10px' }}>
+                        {!isEditingThisBlockImage ? (
+                          <button className="mag-action-btn" onClick={() => openImageSourceModal(block.id)} title="Ajouter une image">
+                            <FontAwesomeIcon icon={faImage} /> Ajouter une image
+                          </button>
+                        ) : (
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.85rem', padding: '5px 8px' }} onClick={handleValidateLocalImage}>
+                              Enregistrer 💾
+                            </button>
+                            <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.85rem', padding: '5px 8px' }} onClick={handleCancelLocalImage}>
+                              Annuler ❌
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                   <div className="mag-article-right" style={block.styles}>
@@ -605,7 +627,7 @@ const AdminNewsletterEditor = () => {
                             <button 
                               className="mag-action-btn" 
                               style={{ background: 'rgba(220, 53, 69, 0.8)', color: '#ffffff', margin: 0, cursor: 'pointer' }} 
-                              onClick={() => handleCancelLocalEdit(block.id)}
+                              onClick={() => handleCancelLocalText(block.id)}
                               title="Annuler la saisie"
                             >
                               <FontAwesomeIcon icon={faTimes} /> Annuler ❌
@@ -699,6 +721,46 @@ const AdminNewsletterEditor = () => {
         </div>
       )}
 
+      {/* MODALE CHOIX SOURCE IMAGE (PC OU INTERNET) */}
+      {showSourceImageModal && (
+        <div className="gemini-modal-overlay">
+          <div className="gemini-modal" style={{ maxWidth: '450px', textAlign: 'center' }}>
+            <div className="gemini-modal-header">
+              <h2>Source de l'image</h2>
+              <button className="close-btn" onClick={() => setShowSourceImageModal(false)} title="Fermer">&times;</button>
+            </div>
+            <div className="gemini-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '20px 0' }}>
+              <p style={{ margin: 0, fontWeight: '600', color: '#555' }}>D'où souhaitez-vous ajouter votre image ?</p>
+              
+              <button 
+                className="v2-btn v2-btn-green"
+                onClick={() => {
+                  setShowSourceImageModal(false);
+                  fileInputRef.current.click();
+                }}
+                style={{ padding: '14px', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+              >
+                <FontAwesomeIcon icon={faDesktop} /> Depuis mon ordinateur
+              </button>
+
+              <button 
+                className="v2-btn v2-btn-blue"
+                onClick={() => {
+                  setShowSourceImageModal(false);
+                  setShowSearchImageModal(true);
+                  setSearchQuery('');
+                  setSearchResults([]);
+                  setSelectedPhotoUrl(null);
+                }}
+                style={{ padding: '14px', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+              >
+                <FontAwesomeIcon icon={faGlobe} /> Rechercher sur Internet
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* GEMINI MODAL */}
       {showGeminiModal && (
         <div className="gemini-modal-overlay">
@@ -776,7 +838,7 @@ const AdminNewsletterEditor = () => {
         <div className="gemini-modal-overlay">
           <div className="gemini-modal">
             <div className="gemini-modal-header">
-              <h2>Recherche d'images</h2>
+              <h2>Recherche d'images sur Internet</h2>
               <button className="close-btn" onClick={() => {
                 setShowSearchImageModal(false);
                 setSearchQuery('');
@@ -841,7 +903,13 @@ const AdminNewsletterEditor = () => {
               <div className="gemini-modal-actions" style={{ marginTop: '30px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 <button
                   className="v2-btn v2-btn-green"
-                  onClick={handleInsertSelectedPhoto}
+                  onClick={() => {
+                    if (selectedPhotoUrl) {
+                      handleImageSelectedTemp(selectedPhotoUrl);
+                    } else {
+                      toast.error("Veuillez sélectionner une photo à insérer.");
+                    }
+                  }}
                   disabled={!selectedPhotoUrl}
                   title="Insérer la photo sélectionnée"
                 >
