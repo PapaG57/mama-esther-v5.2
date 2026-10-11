@@ -34,13 +34,13 @@ const AdminNewsletterEditor = () => {
   const [geminiGeneratedText, setGeminiGeneratedText] = useState('');
   const [geminiLoading, setGeminiLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
-  const [currentBlockIdForGemini, setCurrentBlockIdForGemini] = useState(null); // New state to track block context
+  const [currentBlockIdForGemini, setCurrentBlockIdForGemini] = useState(null);
 
   // New states for image search
   const [showSearchImageModal, setShowSearchImageModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [searchResults, setSearchResults] = useState([]); // Tableau vide au départ !
+  const [searchResults, setSearchResults] = useState([]);
   const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(null);
 
   // SVG Gemini Logo
@@ -98,10 +98,9 @@ const AdminNewsletterEditor = () => {
       const res = await newsletterService.getById(id);
       const nl = res.data;
 
-      // Reconstruction de l'état blocks à partir de content
-      const editoBlockFr = nl.content.fr.find(b => b.type === 'edito');
-      const articleBlocksFr = nl.content.fr.filter(b => b.type !== 'edito');
-      const articleBlocksEn = nl.content.en.filter(b => b.type !== 'edito');
+      const editoBlockFr = nl.content?.fr?.find(b => b.type === 'edito');
+      const articleBlocksFr = nl.content?.fr?.filter(b => b.type !== 'edito') || [];
+      const articleBlocksEn = nl.content?.en?.filter(b => b.type !== 'edito') || [];
 
       const reconstructedBlocks = articleBlocksFr.map((b, idx) => ({
         id: b.id || idx,
@@ -115,15 +114,15 @@ const AdminNewsletterEditor = () => {
       }));
 
       setData({
-        title: nl.title,
-        date: new Date(nl.date).toISOString().split('T')[0],
-        bannerImage: nl.coverImage,
+        title: nl.title || { fr: "NEWSLETTER #", en: "NEWSLETTER #" },
+        date: nl.date ? new Date(nl.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        bannerImage: nl.coverImage || '/assets/covers/banner-news.webp',
         presidentImage: editoBlockFr?.image || nl.presidentImage || '/assets/mentions/president-mama.webp',
         edito: {
           fr: editoBlockFr?.content || nl.edito?.fr || "",
-          en: nl.content.en.find(b => b.type === 'edito')?.content || nl.edito?.en || ""
+          en: nl.content?.en?.find(b => b.type === 'edito')?.content || nl.edito?.en || ""
         },
-        blocks: reconstructedBlocks,
+        blocks: reconstructedBlocks.length > 0 ? reconstructedBlocks : data.blocks,
         tags: nl.tags || { fr: [], en: [] },
         pdfPath: '',
         isPublished: false
@@ -148,14 +147,6 @@ const AdminNewsletterEditor = () => {
         [field]: { ...prev[field], [currentLang]: value }
       }));
     }
-  };
-
-  const handleTagChange = (newTagsString) => {
-    const tagList = newTagsString.split(',').map(s => s.trim()).filter(s => s !== "");
-    setData(prev => ({
-      ...prev,
-      tags: { ...prev.tags, [currentLang]: tagList }
-    }));
   };
 
   const handleStyleChange = (blockId, styleKey, value) => {
@@ -189,7 +180,6 @@ const AdminNewsletterEditor = () => {
     try {
       toast.info("Upload de l'image...");
       const res = await newsletterService.uploadImage(formData);
-      // On utilise l'URL relative retournée par le backend
       const imageUrl = res.data.url;
 
       if (uploadTarget === 'banner') {
@@ -208,7 +198,6 @@ const AdminNewsletterEditor = () => {
     }
   };
 
-  // Function to generate content via Gemini API, called from within the modal
   const handleGenerateInModal = async () => {
     if (!geminiPrompt.trim()) {
       toast.warning("Veuillez saisir un prompt pour générer du texte.");
@@ -222,15 +211,13 @@ const AdminNewsletterEditor = () => {
     }
 
     setGeminiLoading(true);
-    setGeminiGeneratedText(''); // Clear previous generated text
+    setGeminiGeneratedText('');
     try {
       toast.info("L'IA Gemini rédige votre contenu...");
 
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: geminiPrompt }] }],
         }),
@@ -241,8 +228,8 @@ const AdminNewsletterEditor = () => {
         throw new Error(errorData.error?.message || "Erreur lors de l'appel à l'API Gemini.");
       }
 
-      const data = await response.json();
-      const generatedContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      const resData = await response.json();
+      const generatedContent = resData.candidates?.[0]?.content?.parts?.[0]?.text;
 
       if (generatedContent) {
         setGeminiGeneratedText(generatedContent);
@@ -258,48 +245,30 @@ const AdminNewsletterEditor = () => {
     }
   };
 
-  // Function to open the Gemini modal and pre-fill prompt with block content
-  const handleOpenGeminiModalForBlock = (blockId) => {
-    const block = data.blocks.find(b => b.id === blockId);
-    if (block) {
-      setGeminiPrompt(block.text[currentLang] || ''); // Pre-fill with block content
-      setCurrentBlockIdForGemini(blockId); // Store the block ID for potential future use (e.e., applying generated text)
-    } else {
-      setGeminiPrompt(''); // Clear prompt if no block is associated
-      setCurrentBlockIdForGemini(null);
-    }
-    setGeminiGeneratedText(''); // Clear previous generated text
-    setShowGeminiModal(true);
-    setCopySuccess(false); // Reset copy success state
-  };
-
-  // Modifié pour utiliser LoremFlickr et 6 images dynamiquement et gérer le cas de recherche vide
   const handleSearchPhotos = () => {
     const query = searchQuery.trim();
 
     if (!query) {
       toast.warning("Veuillez saisir un mot-clé pour rechercher des images.");
-      setSearchResults([]); // Assurez-vous que les résultats sont vides si la recherche est vide
+      setSearchResults([]);
       setIsSearching(false);
       return;
     }
 
     setIsSearching(true);
-                setSearchResults([]);
-                setSelectedPhotoUrl(null);
+    setSearchResults([]);
+    setSelectedPhotoUrl(null);
 
-    // Formater la requête pour remplacer les espaces par des virgules pour LoremFlickr
     const formattedQuery = query.replace(/\s+/g, ',');
 
-    // Générer un tableau de 6 URLs d'images via LoremFlickr
     const newResults = Array.from({ length: 6 }, (_, i) =>
       `https://loremflickr.com/500/350/${encodeURIComponent(formattedQuery)}?lock=${i + 1}`
-  );
+    );
 
     setSearchResults(newResults);
     setIsSearching(false);
     toast.success(`Recherche de photos pour "${query}" terminée !`);
-};
+  };
 
   const handleInsertSelectedPhoto = () => {
     if (selectedPhotoUrl) {
@@ -312,7 +281,7 @@ const AdminNewsletterEditor = () => {
       };
       setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
       toast.success("Photo insérée dans la newsletter !");
-      setShowSearchImageModal(false); // Close modal after inserting
+      setShowSearchImageModal(false);
       setSearchQuery('');
       setSearchResults([]);
       setSelectedPhotoUrl(null);
@@ -384,7 +353,7 @@ const AdminNewsletterEditor = () => {
 
       <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImageUpload} />
 
-      {/* BARRE LATÉRALE GAUCHE (ACTIONS PRINCIPALES) */}
+      {/* BARRE LATÉRALE GAUCHE */}
       {!isPreview && (
         <div className="editor-toolbar">
           <button className="v2-btn-icon" onClick={() => navigate('/admin')} title="Retour">
@@ -413,55 +382,52 @@ const AdminNewsletterEditor = () => {
             <FontAwesomeIcon icon={faPlusCircle} />
           </button>
 
-          {/* Nouveaux boutons IA déplacés ici */}
           <button className="v2-btn-icon ai-text-btn" onClick={() => setShowGeminiModal(true)} title="Assistant Rédaction IA">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M4 14.899A7 7 0 0 1 15.707 5h1.793a5 5 0 0 1 0 10h-1.5M9 20l3-3 3 3"/>
-                        </svg>
-                      </button>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 14.899A7 7 0 0 1 15.707 5h1.793a5 5 0 0 1 0 10h-1.5M9 20l3-3 3 3"/>
+            </svg>
+          </button>
           <button className="v2-btn-icon photo-btn" onClick={() => {
             setShowSearchImageModal(true);
-            setSearchQuery('');         // Reset the search query
-            setSearchResults([]);       // Clear previous search results
-            setSelectedPhotoUrl(null);  // Clear any selected photo
+            setSearchQuery('');
+            setSearchResults([]);
+            setSelectedPhotoUrl(null);
           }} title="Rechercher une photo">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                          <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                          <polyline points="21 15 16 10 5 21"></polyline>
-                        </svg>
-              </button>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </button>
 
-          {/* BOUTON MOBILE POUR OUVRIR LES OUTILS */}
           <button className="v2-btn-icon btn-mobile-tools" onClick={() => setShowMobileTools(!showMobileTools)} title="Outils de style">
             <FontAwesomeIcon icon={faPalette} />
-              </button>
-              </div>
+          </button>
+        </div>
       )}
 
       {/* BOUTON ÉDITION (SI PREVIEW) */}
       {isPreview && (
         <button
-                className="v2-btn v2-btn-green"
+          className="v2-btn v2-btn-green"
           style={{ position: 'fixed', top: '110px', left: '20px', zIndex: 3000 }}
           onClick={() => setIsPreview(false)}
           title="Retour à l'édition"
-              >
+        >
           <FontAwesomeIcon icon={faEyeSlash} /> Retour à l'édition
-              </button>
-              )}
+        </button>
+      )}
 
       <div className="editor-container">
-
         {/* BANNIÈRE HEADER */}
         <div className="mag-header-banner" title="Image de couverture">
           <img src={data.bannerImage} alt="Bannière" />
-                  {!isPreview && (
+          {!isPreview && (
             <button className="mag-action-btn" onClick={() => { setUploadTarget('banner'); fileInputRef.current.click(); }} title="Changer la bannière">
               <FontAwesomeIcon icon={faImage} /> Changer la bannière
-                      </button>
-                  )}
-                </div>
+            </button>
+          )}
+        </div>
 
         <div className="mag-content-padding">
           <h1
@@ -469,25 +435,21 @@ const AdminNewsletterEditor = () => {
             contentEditable={!isPreview}
             suppressContentEditableWarning={true}
             onBlur={(e) => handleTextChange('title', e.target.innerText)}
-                >
+          >
             {data.title[currentLang]}
           </h1>
 
-          {/* EDITO VERT INSTITUTIONNEL & ACCENT D'OR */}
+          {/* EDITO SECTION */}
           <section className="mag-edito-box">
             <div className="mag-edito-left">
               <h3 style={{ color: '#fcd116', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.95rem', fontWeight: '800', letterSpacing: '1px' }}>
                 {currentLang === 'fr' ? "Le mot de la Présidente" : "A word from the President"}
               </h3>
               <div className="president-img-wrapper" onClick={() => { setUploadTarget('president'); fileInputRef.current.click(); }} title="Changer l'image de la Présidente">
-                <img
-                  src={data.presidentImage}
-                  alt="Avatar"
-                  className="mag-edito-img"
-                />
+                <img src={data.presidentImage} alt="Avatar" className="mag-edito-img" />
                 {!isPreview && <div className="img-mini-btn"><FontAwesomeIcon icon={faPlusCircle} /></div>}
+              </div>
             </div>
-    </div>
             <div className="mag-edito-right">
               <div
                 className="editable-area edito-text"
@@ -496,39 +458,53 @@ const AdminNewsletterEditor = () => {
                 onBlur={(e) => handleTextChange('edito', e.target.innerText)}
               >
                 {data.edito[currentLang]}
-        </div>
-      {!isPreview && (
-                 <button className="mag-action-btn" style={{ marginTop: '20px', background: 'rgba(255,255,255,0.2)' }} onClick={() => execCommand('insertText', ' ')} title="Ajouter du texte">
-                   <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
-                 </button>
-      )}
-    </div>
+              </div>
+              {!isPreview && (
+                <button 
+                  className="mag-action-btn" 
+                  style={{ marginTop: '20px', background: 'rgba(255,255,255,0.2)', cursor: 'pointer' }} 
+                  onClick={() => {
+                    const editoArea = document.querySelector('.edito-text');
+                    if (editoArea) {
+                      editoArea.focus();
+                      const range = document.createRange();
+                      const sel = window.getSelection();
+                      range.selectNodeContents(editoArea);
+                      range.collapse(false);
+                      sel.removeAllRanges();
+                      sel.addRange(range);
+                    }
+                  }} 
+                  title="Ajouter du texte"
+                >
+                  <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
+                </button>
+              )}
+            </div>
           </section>
 
           {/* BLOCS ARTICLES */}
           <div className="mag-articles-list">
-            {data.blocks.map((block, index) => (
+            {data.blocks.map((block) => (
               <div key={block.id} className="mag-article-row">
-                <div
-                  className="mag-article-img-box"
-                  title="Image de l'article"
-                >
+                <div className="mag-article-img-box" title="Image de l'article">
                   {block.image ? (
                     <img src={block.image} alt="Article" />
                   ) : (
                     <div className="add-img-placeholder">
                       <FontAwesomeIcon icon={faImage} size="3x" color="rgba(255,255,255,0.3)" />
                       <span>Aucune image</span>
-          </div>
-      )}
+                    </div>
+                  )}
                   {!isPreview && (
                     <button className="mag-action-btn" onClick={() => { setUploadTarget(block.id); fileInputRef.current.click(); }} title="Ajouter une image">
                       <FontAwesomeIcon icon={faImage} /> Ajouter une image
                     </button>
                   )}
-    </div>
+                </div>
                 <div className="mag-article-right" style={block.styles}>
                   <div
+                    id={`block-text-${block.id}`}
                     className="mag-article-text editable-area"
                     contentEditable={!isPreview}
                     suppressContentEditableWarning={true}
@@ -539,10 +515,28 @@ const AdminNewsletterEditor = () => {
                   </div>
                   {!isPreview && (
                     <div className="block-actions">
-                      <button className="mag-action-btn" style={{ background: 'rgba(255,255,255,0.1)', margin: 0 }} onClick={() => execCommand('insertText', ' ')} title="Ajouter du texte">
+                      <button 
+                        className="mag-action-btn" 
+                        style={{ background: 'rgba(255,255,255,0.1)', margin: 0, cursor: 'pointer' }} 
+                        onClick={() => {
+                          const blockTextDiv = document.getElementById(`block-text-${block.id}`);
+                          if (blockTextDiv) {
+                            blockTextDiv.focus();
+                            const range = document.createRange();
+                            const sel = window.getSelection();
+                            range.selectNodeContents(blockTextDiv);
+                            range.collapse(false);
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                          }
+                        }} 
+                        title="Ajouter du texte"
+                      >
                         <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
                       </button>
-                      <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer ce bloc"><FontAwesomeIcon icon={faTrash} /></button>
+                      <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer ce bloc">
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
                     </div>
                   )}
                 </div>
@@ -561,17 +555,16 @@ const AdminNewsletterEditor = () => {
         {/* FOOTER */}
         <footer className="mag-footer-v2">
           <img src="/assets/logos/logoMama.png" alt="Logo" className="mag-footer-logo" />
-          <p>© {new Date().getFullYear()} - Association Mama Esther - Tous droits réservés - {data.title[currentLang]}</p>
+          <p>© {new Date().getFullYear()} Association Mama Esther - Tous droits réservés - {data.title[currentLang]}</p>
           <div className="mag-footer-btns">
             <button className="mag-btn-news" title="Contactez-nous">Contact</button>
             <button className="mag-btn-news" title="Voir les mentions légales">Mentions légales</button>
             <button className="mag-btn-news" style={{ opacity: 0.5 }} title="Se désinscrire de la newsletter">Désinscription</button>
           </div>
         </footer>
-
       </div>
 
-      {/* BOITE A OUTILS (DROITE) - TOUJOURS VISIBLE SI PAS PREVIEW */}
+      {/* BOITE A OUTILS (DROITE) */}
       {!isPreview && (
         <div className={`sidebar-toolbox ${showMobileTools ? 'mobile-open' : ''}`}>
           <div className="toolbox-header">
@@ -589,12 +582,12 @@ const AdminNewsletterEditor = () => {
 
           <div className="tool-group">
             <label><FontAwesomeIcon icon={faTextHeight} /> Taille de police</label>
-            <select className="tool-select-v2" onChange={(e) => {
+            <select className="tool-select-v2" defaultValue="4" onChange={(e) => {
               if (activeBlockId && activeBlockId !== 'edito') handleStyleChange(activeBlockId, 'fontSize', e.target.value);
               else execCommand('fontSize', e.target.value);
             }} title="Changer la taille de police">
               <option value="3">Petit</option>
-              <option value="4" selected>Normal</option>
+              <option value="4">Normal</option>
               <option value="5">Grand</option>
               <option value="6">Très Grand</option>
             </select>
@@ -627,12 +620,12 @@ const AdminNewsletterEditor = () => {
         </div>
       )}
 
-      {/* Gemini 2.5 Flash Modal (Texte IA) */}
+      {/* GEMINI MODAL */}
       {showGeminiModal && (
         <div className="gemini-modal-overlay">
           <div className="gemini-modal">
             <div className="gemini-modal-header">
-              <h2><GeminiLogo /> Gemini 2.5 Flash</h2>
+              <h2><GeminiLogo /> Gemini 1.5 Flash</h2>
               <button className="close-btn" onClick={() => {
                 setShowGeminiModal(false);
                 setGeminiPrompt('');
@@ -689,7 +682,7 @@ const AdminNewsletterEditor = () => {
                     setGeminiPrompt('');
                     setGeminiGeneratedText('');
                     setCopySuccess(false);
-                    setCurrentBlockIdForGemini(null); // Reset on modal close
+                    setCurrentBlockIdForGemini(null);
                   }}
                   title="Fermer la modale Gemini"
                 >
@@ -701,7 +694,7 @@ const AdminNewsletterEditor = () => {
         </div>
       )}
 
-      {/* Placeholder for Search Image Modal */}
+      {/* SEARCH IMAGE MODAL */}
       {showSearchImageModal && (
         <div className="gemini-modal-overlay">
           <div className="gemini-modal">
@@ -715,7 +708,7 @@ const AdminNewsletterEditor = () => {
               }} title="Fermer la modale">&times;</button>
             </div>
             <div className="gemini-modal-body">
-              <div className="search-input-group">
+              <div className="search-input-group" style={{ display: 'flex', gap: '10px' }}>
                 <input
                   type="text"
                   className="tool-select-v2"
@@ -724,17 +717,17 @@ const AdminNewsletterEditor = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => { if (e.key === 'Enter') handleSearchPhotos(); }}
                   title="Saisissez votre recherche d'images"
+                  style={{ flexGrow: 1 }}
                 />
                 <button
-                className="v2-btn v2-btn-green"
+                  className="v2-btn v2-btn-green"
                   onClick={handleSearchPhotos}
                   disabled={isSearching || searchQuery.trim() === ''}
-                  style={{ marginLeft: '10px' }}
                   title="Lancer la recherche"
-              >
+                >
                   {isSearching ? 'Recherche...' : 'Rechercher'}
-              </button>
-                </div>
+                </button>
+              </div>
 
               {isSearching && <HandSpinner fullPage={false} small={true} style={{ marginTop: '20px' }} />}
 
@@ -745,28 +738,38 @@ const AdminNewsletterEditor = () => {
               )}
 
               {!isSearching && searchResults.length > 0 && (
-                <div className="image-gallery">
+                <div className="image-gallery" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginTop: '20px' }}>
                   {searchResults.map((url, index) => (
                     <div
                       key={index}
                       className={`image-thumbnail ${selectedPhotoUrl === url ? 'selected' : ''}`}
                       onClick={() => setSelectedPhotoUrl(url)}
                       title="Cliquer pour sélectionner"
+                      style={{ cursor: 'pointer', border: selectedPhotoUrl === url ? '3px solid #007a5e' : '1px solid #ccc', borderRadius: '8px', overflow: 'hidden' }}
                     >
                       <img
                         src={url}
                         alt={`Résultat ${index + 1}`}
+                        style={{ width: '100%', height: '120px', objectFit: 'cover' }}
                         onError={(e) => {
-                          e.target.onerror = null; // Empêche la boucle infinie d'erreur
+                          e.target.onerror = null;
                           e.target.src = 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=600&auto=format&fit=crop';
                         }}
                       />
-                      {selectedPhotoUrl === url && <FontAwesomeIcon icon={faCheckCircle} className="selection-icon" />}
-    </div>
+                    </div>
                   ))}
-          </div>
-      )}
-              <div className="gemini-modal-actions" style={{ marginTop: '30px' }}>
+                </div>
+              )}
+
+              <div className="gemini-modal-actions" style={{ marginTop: '30px', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <button
+                  className="v2-btn v2-btn-green"
+                  onClick={handleInsertSelectedPhoto}
+                  disabled={!selectedPhotoUrl}
+                  title="Insérer la photo sélectionnée"
+                >
+                  Insérer la photo
+                </button>
                 <button
                   className="v2-btn"
                   onClick={() => {
@@ -775,17 +778,9 @@ const AdminNewsletterEditor = () => {
                     setSearchResults([]);
                     setSelectedPhotoUrl(null);
                   }}
-                  title="Annuler la recherche d'image"
+                  title="Fermer la modale"
                 >
-                  Annuler
-                </button>
-                <button
-                  className="v2-btn v2-btn-blue"
-                  onClick={handleInsertSelectedPhoto}
-                  disabled={!selectedPhotoUrl}
-                  title="Insérer la photo sélectionnée"
-                >
-                  Insérer dans la newsletter
+                  Fermer
                 </button>
               </div>
             </div>
@@ -797,4 +792,3 @@ const AdminNewsletterEditor = () => {
 };
 
 export default AdminNewsletterEditor;
-
