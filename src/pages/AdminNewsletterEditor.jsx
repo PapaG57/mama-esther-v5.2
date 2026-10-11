@@ -234,6 +234,23 @@ const AdminNewsletterEditor = () => {
     toast.info("Saisie annulée ❌");
   };
 
+  // Suppression directe de l'image
+  const handleDeleteImage = (target) => {
+    if (target === 'banner') {
+      setData(prev => ({ ...prev, bannerImage: '' }));
+    } else if (target === 'president') {
+      setData(prev => ({ ...prev, presidentImage: '' }));
+    } else {
+      setData(prev => ({
+        ...prev,
+        blocks: prev.blocks.map(b => b.id === target ? { ...b, image: '' } : b)
+      }));
+    }
+    setEditingImageTarget(null);
+    setTempImageUrl(null);
+    toast.info("Image supprimée 🗑️");
+  };
+
   const handleStyleChange = (blockId, styleKey, value) => {
     setData(prev => ({
       ...prev,
@@ -270,10 +287,10 @@ const AdminNewsletterEditor = () => {
     setSearchResults([]);
     setSelectedPhotoUrl(null);
 
-    // Utilisation d'Unsplash Source avec mots-clés dynamiques et fiables
+    // Utilisation d'un service de recherche thématique par mots-clés réels
     const encoded = encodeURIComponent(query);
     const newResults = Array.from({ length: 6 }, (_, i) =>
-      `https://picsum.photos/seed/${encoded}${i + 1}/500/350`
+      `https://images.unsplash.com/featured/500x350/?${encoded}&sig=${i + Date.now()}`
     );
 
     setSearchResults(newResults);
@@ -427,20 +444,23 @@ const AdminNewsletterEditor = () => {
         <div className="mag-header-banner" title="Image de couverture">
           <img src={editingImageTarget === 'banner' && tempImageUrl ? tempImageUrl : data.bannerImage} alt="Bannière" />
           {!isPreview && (
-            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
               {editingImageTarget !== 'banner' ? (
                 <button className="mag-action-btn" onClick={() => openImageSourceModal('banner')} title="Changer la bannière">
                   <FontAwesomeIcon icon={faImage} /> Changer la bannière
                 </button>
               ) : (
-                <>
-                  <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', border: '1px solid #fcd116' }} onClick={handleValidateLocalImage}>
-                    <FontAwesomeIcon icon={faSave} /> Enregistrer 💾
+                <div style={{ display: 'flex', gap: '6px', background: 'rgba(0,0,0,0.6)', padding: '6px', borderRadius: '8px' }}>
+                  <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff' }} onClick={handleValidateLocalImage} title="Enregistrer">
+                    Enregistrer 💾
                   </button>
-                  <button className="mag-action-btn" style={{ background: 'rgba(220, 53, 69, 0.9)', color: '#fff' }} onClick={handleCancelLocalImage}>
-                    <FontAwesomeIcon icon={faTimes} /> Annuler ❌
+                  <button className="mag-action-btn" style={{ background: '#6c757d', color: '#fff' }} onClick={handleCancelLocalImage} title="Annuler">
+                    Annuler ❌
                   </button>
-                </>
+                  <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff' }} onClick={() => handleDeleteImage('banner')} title="Supprimer">
+                    Supprimer 🗑️
+                  </button>
+                </div>
               )}
             </div>
           )}
@@ -472,12 +492,15 @@ const AdminNewsletterEditor = () => {
                       <FontAwesomeIcon icon={faImage} /> Changer l'image
                     </button>
                   ) : (
-                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                      <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleValidateLocalImage}>
+                    <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                      <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.75rem', padding: '5px 6px' }} onClick={handleValidateLocalImage}>
                         Enregistrer 💾
                       </button>
-                      <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleCancelLocalImage}>
+                      <button className="mag-action-btn" style={{ background: '#6c757d', color: '#fff', fontSize: '0.75rem', padding: '5px 6px' }} onClick={handleCancelLocalImage}>
                         Annuler ❌
+                      </button>
+                      <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.75rem', padding: '5px 6px' }} onClick={() => handleDeleteImage('president')}>
+                        Supprimer 🗑️
                       </button>
                     </div>
                   )}
@@ -568,12 +591,15 @@ const AdminNewsletterEditor = () => {
                             <FontAwesomeIcon icon={faImage} /> {block.image ? "Changer l'image" : "Ajouter une image"}
                           </button>
                         ) : (
-                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                            <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.85rem', padding: '5px 8px' }} onClick={handleValidateLocalImage}>
+                          <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                            <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleValidateLocalImage}>
                               Enregistrer 💾
                             </button>
-                            <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.85rem', padding: '5px 8px' }} onClick={handleCancelLocalImage}>
+                            <button className="mag-action-btn" style={{ background: '#6c757d', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleCancelLocalImage}>
                               Annuler ❌
+                            </button>
+                            <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={() => handleDeleteImage(block.id)}>
+                              Supprimer 🗑️
                             </button>
                           </div>
                         )}
@@ -852,11 +878,11 @@ const AdminNewsletterEditor = () => {
                 <input
                   type="text"
                   className="tool-select-v2"
-                  placeholder="Ex: enfance, éducation, solidarité..."
+                  placeholder="Ex: children, school, charity..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => { if (e.key === 'Enter') handleSearchPhotos(); }}
-                  title="Saisissez votre recherche d'images"
+                  title="Saisissez votre recherche d'images (anglais recommandé pour Unsplash)"
                   style={{ flexGrow: 1 }}
                 />
                 <button
@@ -873,7 +899,7 @@ const AdminNewsletterEditor = () => {
 
               {!isSearching && searchResults.length === 0 && (
                 <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
-                  Tape un mot-clé ci-dessus puis clique sur RECHERCHER pour afficher des images.
+                  Tape un mot-clé (ex: *school*, *children*, *africa*) puis clique sur RECHERCHER.
                 </p>
               )}
 
