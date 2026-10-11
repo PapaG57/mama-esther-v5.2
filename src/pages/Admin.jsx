@@ -1,7 +1,22 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPlusCircle, faUsersCog, faCoins, faFileExcel, faSignOutAlt, faNewspaper, faKey, faUserEdit } from "@fortawesome/free-solid-svg-icons";
+import { 
+  faTrash, 
+  faPlusCircle, 
+  faUsersCog, 
+  faCoins, 
+  faFileExcel, 
+  faSignOutAlt, 
+  faNewspaper, 
+  faKey, 
+  faUserEdit,
+  faRobot,
+  faPaperPlane,
+  faCopy,
+  faTimes,
+  faMagic // <-- Remplacé faSparkles par faMagic ici
+} from "@fortawesome/free-solid-svg-icons";
 import "../styles/AdminV2.css";
 import PasswordField from "../components/PasswordField";
 import confetti from "canvas-confetti";
@@ -26,6 +41,7 @@ export default function Admin() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  // États formulaires et Modales Admin
   const [identifiant, setIdentifiant] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [confirmationMotDePasse, setConfirmationMotDePasse] = useState("");
@@ -39,38 +55,112 @@ export default function Admin() {
   const [source, setSource] = useState("");
   const [sourcePrecise, setSourcePrecise] = useState("");
   const [dons, setDons] = useState([]);
-    const [donASupprimer, setDonASupprimer] = useState(null);
+  const [donASupprimer, setDonASupprimer] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showChangeCredentialsModal, setShowChangeCredentialsModal] = useState(false);
-    const [changeCredentials, setChangeCredentials] = useState({
+  const [changeCredentials, setChangeCredentials] = useState({
     nouvelIdentifiant: "",
     ancienMotDePasse: "",
     nouveauMotDePasse: "",
     confirmationNouveauMotDePasse: "",
   });
 
-    const handleChangeCredentialsSubmit = async (e) => {
-    e.preventDefault();
+  // États pour la modale Chat AI Gemini
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { sender: "ai", text: "Bonjour ! Je suis votre assistant IA Gemini. Comment puis-je vous aider dans la rédaction de vos newsletters ou la gestion de l'association ?" }
+  ]);
+  const [currentInput, setCurrentInput] = useState("");
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const chatBottomRef = useRef(null);
 
-    // Vérifier que l'ancien mot de passe est fourni
+  // Auto-scroll vers le bas des messages
+  useEffect(() => {
+    if (showChatModal) {
+      chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatMessages, showChatModal, isAiLoading]);
+
+  // Appel API Gemini direct
+  const handleSendMessage = async () => {
+    if (currentInput.trim() === "" || isAiLoading) return;
+
+    const userText = currentInput.trim();
+    const newUserMessage = { sender: "user", text: userText };
+    setChatMessages((prev) => [...prev, newUserMessage]);
+    setCurrentInput("");
+    setIsAiLoading(true);
+
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+    if (!apiKey) {
+      toast.error("Clé API Gemini non configurée dans .env (VITE_GEMINI_API_KEY)");
+      setChatMessages((prev) => [
+        ...prev, 
+        { sender: "ai", text: "⚠️ Erreur : La clé API VITE_GEMINI_API_KEY manque dans votre fichier .env." }
+      ]);
+      setIsAiLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [{ text: `Tu es un assistant rédactionnel bienveillant et efficace pour l'association Mama Esther. Réponds de façon claire et structurée à la demande suivante :\n\n${userText}` }]
+              }
+            ]
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || "Erreur lors de l'appel Gemini");
+      }
+
+      const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Désolé, je n'ai pas pu générer de réponse.";
+      setChatMessages((prev) => [...prev, { sender: "ai", text: aiText }]);
+    } catch (err) {
+      console.error("Erreur Gemini AI :", err);
+      toast.error("Erreur lors de la génération IA");
+      setChatMessages((prev) => [
+        ...prev, 
+        { sender: "ai", text: `❌ Erreur : ${err.message || "Impossible d'interroger Gemini."}` }
+      ]);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  const handleCopyMessage = (text) => {
+    navigator.clipboard.writeText(text)
+      .then(() => toast.success("Texte copié dans le presse-papier !"))
+      .catch(() => toast.error("Erreur de copie"));
+  };
+
+  const handleChangeCredentialsSubmit = async (e) => {
+    e.preventDefault();
     if (!changeCredentials.ancienMotDePasse) {
       toast.error("L'ancien mot de passe est obligatoire");
       return;
     }
-
-    // Vérifier qu'au moins un champ (identifiant OU mot de passe) est rempli
     if (!changeCredentials.nouvelIdentifiant && !changeCredentials.nouveauMotDePasse) {
-      toast.error("Au moins un champ (identifiant ou mot de passe) doit être renseigné");
+      toast.error("Au moins un champ doit être renseigné");
       return;
     }
-
-    // Vérifier que les deux nouveaux mots de passe correspondent si un nouveau mot de passe est fourni
     if (changeCredentials.nouveauMotDePasse && changeCredentials.nouveauMotDePasse !== changeCredentials.confirmationNouveauMotDePasse) {
       toast.error("Les mots de passe ne correspondent pas");
       return;
     }
 
-        try {
+    try {
       await adminService.changeCredentials({
         ancienMotDePasse: changeCredentials.ancienMotDePasse,
         nouvelIdentifiant: changeCredentials.nouvelIdentifiant || undefined,
@@ -79,21 +169,20 @@ export default function Admin() {
 
       toast.success("Identifiants mis à jour avec succès !");
       setShowChangeCredentialsModal(false);
-            setChangeCredentials({
+      setChangeCredentials({
         nouvelIdentifiant: "",
         ancienMotDePasse: "",
         nouveauMotDePasse: "",
         confirmationNouveauMotDePasse: "",
       });
-        } catch (err) {
-          const msg = err.response?.data?.message || err.response?.data?.error || err.message || "Erreur de mise à jour";
-          toast.error(msg);
-        }
+    } catch (err) {
+      const msg = err.response?.data?.message || err.response?.data?.error || err.message || "Erreur de mise à jour";
+      toast.error(msg);
+    }
   };
 
   const handleLogout = () => {
     sessionStorage.removeItem("adminToken");
-    // .replace() écrase l'entrée actuelle dans l'historique : impossible de revenir en arrière
     window.location.replace("/");
   };
 
@@ -117,8 +206,6 @@ export default function Admin() {
 
   useEffect(() => {
     fetchDons();
-    // SÉCURITÉ MAXIMALE : On vide le token uniquement si on quitte la page admin
-    // On vérifie le pathname pour ne pas déconnecter lors d'un changement de langue
     return () => {
       if (!window.location.pathname.includes("/admin")) {
         sessionStorage.removeItem("adminToken");
@@ -183,7 +270,6 @@ export default function Admin() {
     }
   };
 
-  // FONCTION EXPORT CSV
   const exportToCSV = () => {
     if (dons.length === 0) {
       toast.info("Aucun don à exporter.");
@@ -200,7 +286,7 @@ export default function Admin() {
     ]);
 
     const csvContent = [
-      headers.join(";"), // Séparateur point-virgule pour Excel FR
+      headers.join(";"),
       ...rows.map(row => row.map(val => `"${val}"`).join(";"))
     ].join("\n");
 
@@ -222,12 +308,13 @@ export default function Admin() {
       
       <main className="admin-v2-container">
         <div className="v2-container">
-                    <h1>
+          <h1>
             <FontAwesomeIcon icon={faUsersCog} style={{marginRight: "20px", color: "var(--color-green)"}} />
             {t("admin.dashboard.title")}
           </h1>
 
-          <div style={{display: "flex", justifyContent: "center", marginBottom: "30px"}}>
+          {/* BARRE DE BOUTONS D'ACTION */}
+          <div style={{display: "flex", justifyContent: "center", gap: "20px", marginBottom: "30px", flexWrap: "wrap"}}>
             <button
               className="v2-btn v2-btn-green"
               style={{
@@ -236,16 +323,36 @@ export default function Admin() {
                 fontWeight: "700",
                 borderRadius: "9999px",
                 boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                transition: "transform 0.2s, box-shadow 0.2s",
                 cursor: "pointer",
                 border: "none",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.15)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)"; }}
               onClick={() => setShowChangeCredentialsModal(true)}
             >
               <FontAwesomeIcon icon={faKey} style={{ marginRight: "10px" }} />
               🔑 Modifier mes identifiants
+            </button>
+
+            {/* BOUTON CHAT AI AMÉLIORÉ */}
+            <button
+              className="v2-btn v2-btn-primary"
+              style={{
+                padding: "14px 28px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                borderRadius: "9999px",
+                boxShadow: "0 4px 12px rgba(0, 122, 94, 0.3)",
+                background: "linear-gradient(135deg, #007a5e 0%, #00b386 100%)",
+                color: "white",
+                cursor: "pointer",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px"
+              }}
+              onClick={() => setShowChatModal(true)}
+            >
+              <FontAwesomeIcon icon={faRobot} style={{ fontSize: "1.2rem" }} />
+              🤖 Assistant Chat AI Gemini
             </button>
           </div>
 
@@ -362,7 +469,7 @@ export default function Admin() {
         </div>
       </main>
 
-      {/* MODALES */}
+      {/* MODALES CLASSIQUES */}
       {showSuccessModal && (
         <div className="v2-modal-overlay">
           <div className="v2-modal">
@@ -375,7 +482,7 @@ export default function Admin() {
         </div>
       )}
 
-            {showConfirmModal && (
+      {showConfirmModal && (
         <div className="v2-modal-overlay">
           <div className="v2-modal">
             <h2 style={{color: "var(--color-red)"}}>{t("admin.modals.confirmDeleteTitle")}</h2>
@@ -395,7 +502,7 @@ export default function Admin() {
               <FontAwesomeIcon icon={faUserEdit} style={{marginRight: "10px"}} />
               Modifier mes identifiants
             </h2>
-                        <form onSubmit={handleChangeCredentialsSubmit} className="admin-v2-form">
+            <form onSubmit={handleChangeCredentialsSubmit} className="admin-v2-form">
               <label style={{display: "block", marginBottom: "5px", fontWeight: "600", color: "var(--color-dark)"}}>Nouvel identifiant / Email</label>
               <input
                 type="text"
@@ -433,6 +540,208 @@ export default function Admin() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE MODERNE ASSISTANT GEMINI AI */}
+      {showChatModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1100,
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: '#ffffff',
+            borderRadius: '24px',
+            width: '100%',
+            maxWidth: '680px',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '85vh',
+            maxHeight: '750px',
+            overflow: 'hidden',
+            border: '1px solid rgba(226, 232, 240, 0.8)'
+          }}>
+            {/* Header de la Modale */}
+            <div style={{
+              background: 'linear-gradient(135deg, #007a5e 0%, #004d3b 100%)',
+              color: 'white',
+              padding: '20px 24px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  borderRadius: '12px',
+                  padding: '10px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <FontAwesomeIcon icon={faMagic} style={{ fontSize: '1.2rem', color: '#ffea79' }} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#ffffff' }}>Assistant IA Mama Esther</h3>
+                  <p style={{ margin: '2px 0 0 0', fontSize: '0.8rem', opacity: 0.85 }}>Propulsé par Google Gemini 2.5 Flash</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowChatModal(false)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'white',
+                  cursor: 'pointer',
+                  fontSize: '1.2rem',
+                  opacity: 0.8,
+                  padding: '6px',
+                  borderRadius: '50%',
+                  transition: 'opacity 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '0.8'}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </div>
+
+            {/* Zone de conversation */}
+            <div style={{
+              flexGrow: 1,
+              overflowY: 'auto',
+              padding: '24px',
+              backgroundColor: '#f8fafc',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px'
+            }}>
+              {chatMessages.map((msg, index) => {
+                const isUser = msg.sender === 'user';
+                return (
+                  <div key={index} style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: isUser ? 'flex-end' : 'flex-start',
+                    maxWidth: '85%',
+                    alignSelf: isUser ? 'flex-end' : 'flex-start'
+                  }}>
+                    <div style={{
+                      backgroundColor: isUser ? '#007a5e' : '#ffffff',
+                      color: isUser ? '#ffffff' : '#1e293b',
+                      padding: '14px 18px',
+                      borderRadius: isUser ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
+                      boxShadow: isUser ? '0 4px 12px rgba(0, 122, 94, 0.2)' : '0 2px 8px rgba(0,0,0,0.05)',
+                      fontSize: '0.95rem',
+                      lineHeight: '1.5',
+                      whiteSpace: 'pre-wrap',
+                      position: 'relative'
+                    }}>
+                      {msg.text}
+                    </div>
+
+                    {!isUser && (
+                      <button 
+                        onClick={() => handleCopyMessage(msg.text)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#64748b',
+                          cursor: 'pointer',
+                          fontSize: '0.78rem',
+                          marginTop: '6px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '2px 6px',
+                          borderRadius: '4px'
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faCopy} /> Copier
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+
+              {isAiLoading && (
+                <div style={{ alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#ffffff', padding: '12px 18px', borderRadius: '20px 20px 20px 4px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                  <FontAwesomeIcon icon={faMagic} className="fa-spin" style={{ color: '#007a5e' }} />
+                  <span style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 500 }}>L'IA réfléchit...</span>
+                </div>
+              )}
+              <div ref={chatBottomRef} />
+            </div>
+
+            {/* Zone de saisie */}
+            <div style={{
+              padding: '18px 24px',
+              backgroundColor: '#ffffff',
+              borderTop: '1px solid #e2e8f0',
+              display: 'flex',
+              gap: '12px',
+              alignItems: 'center'
+            }}>
+              <textarea
+                value={currentInput}
+                onChange={(e) => setCurrentInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                placeholder="Rédiger un article, poser une question..."
+                style={{
+                  flexGrow: 1,
+                  padding: '12px 16px',
+                  border: '1.5px solid #cbd5e1',
+                  borderRadius: '14px',
+                  outline: 'none',
+                  fontSize: '0.95rem',
+                  resize: 'none',
+                  maxHeight: '100px',
+                  minHeight: '46px',
+                  fontFamily: 'inherit',
+                  transition: 'border-color 0.2s'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#007a5e'}
+                onBlur={(e) => e.target.style.borderColor = '#cbd5e1'}
+              />
+
+              <button
+                onClick={handleSendMessage}
+                disabled={isAiLoading || !currentInput.trim()}
+                style={{
+                  backgroundColor: currentInput.trim() && !isAiLoading ? '#007a5e' : '#cbd5e1',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '14px',
+                  width: '48px',
+                  height: '46px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: currentInput.trim() && !isAiLoading ? 'pointer' : 'not-allowed',
+                  transition: 'background-color 0.2s',
+                  fontSize: '1.1rem'
+                }}
+              >
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </button>
+            </div>
           </div>
         </div>
       )}
