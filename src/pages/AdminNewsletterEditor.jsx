@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faArrowLeft, faSave, faEye, faEyeSlash, 
-  faImage, faPlusCircle, faCheck, faTrash,
+  faImage, faPlusCircle, faTrash, faTimes,
   faTextHeight, faPalette, faFillDrip, faCheckCircle,
   faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +15,7 @@ import HandSpinner from '../components/HandSpinner';
 import '../styles/AdminNewsletterEditor.css';
 
 const AdminNewsletterEditor = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,7 @@ const AdminNewsletterEditor = () => {
   const fileInputRef = useRef(null);
   const [uploadTarget, setUploadTarget] = useState(null);
 
-  // États pour afficher/masquer dynamiquement les boutons Enregistrer sous les zones
+  // États d'édition locale
   const [isEditingEdito, setIsEditingEdito] = useState(false);
   const [editingBlockId, setEditingBlockId] = useState(null);
 
@@ -37,7 +37,6 @@ const AdminNewsletterEditor = () => {
   const [geminiGeneratedText, setGeminiGeneratedText] = useState('');
   const [geminiLoading, setGeminiLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
-  const [currentBlockIdForGemini, setCurrentBlockIdForGemini] = useState(null);
 
   // Image Search States
   const [showSearchImageModal, setShowSearchImageModal] = useState(false);
@@ -138,14 +137,41 @@ const AdminNewsletterEditor = () => {
     }
   };
 
-  // Validation locale (ne sauvegarde pas en BDD, ne génère aucun PDF)
+  // Validation locale avec alerte pour étourdis ! 🙈
   const handleValidateLocalText = (target) => {
+    let contentToCheck = "";
+    const placeholders = ["votre édito ici...", "your editorial here...", "votre texte d'article ici...", "your article text here..."];
+
+    if (target === 'edito') {
+      contentToCheck = data.edito[currentLang]?.trim().toLowerCase() || "";
+    } else {
+      const block = data.blocks.find(b => b.id === target);
+      contentToCheck = block?.text[currentLang]?.trim().toLowerCase() || "";
+    }
+
+    const isEmptyOrPlaceholder = !contentToCheck || placeholders.includes(contentToCheck);
+
+    if (isEmptyOrPlaceholder) {
+      const confirmSave = window.confirm("⚠️ Oups ! Le texte semble vide ou contient encore le texte par défaut. Es-tu sûr(e) de vouloir valider ?");
+      if (!confirmSave) return;
+    }
+
     if (target === 'edito') {
       setIsEditingEdito(false);
     } else {
       setEditingBlockId(null);
     }
     toast.success("Texte ajouté avec succès ! 🎉");
+  };
+
+  // Annulation de la saisie
+  const handleCancelLocalEdit = (target) => {
+    if (target === 'edito') {
+      setIsEditingEdito(false);
+    } else {
+      setEditingBlockId(null);
+    }
+    toast.info("Saisie annulée ❌");
   };
 
   const handleStyleChange = (blockId, styleKey, value) => {
@@ -288,7 +314,7 @@ const AdminNewsletterEditor = () => {
     }
   };
 
-  // Sauvegarde FINALE en BDD + génération du PDF (appelée UNIQUEMENT via la disquette de gauche)
+  // Sauvegarde globale BDD
   const handleSave = async () => {
     try {
       const formatted = {
@@ -485,14 +511,24 @@ const AdminNewsletterEditor = () => {
                       <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
                     </button>
                   ) : (
-                    <button 
-                      className="mag-action-btn" 
-                      style={{ background: '#007a5e', color: '#ffffff', border: '1px solid #fcd116', cursor: 'pointer' }} 
-                      onClick={() => handleValidateLocalText('edito')}
-                      title="Valider la saisie"
-                    >
-                      <FontAwesomeIcon icon={faSave} /> Enregistrer 💾
-                    </button>
+                    <>
+                      <button 
+                        className="mag-action-btn" 
+                        style={{ background: '#007a5e', color: '#ffffff', border: '1px solid #fcd116', cursor: 'pointer' }} 
+                        onClick={() => handleValidateLocalText('edito')}
+                        title="Valider la saisie"
+                      >
+                        <FontAwesomeIcon icon={faSave} /> Enregistrer 💾
+                      </button>
+                      <button 
+                        className="mag-action-btn" 
+                        style={{ background: 'rgba(220, 53, 69, 0.8)', color: '#ffffff', cursor: 'pointer' }} 
+                        onClick={() => handleCancelLocalEdit('edito')}
+                        title="Annuler la saisie"
+                      >
+                        <FontAwesomeIcon icon={faTimes} /> Annuler ❌
+                      </button>
+                    </>
                   )}
                 </div>
               )}
@@ -557,14 +593,24 @@ const AdminNewsletterEditor = () => {
                             <FontAwesomeIcon icon={faPlusCircle} /> Ajouter du texte
                           </button>
                         ) : (
-                          <button 
-                            className="mag-action-btn" 
-                            style={{ background: '#007a5e', color: '#ffffff', border: '1px solid #fcd116', margin: 0, cursor: 'pointer' }} 
-                            onClick={() => handleValidateLocalText(block.id)}
-                            title="Valider la saisie"
-                          >
-                            <FontAwesomeIcon icon={faSave} /> Enregistrer 💾
-                          </button>
+                          <>
+                            <button 
+                              className="mag-action-btn" 
+                              style={{ background: '#007a5e', color: '#ffffff', border: '1px solid #fcd116', margin: 0, cursor: 'pointer' }} 
+                              onClick={() => handleValidateLocalText(block.id)}
+                              title="Valider la saisie"
+                            >
+                              <FontAwesomeIcon icon={faSave} /> Enregistrer 💾
+                            </button>
+                            <button 
+                              className="mag-action-btn" 
+                              style={{ background: 'rgba(220, 53, 69, 0.8)', color: '#ffffff', margin: 0, cursor: 'pointer' }} 
+                              onClick={() => handleCancelLocalEdit(block.id)}
+                              title="Annuler la saisie"
+                            >
+                              <FontAwesomeIcon icon={faTimes} /> Annuler ❌
+                            </button>
+                          </>
                         )}
                         <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer ce bloc">
                           <FontAwesomeIcon icon={faTrash} />
@@ -664,7 +710,6 @@ const AdminNewsletterEditor = () => {
                 setGeminiPrompt('');
                 setGeminiGeneratedText('');
                 setCopySuccess(false);
-                setCurrentBlockIdForGemini(null);
               }} title="Fermer la modale">&times;</button>
             </div>
             <div className="gemini-modal-body">
@@ -715,7 +760,6 @@ const AdminNewsletterEditor = () => {
                     setGeminiPrompt('');
                     setGeminiGeneratedText('');
                     setCopySuccess(false);
-                    setCurrentBlockIdForGemini(null);
                   }}
                   title="Fermer la modale Gemini"
                 >
