@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faArrowLeft, faSave, faEye, faEyeSlash, 
-  faImage, faPlusCircle, faTrash, faTimes,
+  faImage, faVideo, faPlusCircle, faTrash, faTimes,
   faTextHeight, faPalette, faFillDrip, faCheckCircle,
   faPaperPlane, faGlobe, faDesktop
 } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import HandSpinner from '../components/HandSpinner';
 import '../styles/AdminNewsletterEditor.css';
+import { fetchPixabayMedia } from '../api/pixabayService';
 
 const AdminNewsletterEditor = () => {
   const { i18n } = useTranslation();
@@ -27,33 +28,33 @@ const AdminNewsletterEditor = () => {
   const fileInputRef = useRef(null);
   const [uploadTarget, setUploadTarget] = useState(null);
 
-  // États d'édition locale (Textes)
+  // Édition locale - Textes
   const [isEditingEdito, setIsEditingEdito] = useState(false);
   const [editingBlockId, setEditingBlockId] = useState(null);
 
-  // États d'édition locale (Images)
+  // Édition locale - Médias (Images / Vidéos)
   const [editingImageTarget, setEditingImageTarget] = useState(null);
   const [tempImageUrl, setTempImageUrl] = useState(null);
+  const [tempMediaType, setTempMediaType] = useState('image'); // 'image' ou 'video'
 
-  // Modale Choix Source Image (PC / Internet)
+  // Modales
   const [showSourceImageModal, setShowSourceImageModal] = useState(false);
-
-  // Gemini Modal States
   const [showGeminiModal, setShowGeminiModal] = useState(false);
   const [geminiPrompt, setGeminiPrompt] = useState('');
   const [geminiGeneratedText, setGeminiGeneratedText] = useState('');
   const [geminiLoading, setGeminiLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // Image Search States
+  // Recherche d'images/vidéos Pixabay
   const [showSearchImageModal, setShowSearchImageModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchType, setSearchType] = useState('photo'); // 'photo' ou 'video'
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
-  const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(null);
+  const [selectedMedia, setSelectedMedia] = useState(null); // { url, type }
 
   const GeminiLogo = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" fill="currentColor"/>
       <path d="M19 3L19.71 4.71L21.42 5.42L19.71 6.13L19 7.84L18.29 6.13L16.58 5.42L18.29 4.71L19 3Z" fill="currentColor"/>
     </svg>
@@ -70,8 +71,9 @@ const AdminNewsletterEditor = () => {
         id: Date.now(),
         type: 'article',
         image: '',
+        mediaType: 'image',
         text: { fr: 'Votre texte d\'article ici...', en: 'Your article text here...' },
-        styles: { fontSize: '1.25rem', color: 'white' }
+        styles: { fontSize: '1.25rem', color: '#222222' }
       }
     ],
     tags: { fr: [], en: [] },
@@ -101,11 +103,12 @@ const AdminNewsletterEditor = () => {
         id: b.id || idx,
         type: b.type,
         image: b.image,
+        mediaType: b.mediaType || 'image',
         text: {
           fr: b.text,
           en: articleBlocksEn[idx]?.text || ""
         },
-        styles: b.styles || { fontSize: '1.25rem', color: 'white' }
+        styles: b.styles || { fontSize: '1.25rem', color: '#222222' }
       }));
 
       setData({
@@ -144,7 +147,6 @@ const AdminNewsletterEditor = () => {
     }
   };
 
-  // Validation locale du texte avec alerte anti-étourderie
   const handleValidateLocalText = (target) => {
     let contentToCheck = "";
     const placeholders = ["votre édito ici...", "your editorial here...", "votre texte d'article ici...", "your article text here..."];
@@ -171,7 +173,6 @@ const AdminNewsletterEditor = () => {
     toast.success("Texte ajouté avec succès ! 🎉");
   };
 
-  // Annulation locale du texte
   const handleCancelLocalText = (target) => {
     if (target === 'edito') {
       setIsEditingEdito(false);
@@ -181,15 +182,13 @@ const AdminNewsletterEditor = () => {
     toast.info("Saisie annulée ❌");
   };
 
-  // Ouverture du choix source image
   const openImageSourceModal = (target) => {
     setUploadTarget(target);
     setShowSourceImageModal(true);
   };
 
-  // Upload PC ou sélection Internet (Mode Local Temporaire)
-  const handleImageSelectedTemp = async (imageUrl, file = null) => {
-    let finalUrl = imageUrl;
+  const handleMediaSelectedTemp = async (mediaUrl, type = 'image', file = null) => {
+    let finalUrl = mediaUrl;
     if (file) {
       try {
         const formData = new FormData();
@@ -202,12 +201,12 @@ const AdminNewsletterEditor = () => {
     }
 
     setTempImageUrl(finalUrl);
+    setTempMediaType(type);
     setEditingImageTarget(uploadTarget);
     setShowSourceImageModal(false);
     setShowSearchImageModal(false);
   };
 
-  // Validation locale de l'image
   const handleValidateLocalImage = () => {
     if (!tempImageUrl) return;
 
@@ -218,23 +217,21 @@ const AdminNewsletterEditor = () => {
     } else {
       setData(prev => ({
         ...prev,
-        blocks: prev.blocks.map(b => b.id === editingImageTarget ? { ...b, image: tempImageUrl } : b)
+        blocks: prev.blocks.map(b => b.id === editingImageTarget ? { ...b, image: tempImageUrl, mediaType: tempMediaType } : b)
       }));
     }
 
-    toast.success("Image ajoutée avec succès ! 🖼️");
+    toast.success("Média ajouté avec succès ! 🖼️");
     setEditingImageTarget(null);
     setTempImageUrl(null);
   };
 
-  // Annulation locale de l'image
   const handleCancelLocalImage = () => {
     setEditingImageTarget(null);
     setTempImageUrl(null);
     toast.info("Saisie annulée ❌");
   };
 
-  // Suppression directe de l'image
   const handleDeleteImage = (target) => {
     if (target === 'banner') {
       setData(prev => ({ ...prev, bannerImage: '' }));
@@ -243,12 +240,12 @@ const AdminNewsletterEditor = () => {
     } else {
       setData(prev => ({
         ...prev,
-        blocks: prev.blocks.map(b => b.id === target ? { ...b, image: '' } : b)
+        blocks: prev.blocks.map(b => b.id === target ? { ...b, image: '', mediaType: 'image' } : b)
       }));
     }
     setEditingImageTarget(null);
     setTempImageUrl(null);
-    toast.info("Image supprimée 🗑️");
+    toast.info("Média supprimé 🗑️");
   };
 
   const handleStyleChange = (blockId, styleKey, value) => {
@@ -263,8 +260,9 @@ const AdminNewsletterEditor = () => {
       id: Date.now(),
       type: 'article',
       image: '',
+      mediaType: 'image',
       text: { fr: 'Votre texte d\'article ici...', en: 'Your article text here...' },
-      styles: { fontSize: '1.25rem', color: 'white' }
+      styles: { fontSize: '1.25rem', color: '#222222' }
     };
     setData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
   };
@@ -274,31 +272,40 @@ const AdminNewsletterEditor = () => {
     if (editingBlockId === blockId) setEditingBlockId(null);
   };
 
-  const handleSearchPhotos = () => {
-    const query = searchQuery.trim();
-    if (!query) {
-      toast.warning("Veuillez saisir un mot-clé pour rechercher des images.");
-      setSearchResults([]);
-      setIsSearching(false);
-      return;
-    }
-
-    setIsSearching(true);
+  // API Pixabay dynamique (Photos + Vidéos) via le service dédié
+const handleSearchPhotos = async () => {
+  const query = searchQuery.trim();
+  if (!query) {
+    toast.warning("Veuillez saisir un mot-clé pour la recherche.");
     setSearchResults([]);
-    setSelectedPhotoUrl(null);
-
-    // Utilisation d'un service de recherche thématique par mots-clés réels
-    const encoded = encodeURIComponent(query);
-    const newResults = Array.from({ length: 6 }, (_, i) =>
-      `https://images.unsplash.com/featured/500x350/?${encoded}&sig=${i + Date.now()}`
-    );
-
-    setSearchResults(newResults);
     setIsSearching(false);
-    toast.success(`Recherche de photos pour "${query}" terminée !`);
-  };
+    return;
+  }
 
-  // Sauvegarde globale BDD
+  setIsSearching(true);
+  setSearchResults([]);
+  setSelectedMedia(null);
+
+  try {
+    // On appelle notre service propre situé dans src/api/
+    const results = await fetchPixabayMedia(query, searchType);
+
+    if (results && results.length > 0) {
+      setSearchResults(results);
+      toast.success(`Recherche de ${searchType === 'video' ? 'vidéos' : 'photos'} pour "${query}" réussie ! 📸`);
+    } else {
+      toast.warning("Aucun résultat trouvé pour ce mot-clé.");
+      setSearchResults([]);
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Erreur lors de la recherche Pixabay.");
+    setSearchResults([]);
+  } finally {
+    setIsSearching(false);
+  }
+};
+
   const handleSave = async () => {
     try {
       const formatted = {
@@ -369,9 +376,12 @@ const AdminNewsletterEditor = () => {
         style={{ display: 'none' }} 
         onChange={(e) => {
           const file = e.target.files[0];
-          if (file) handleImageSelectedTemp(null, file);
+          if (file) {
+            const isVid = file.type.startsWith('video');
+            handleMediaSelectedTemp(null, isVid ? 'video' : 'image', file);
+          }
         }} 
-        accept="image/*" 
+        accept="image/*,video/*" 
       />
 
       {/* BARRE LATÉRALE GAUCHE */}
@@ -412,13 +422,9 @@ const AdminNewsletterEditor = () => {
             setShowSearchImageModal(true);
             setSearchQuery('');
             setSearchResults([]);
-            setSelectedPhotoUrl(null);
-          }} title="Rechercher une photo sur Internet">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
+            setSelectedMedia(null);
+          }} title="Rechercher une photo ou vidéo sur Internet">
+            <FontAwesomeIcon icon={faGlobe} />
           </button>
 
           <button className="v2-btn-icon btn-mobile-tools" onClick={() => setShowMobileTools(!showMobileTools)} title="Outils de style">
@@ -427,7 +433,7 @@ const AdminNewsletterEditor = () => {
         </div>
       )}
 
-      {/* BOUTON ÉDITION (SI PREVIEW) */}
+      {/* BOUTON RETOUR PREVIEW */}
       {isPreview && (
         <button
           className="v2-btn v2-btn-green"
@@ -444,20 +450,27 @@ const AdminNewsletterEditor = () => {
         <div className="mag-header-banner" title="Image de couverture">
           <img src={editingImageTarget === 'banner' && tempImageUrl ? tempImageUrl : data.bannerImage} alt="Bannière" />
           {!isPreview && (
-            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10 }}>
               {editingImageTarget !== 'banner' ? (
-                <button className="mag-action-btn" onClick={() => openImageSourceModal('banner')} title="Changer la bannière">
-                  <FontAwesomeIcon icon={faImage} /> Changer la bannière
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button className="mag-action-btn" onClick={() => openImageSourceModal('banner')} title="Changer la bannière">
+                    <FontAwesomeIcon icon={faImage} /> Changer la bannière
+                  </button>
+                  {data.bannerImage && (
+                    <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff' }} onClick={() => handleDeleteImage('banner')} title="Supprimer la bannière">
+                      Supprimer 🗑️
+                    </button>
+                  )}
+                </div>
               ) : (
-                <div style={{ display: 'flex', gap: '6px', background: 'rgba(0,0,0,0.6)', padding: '6px', borderRadius: '8px' }}>
-                  <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff' }} onClick={handleValidateLocalImage} title="Enregistrer">
+                <div style={{ display: 'flex', gap: '6px', background: 'rgba(0,0,0,0.7)', padding: '6px 12px', borderRadius: '8px' }}>
+                  <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff' }} onClick={handleValidateLocalImage}>
                     Enregistrer 💾
                   </button>
-                  <button className="mag-action-btn" style={{ background: '#6c757d', color: '#fff' }} onClick={handleCancelLocalImage} title="Annuler">
+                  <button className="mag-action-btn" style={{ background: '#6c757d', color: '#fff' }} onClick={handleCancelLocalImage}>
                     Annuler ❌
                   </button>
-                  <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff' }} onClick={() => handleDeleteImage('banner')} title="Supprimer">
+                  <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff' }} onClick={() => handleDeleteImage('banner')}>
                     Supprimer 🗑️
                   </button>
                 </div>
@@ -476,7 +489,7 @@ const AdminNewsletterEditor = () => {
             {data.title[currentLang]}
           </h1>
 
-          {/* EDITO SECTION */}
+          {/* SECTION EDITO */}
           <section className="mag-edito-box">
             <div className="mag-edito-left" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <h3 style={{ color: '#fcd116', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.95rem', fontWeight: '800', letterSpacing: '1px' }}>
@@ -488,18 +501,25 @@ const AdminNewsletterEditor = () => {
               {!isPreview && (
                 <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center', width: '100%' }}>
                   {editingImageTarget !== 'president' ? (
-                    <button className="mag-action-btn" onClick={() => openImageSourceModal('president')} style={{ fontSize: '0.85rem', padding: '6px 12px', whiteSpace: 'nowrap' }}>
-                      <FontAwesomeIcon icon={faImage} /> Changer l'image
-                    </button>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button className="mag-action-btn" onClick={() => openImageSourceModal('president')} style={{ fontSize: '0.85rem', padding: '6px 12px' }}>
+                        <FontAwesomeIcon icon={faImage} /> Changer l'image
+                      </button>
+                      {data.presidentImage && (
+                        <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.85rem', padding: '6px 10px' }} onClick={() => handleDeleteImage('president')}>
+                          Supprimer 🗑️
+                        </button>
+                      )}
+                    </div>
                   ) : (
                     <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                      <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.75rem', padding: '5px 6px' }} onClick={handleValidateLocalImage}>
+                      <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleValidateLocalImage}>
                         Enregistrer 💾
                       </button>
-                      <button className="mag-action-btn" style={{ background: '#6c757d', color: '#fff', fontSize: '0.75rem', padding: '5px 6px' }} onClick={handleCancelLocalImage}>
+                      <button className="mag-action-btn" style={{ background: '#6c757d', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleCancelLocalImage}>
                         Annuler ❌
                       </button>
-                      <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.75rem', padding: '5px 6px' }} onClick={() => handleDeleteImage('president')}>
+                      <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={() => handleDeleteImage('president')}>
                         Supprimer 🗑️
                       </button>
                     </div>
@@ -571,34 +591,54 @@ const AdminNewsletterEditor = () => {
             {data.blocks.map((block) => {
               const isEditingThisBlock = editingBlockId === block.id;
               const isEditingThisBlockImage = editingImageTarget === block.id;
-              const activeImg = isEditingThisBlockImage && tempImageUrl ? tempImageUrl : block.image;
+              const activeMedia = isEditingThisBlockImage && tempImageUrl ? tempImageUrl : block.image;
+              const currentType = isEditingThisBlockImage ? tempMediaType : (block.mediaType || 'image');
 
               return (
                 <div key={block.id} className="mag-article-row">
-                  <div className="mag-article-img-box" title="Image de l'article" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', overflow: 'hidden' }}>
-                    {activeImg ? (
-                      <img src={activeImg} alt="Article" />
+                  <div className="mag-article-img-box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '280px' }}>
+                    {activeMedia ? (
+                      currentType === 'video' ? (
+                        <video 
+                          src={activeMedia} 
+                          controls 
+                          autoPlay 
+                          muted 
+                          loop 
+                          style={{ width: '100%', maxHeight: '250px', objectFit: 'cover', borderRadius: '12px' }} 
+                        />
+                      ) : (
+                        <img src={activeMedia} alt="Article" style={{ width: '100%', maxHeight: '250px', objectFit: 'cover', borderRadius: '12px' }} />
+                      )
                     ) : (
-                      <div className="add-img-placeholder">
+                      <div className="add-img-placeholder" style={{ width: '100%', height: '180px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(255,255,255,0.2)', borderRadius: '12px' }}>
                         <FontAwesomeIcon icon={faImage} size="3x" color="rgba(255,255,255,0.3)" />
-                        <span>Aucune image</span>
+                        <span style={{ marginTop: '8px', color: 'rgba(255,255,255,0.5)' }}>Aucun média</span>
                       </div>
                     )}
+
                     {!isPreview && (
-                      <div style={{ marginTop: '10px', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                        {!isEditingThisBlockImage ? (
-                          <button className="mag-action-btn" onClick={() => openImageSourceModal(block.id)} title="Ajouter ou changer l'image" style={{ whiteSpace: 'nowrap' }}>
-                            <FontAwesomeIcon icon={faImage} /> {block.image ? "Changer l'image" : "Ajouter une image"}
-                          </button>
+                      <div style={{ marginTop: '12px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                        {editingImageTarget !== block.id ? (
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                            <button className="mag-action-btn" onClick={() => openImageSourceModal(block.id)} style={{ whiteSpace: 'nowrap' }}>
+                              <FontAwesomeIcon icon={block.mediaType === 'video' ? faVideo : faImage} /> {block.image ? "Changer le média" : "Ajouter média"}
+                            </button>
+                            {block.image && (
+                              <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff' }} onClick={() => handleDeleteImage(block.id)} title="Supprimer">
+                                Supprimer 🗑️
+                              </button>
+                            )}
+                          </div>
                         ) : (
-                          <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                            <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleValidateLocalImage}>
+                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                            <button className="mag-action-btn" style={{ background: '#007a5e', color: '#fff', fontSize: '0.85rem', padding: '6px 10px' }} onClick={handleValidateLocalImage}>
                               Enregistrer 💾
                             </button>
-                            <button className="mag-action-btn" style={{ background: '#6c757d', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={handleCancelLocalImage}>
+                            <button className="mag-action-btn" style={{ background: '#6c757d', color: '#fff', fontSize: '0.85rem', padding: '6px 10px' }} onClick={handleCancelLocalImage}>
                               Annuler ❌
                             </button>
-                            <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.8rem', padding: '5px 8px' }} onClick={() => handleDeleteImage(block.id)}>
+                            <button className="mag-action-btn" style={{ background: '#dc3545', color: '#fff', fontSize: '0.85rem', padding: '6px 10px' }} onClick={() => handleDeleteImage(block.id)}>
                               Supprimer 🗑️
                             </button>
                           </div>
@@ -606,7 +646,8 @@ const AdminNewsletterEditor = () => {
                       </div>
                     )}
                   </div>
-                  <div className="mag-article-right" style={block.styles}>
+
+                  <div className="mag-article-right" style={{ ...block.styles, color: block.styles?.color || '#222222' }}>
                     <div
                       id={`block-text-${block.id}`}
                       className="mag-article-text editable-area"
@@ -615,15 +656,16 @@ const AdminNewsletterEditor = () => {
                       onFocus={() => setEditingBlockId(block.id)}
                       onBlur={(e) => handleTextChange('text', e.target.innerText, block.id)}
                       onClick={() => { setActiveBlockId(block.id); setShowMobileTools(true); }}
+                      style={{ color: block.styles?.color || '#222222' }}
                     >
                       {block.text[currentLang]}
                     </div>
                     {!isPreview && (
-                      <div className="block-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <div className="block-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '15px' }}>
                         {!isEditingThisBlock ? (
                           <button 
                             className="mag-action-btn" 
-                            style={{ background: 'rgba(255,255,255,0.1)', margin: 0, cursor: 'pointer' }} 
+                            style={{ background: 'rgba(0,0,0,0.1)', color: '#222', margin: 0, cursor: 'pointer' }} 
                             onClick={() => {
                               setEditingBlockId(block.id);
                               const blockTextDiv = document.getElementById(`block-text-${block.id}`);
@@ -661,7 +703,7 @@ const AdminNewsletterEditor = () => {
                             </button>
                           </>
                         )}
-                        <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer ce bloc">
+                        <button className="v2-btn-icon btn-delete" onClick={() => deleteBlock(block.id)} title="Supprimer ce bloc d'article">
                           <FontAwesomeIcon icon={faTrash} />
                         </button>
                       </div>
@@ -673,9 +715,9 @@ const AdminNewsletterEditor = () => {
           </div>
 
           {!isPreview && (
-            <div className="add-block-zone" onClick={addBlock} style={{ cursor: 'pointer', padding: '40px', border: '2px dashed rgba(255,255,255,0.3)', borderRadius: '20px', marginTop: '60px', textAlign: 'center' }} title="Ajouter un nouveau bloc article">
+            <div className="add-block-zone" onClick={addBlock} style={{ cursor: 'pointer', padding: '40px', border: '2px dashed rgba(0,0,0,0.2)', borderRadius: '20px', marginTop: '60px', textAlign: 'center', color: '#222' }} title="Ajouter un nouveau bloc article">
               <FontAwesomeIcon icon={faPlusCircle} size="3x" style={{ marginBottom: '15px' }} />
-              <h3 style={{ margin: 0 }}>Ajouter un article (Image + Texte alterné)</h3>
+              <h3 style={{ margin: 0 }}>Ajouter un article (Média + Texte alterné)</h3>
             </div>
           )}
         </div>
@@ -726,7 +768,7 @@ const AdminNewsletterEditor = () => {
             <input type="color" className="tool-color-picker" onChange={(e) => {
                if (activeBlockId && activeBlockId !== 'edito') handleStyleChange(activeBlockId, 'color', e.target.value);
                else execCommand('foreColor', e.target.value);
-            }} defaultValue="#ffffff" title="Changer la couleur du texte" />
+            }} defaultValue="#222222" title="Changer la couleur du texte" />
           </div>
 
           <div className="tool-group">
@@ -748,16 +790,16 @@ const AdminNewsletterEditor = () => {
         </div>
       )}
 
-      {/* MODALE CHOIX SOURCE IMAGE (PC OU INTERNET) */}
+      {/* MODALE SOURCE MEDIA (PC OU INTERNET) */}
       {showSourceImageModal && (
         <div className="gemini-modal-overlay">
           <div className="gemini-modal" style={{ maxWidth: '450px', textAlign: 'center' }}>
             <div className="gemini-modal-header">
-              <h2>Source de l'image</h2>
+              <h2>Source du média</h2>
               <button className="close-btn" onClick={() => setShowSourceImageModal(false)} title="Fermer">&times;</button>
             </div>
             <div className="gemini-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '20px 0' }}>
-              <p style={{ margin: 0, fontWeight: '600', color: '#555' }}>D'où souhaitez-vous ajouter votre image ?</p>
+              <p style={{ margin: 0, fontWeight: '600', color: '#555' }}>D'où souhaitez-vous ajouter votre média ?</p>
               
               <button 
                 className="v2-btn v2-btn-green"
@@ -767,7 +809,7 @@ const AdminNewsletterEditor = () => {
                 }}
                 style={{ padding: '14px', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
               >
-                <FontAwesomeIcon icon={faDesktop} /> Depuis mon ordinateur
+                <FontAwesomeIcon icon={faDesktop} /> Depuis mon ordinateur (Photo / Vidéo)
               </button>
 
               <button 
@@ -777,18 +819,18 @@ const AdminNewsletterEditor = () => {
                   setShowSearchImageModal(true);
                   setSearchQuery('');
                   setSearchResults([]);
-                  setSelectedPhotoUrl(null);
+                  setSelectedMedia(null);
                 }}
                 style={{ padding: '14px', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
               >
-                <FontAwesomeIcon icon={faGlobe} /> Rechercher sur Internet
+                <FontAwesomeIcon icon={faGlobe} /> Rechercher sur Internet (Pixabay)
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* GEMINI MODAL */}
+      {/* MODALE GEMINI */}
       {showGeminiModal && (
         <div className="gemini-modal-overlay">
           <div className="gemini-modal">
@@ -812,7 +854,14 @@ const AdminNewsletterEditor = () => {
               ></textarea>
               <button
                 className="v2-btn v2-btn-green"
-                onClick={handleGenerateInModal}
+                onClick={() => {
+                  if (!geminiPrompt.trim()) return;
+                  setGeminiLoading(true);
+                  setTimeout(() => {
+                    setGeminiGeneratedText(`Exemple de texte généré pour : "${geminiPrompt}"`);
+                    setGeminiLoading(false);
+                  }, 1000);
+                }}
                 disabled={geminiLoading || geminiPrompt.trim() === ''}
                 style={{ marginTop: '15px' }}
                 title="Générer du texte avec Gemini"
@@ -860,29 +909,52 @@ const AdminNewsletterEditor = () => {
         </div>
       )}
 
-      {/* SEARCH IMAGE MODAL */}
+      {/* MODALE RECHERCHE PIXABAY (PHOTOS & VIDÉOS) */}
       {showSearchImageModal && (
         <div className="gemini-modal-overlay">
-          <div className="gemini-modal">
+          <div className="gemini-modal" style={{ maxWidth: '700px' }}>
             <div className="gemini-modal-header">
-              <h2>Recherche d'images sur Internet</h2>
-              <button className="close-btn" onClick={() => {
-                setShowSearchImageModal(false);
-                setSearchQuery('');
-                setSearchResults([]);
-                setSelectedPhotoUrl(null);
-              }} title="Fermer la modale">&times;</button>
+              <h2>Recherche Médias Pixabay</h2>
+              <button 
+                className="close-btn" 
+                onClick={() => {
+                  setShowSearchImageModal(false);
+                  setSearchQuery('');
+                  setSearchResults([]);
+                  setSelectedMedia(null);
+                }} 
+                title="Fermer"
+              >
+                &times;
+              </button>
             </div>
             <div className="gemini-modal-body">
+              <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+                <button 
+                  className={`v2-btn ${searchType === 'photo' ? 'v2-btn-green' : ''}`}
+                  onClick={() => setSearchType('photo')}
+                  style={{ flex: 1, padding: '10px' }}
+                >
+                  <FontAwesomeIcon icon={faImage} /> Photos
+                </button>
+                <button 
+                  className={`v2-btn ${searchType === 'video' ? 'v2-btn-green' : ''}`}
+                  onClick={() => setSearchType('video')}
+                  style={{ flex: 1, padding: '10px' }}
+                >
+                  <FontAwesomeIcon icon={faVideo} /> Vidéos
+                </button>
+              </div>
+
               <div className="search-input-group" style={{ display: 'flex', gap: '10px' }}>
                 <input
                   type="text"
                   className="tool-select-v2"
-                  placeholder="Ex: children, school, charity..."
+                  placeholder={searchType === 'video' ? "Ex: enfants jouer, ecole, nature..." : "Ex: enfance, éducation, travaux, école..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => { if (e.key === 'Enter') handleSearchPhotos(); }}
-                  title="Saisissez votre recherche d'images (anglais recommandé pour Unsplash)"
+                  title="Saisissez votre recherche"
                   style={{ flexGrow: 1 }}
                 />
                 <button
@@ -899,29 +971,48 @@ const AdminNewsletterEditor = () => {
 
               {!isSearching && searchResults.length === 0 && (
                 <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
-                  Tape un mot-clé (ex: *school*, *children*, *africa*) puis clique sur RECHERCHER.
+                  Tape un mot-clé en français (ex: *école*, *enfance*, *travaux*) puis clique sur RECHERCHER.
                 </p>
               )}
 
               {!isSearching && searchResults.length > 0 && (
                 <div className="image-gallery" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginTop: '20px' }}>
-                  {searchResults.map((url, index) => (
+                  {searchResults.map((item, index) => (
                     <div
                       key={index}
-                      className={`image-thumbnail ${selectedPhotoUrl === url ? 'selected' : ''}`}
-                      onClick={() => setSelectedPhotoUrl(url)}
+                      className={`image-thumbnail ${selectedMedia?.url === item.url ? 'selected' : ''}`}
+                      onClick={() => setSelectedMedia(item)}
                       title="Cliquer pour sélectionner"
-                      style={{ cursor: 'pointer', border: selectedPhotoUrl === url ? '3px solid #007a5e' : '1px solid #ccc', borderRadius: '8px', overflow: 'hidden' }}
+                      style={{ 
+                        cursor: 'pointer', 
+                        border: selectedMedia?.url === item.url ? '3px solid #007a5e' : '1px solid #ccc', 
+                        borderRadius: '8px', 
+                        overflow: 'hidden',
+                        position: 'relative',
+                        boxShadow: selectedMedia?.url === item.url ? '0 0 10px rgba(0,122,94,0.5)' : 'none'
+                      }}
                     >
-                      <img
-                        src={url}
-                        alt={`Résultat ${index + 1}`}
-                        style={{ width: '100%', height: '120px', objectFit: 'cover' }}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=600&auto=format&fit=crop';
-                        }}
-                      />
+                      {item.type === 'video' ? (
+                        <video 
+                          src={item.url} 
+                          style={{ width: '100%', height: '120px', objectFit: 'cover' }} 
+                          muted 
+                          loop 
+                          onMouseOver={(e) => e.target.play()} 
+                          onMouseOut={(e) => e.target.pause()} 
+                        />
+                      ) : (
+                        <img
+                          src={item.preview}
+                          alt={`Résultat ${index + 1}`}
+                          style={{ width: '100%', height: '120px', objectFit: 'cover' }}
+                        />
+                      )}
+                      {item.type === 'video' && (
+                        <span style={{ position: 'absolute', bottom: '5px', right: '5px', background: 'rgba(0,0,0,0.7)', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontSize: '0.7rem' }}>
+                          🎥 Vidéo
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -931,16 +1022,16 @@ const AdminNewsletterEditor = () => {
                 <button
                   className="v2-btn v2-btn-green"
                   onClick={() => {
-                    if (selectedPhotoUrl) {
-                      handleImageSelectedTemp(selectedPhotoUrl);
+                    if (selectedMedia) {
+                      handleMediaSelectedTemp(selectedMedia.url, selectedMedia.type);
                     } else {
-                      toast.error("Veuillez sélectionner une photo à insérer.");
+                      toast.error("Veuillez sélectionner un média à insérer.");
                     }
                   }}
-                  disabled={!selectedPhotoUrl}
-                  title="Insérer la photo sélectionnée"
+                  disabled={!selectedMedia}
+                  title="Insérer le média sélectionné"
                 >
-                  Insérer la photo
+                  Insérer le média
                 </button>
                 <button
                   className="v2-btn"
@@ -948,9 +1039,9 @@ const AdminNewsletterEditor = () => {
                     setShowSearchImageModal(false);
                     setSearchQuery('');
                     setSearchResults([]);
-                    setSelectedPhotoUrl(null);
+                    setSelectedMedia(null);
                   }}
-                  title="Fermer la modale"
+                  title="Fermer"
                 >
                   Fermer
                 </button>
