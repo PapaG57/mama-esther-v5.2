@@ -55,5 +55,8 @@
     "nodemon": "^3.1.10",
     "vite": "^6.3.5",
     "vitest": "^3.0.6"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
   }
 }
